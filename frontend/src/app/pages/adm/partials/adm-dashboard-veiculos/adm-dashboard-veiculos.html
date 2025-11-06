@@ -1,0 +1,65 @@
+<div class="page-container">
+  <div class="page-header">
+    <h1>Gerenciamento de Veículos</h1>
+    <button class="btn btn-primary" (click)="onAddNew()">Adicionar Novo Veículo</button>
+  </div>
+
+  <!-- Formulário de Adicionar/Editar -->
+  <div *ngIf="showForm()" class="form-container">
+    <h2>{{ editingVeiculoId() ? 'Editar Veículo' : 'Novo Veículo' }}</h2>
+    <form [formGroup]="veiculoForm" (ngSubmit)="onSave()">
+      <div class="form-group">
+        <label for="nome">Nome</label>
+        <input id="nome" type="text" formControlName="nome" />
+      </div>
+      <div class="form-group">
+        <label for="marca">Marca</label>
+        <input id="marca" type="text" formControlName="marca" />
+      </div>
+      <div class="form-group">
+        <label for="ano">Ano</label>
+        <input id="ano" type="number" formControlName="ano" />
+      </div>
+      <div class="form-group">
+        <label for="preco">Preço</label>
+        <input id="preco" type="number" formControlName="preco" />
+      </div>
+      <div class="form-actions">
+        <button type="submit" class="btn btn-primary" [disabled]="veiculoForm.invalid">Salvar</button>
+        <button type="button" class="btn btn-secondary" (click)="onCancel()">Cancelar</button>
+      </div>
+    </form>
+  </div>
+
+  <!-- Tabela de Veículos -->
+  <div class="table-container">
+    <table class="data-table">
+      <thead>
+        <tr>
+          <th>ID</th>
+          <th>Nome</th>
+          <th>Marca</th>
+          <th>Ano</th>
+          <th>Preço</th>
+          <th>Ações</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr *ngFor="let veiculo of veiculos()">
+          <td>{{ veiculo.id }}</td>
+          <td>{{ veiculo.nome }}</td>
+          <td>{{ veiculo.marca }}</td>
+          <td>{{ veiculo.ano }}</td>
+          <td>{{ veiculo.preco | currency: 'BRL' }}</td>
+          <td class="actions-cell">
+            <button class="btn btn-sm btn-secondary" (click)="onEdit(veiculo)">Editar</button>
+            <button class="btn btn-sm btn-danger" (click)="onDelete(veiculo.id)">Excluir</button>
+          </td>
+        </tr>
+        <tr *ngIf="veiculos().length === 0">
+          <td colspan="6" class="empty-state">Nenhum veículo cadastrado.</td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+</div>

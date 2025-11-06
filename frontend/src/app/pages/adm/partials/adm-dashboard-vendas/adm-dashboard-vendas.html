@@ -1,0 +1,28 @@
+<div class="page-container">
+  <div class="page-header">
+    <h1>Relatório de Vendas</h1>
+  </div>
+
+  <div class="table-container">
+    <table class="data-table">
+      <thead>
+        <tr>
+          <th>ID Venda</th>
+          <th>Cliente</th>
+          <th>Produto</th>
+          <th>Data</th>
+          <th>Valor</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr *ngFor="let venda of vendas()">
+          <td>{{ venda.id }}</td>
+          <td>{{ venda.cliente }}</td>
+          <td>{{ venda.produto }}</td>
+          <td>{{ venda.data | date: 'dd/MM/yyyy' }}</td>
+          <td>{{ venda.valor | currency: 'BRL' }}</td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+</div>

@@ -1,0 +1,6 @@
+# Dependências
+/node_modules
+
+# Arquivos de ambiente e temporários
+.env
+/tmp

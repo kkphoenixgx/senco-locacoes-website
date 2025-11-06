@@ -1,0 +1,17 @@
+/* You can add global styles to this file, and also import other style files */
+
+*{
+    box-sizing: border-box;
+    margin: 0px;
+    padding: 0px;
+}
+
+/* Declarando variáveis CSS globais */
+:root {
+  --blue-default: #15233c;
+  --blue-lighter: #5fa8cf;
+  --yellow-default: #facb27; /* Corrigido de yelow para yellow */
+  --yellow-lighter: #ffe411; /* Corrigido de yelow para yellow */
+  --white-default: #e1e4e6;
+  --gray-default: #9a968e;
+}

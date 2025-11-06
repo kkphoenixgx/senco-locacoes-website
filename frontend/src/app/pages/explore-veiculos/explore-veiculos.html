@@ -1,0 +1,73 @@
+<div class="explore-container">
+  <h1 class="section-title">Nossos Veículos</h1>
+
+  <!-- Bloco de Filtros -->
+  <section class="filters-block">
+    <!-- Filtros para Desktop -->
+    <div class="filters-desktop">
+      <input type="text" placeholder="Busque por nome..." class="filter-input" />
+      <select class="filter-select">
+        <option disabled selected>Marca</option>
+        <option>Honda</option>
+        <option>Mercedes-Benz</option>
+        <option>Voltz</option>
+      </select>
+      <select class="filter-select">
+        <option disabled selected>Ano</option>
+        <option>2024</option>
+        <option>2023</option>
+      </select>
+      <select class="filter-select">
+        <option disabled selected>Preço</option>
+        <option>Até R$ 50.000</option>
+        <option>Acima de R$ 50.000</option>
+      </select>
+    </div>
+
+    <!-- Botão de Filtro para Mobile -->
+    <button class="filters-mobile-toggle" (click)="toggleFilters()">Filtrar e Ordenar</button>
+  </section>
+
+  <!-- Grade de Veículos -->
+  <section class="vehicle-grid">
+    <!-- Cards de produto seriam gerados aqui, por exemplo com *ngFor -->
+    <div class="product-card">
+      <div class="product-image-placeholder">Veículo 1</div>
+      <h3>Honda CBR 500R</h3>
+      <p class="price">R$ 55.000</p>
+      <a href="#" class="cta-button">Tenho Interesse</a>
+    </div>
+    <div class="product-card">
+      <div class="product-image-placeholder">Veículo 2</div>
+      <h3>Mercedes-Benz Axor</h3>
+      <p class="price">R$ 320.000</p>
+      <a href="#" class="cta-button">Tenho Interesse</a>
+    </div>
+    <!-- Repetir mais cards... -->
+  </section>
+
+  <!-- Paginação / Carregar Mais -->
+  <section class="pagination-section">
+    <button class="load-more-button">Carregar Mais Veículos</button>
+  </section>
+</div>
+
+<!-- Drawer de Filtros para Mobile -->
+<div class="filters-mobile-drawer" [ngClass]="{ 'open': isFilterOpen() }">
+  <div class="drawer-header">
+    <h3>Filtrar e Ordenar</h3>
+    <button class="close-button" (click)="toggleFilters()">X</button>
+  </div>
+  <div class="drawer-content">
+    <input type="text" placeholder="Busque por nome..." class="filter-input" />
+    <select class="filter-select">
+      <option disabled selected>Marca</option>
+    </select>
+    <select class="filter-select">
+      <option disabled selected>Ano</option>
+    </select>
+    <select class="filter-select">
+      <option disabled selected>Preço</option>
+    </select>
+  </div>
+</div>

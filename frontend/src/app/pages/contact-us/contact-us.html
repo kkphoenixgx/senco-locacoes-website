@@ -1,0 +1,50 @@
+<div class="contact-container">
+  <h1 class="section-title">Entre em Contato</h1>
+
+  <div class="contact-grid">
+    <!-- Seção: Informações de Contato Direto -->
+    <section class="contact-details">
+      <h2 class="subsection-title">Nossos Canais</h2>
+      <ul>
+        <li>
+          <strong>Telefone/WhatsApp:</strong>
+          <span>(67) 4000-0210</span>
+        </li>
+        <li>
+          <strong>Email:</strong>
+          <span>contato@senco.com</span>
+        </li>
+        <li>
+          <strong>Endereço:</strong>
+          <span>Av. dos Oitizeiros, 200 60, Jardim dos Estados, Dourados/MS</span>
+        </li>
+        <li>
+          <strong>Horário de Atendimento:</strong>
+          <span>Segunda a Sexta, das 8h às 18h</span>
+        </li>
+      </ul>
+    </section>
+
+    <!-- Seção: Formulário de Contato -->
+    <section class="contact-form-section">
+      <h2 class="subsection-title">Envie uma Mensagem</h2>
+      <form [formGroup]="contactForm" (ngSubmit)="onSubmit()" class="contact-form">
+        <div class="form-group"><input type="text" placeholder="Nome" formControlName="name" /></div>
+        <div class="form-group"><input type="email" placeholder="Email" formControlName="email" /></div>
+        <div class="form-group"><input type="tel" placeholder="Telefone" formControlName="phone" /></div>
+        <div class="form-group"><input type="text" placeholder="Assunto" formControlName="subject" /></div>
+        <div class="form-group"><textarea placeholder="Sua Mensagem" rows="5" formControlName="message"></textarea></div>
+        <button type="submit" class="cta-button">Enviar Mensagem</button>
+      </form>
+    </section>
+  </div>
+
+  <!-- Seção: Mapa de Localização -->
+  <section class="map-section">
+    <h2 class="subsection-title">Nossa Localização</h2>
+    <div class="map-placeholder">
+      <!-- Placeholder for Google Maps Iframe -->
+      <p>Mapa seria incorporado aqui.</p>
+    </div>
+  </section>
+</div>

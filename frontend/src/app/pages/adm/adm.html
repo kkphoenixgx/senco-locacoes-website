@@ -1,0 +1,25 @@
+<div class="admin-layout">
+  <aside class="admin-sidebar">
+    <div class="sidebar-header">
+      <a class="logo" routerLink="/adm">SENCO ADM</a>
+    </div>
+    <nav class="sidebar-nav">
+      <ul>
+        <li><a routerLink="/adm/vendas" routerLinkActive="active">Vendas</a></li>
+        <li><a routerLink="/adm/veiculos" routerLinkActive="active">Veículos</a></li>
+        <li><a routerLink="/adm/ferramentas" routerLinkActive="active">Ferramentas</a></li>
+      </ul>
+    </nav>
+  </aside>
+
+  <div class="admin-main-content">
+    <header class="admin-header">
+      <h2>Painel Administrativo</h2>
+      <button (click)="logout()" class="logout-button">Sair</button>
+    </header>
+
+    <main class="content-area">
+      <router-outlet />
+    </main>
+  </div>
+</div>

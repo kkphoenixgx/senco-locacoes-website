@@ -1,0 +1,233 @@
+/* Usando as variáveis globais definidas em styles.scss */
+:host {
+  display: block;
+  position: sticky;
+  top: 0;
+  z-index: 1000;
+  background-color: var(--blue-default);
+  color: var(--white-default);
+  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2);
+}
+
+.header-container {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 0 2rem;
+  height: 70px;
+  max-width: 1400px;
+  margin: 0 auto;
+}
+
+.logo {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  text-decoration: none;
+  color: var(--white-default);
+}
+
+/* Placeholder para o ícone da logo */
+.logo-icon-placeholder {
+  width: 32px;
+  height: 32px;
+  background-color: var(--blue-lighter);
+  color: var(--blue-default);
+  display: grid;
+  place-items: center;
+  font-weight: bold;
+  border-radius: 4px;
+}
+
+.logo-text {
+  font-size: 18px;
+  font-weight: bold;
+  line-height: 1.1;
+  color: var(--white-default);
+  & br {
+    content: '';
+  }
+}
+
+/* Estilos para o menu de navegação do Desktop */
+.nav-desktop ul {
+  display: flex;
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  gap: 2rem;
+}
+
+.nav-desktop a {
+  text-decoration: none;
+  color: var(--white-default);
+  font-weight: 500;
+  padding-bottom: 5px;
+  position: relative;
+  transition: color 0.3s ease;
+
+  &::after {
+    content: '';
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    width: 100%;
+    height: 2px;
+    background-color: var(--yellow-default);
+    transform: scaleX(0);
+    transform-origin: bottom right;
+    transition: transform 0.3s ease-out;
+  }
+
+  &:hover, &.active {
+    color: var(--yellow-default);
+    &::after {
+      transform: scaleX(1);
+      transform-origin: bottom left;
+    }
+  }
+}
+
+/* Ações do lado direito (Desktop) */
+.actions-desktop {
+  display: flex;
+  align-items: center;
+  gap: 1.5rem;
+}
+
+.cta-button {
+  background-color: var(--yellow-default);
+  color: var(--blue-default);
+  padding: 0.75rem 1.5rem;
+  border-radius: 5px;
+  text-decoration: none;
+  font-weight: bold;
+  transition: transform 0.2s ease;
+
+  &:hover {
+    transform: scale(1.05);
+  }
+}
+
+.login-link {
+  color: var(--white-default);
+  text-decoration: none;
+  font-weight: 500;
+  &:hover {
+    text-decoration: underline;
+  }
+}
+
+/* Esconde o menu desktop e as ações em telas menores */
+.nav-desktop,
+.actions-desktop {
+  display: none;
+}
+
+/* Botão Hamburger (visível apenas no mobile) */
+.hamburger-button {
+  display: flex; /* Por padrão, será alterado no media query */
+  flex-direction: column;
+  justify-content: space-around;
+  width: 2rem;
+  height: 2rem;
+  background: transparent;
+  border: none;
+  cursor: pointer;
+  padding: 0;
+  z-index: 10;
+  position: relative; /* Para o posicionamento do ícone */
+
+  span {
+    display: block;
+    width: 2rem;
+    height: 0.25rem;
+    background: var(--white-default);
+    border-radius: 10px;
+    transition: all 0.3s linear;
+    position: relative;
+    transform-origin: center;
+  }
+
+  &.open span:nth-child(1) {
+    transform: translateY(0.625rem) rotate(45deg);
+  }
+
+  &.open span:nth-child(2) {
+    opacity: 0;
+    transform: translateX(-20px);
+  }
+
+  &.open span:nth-child(3) {
+    transform: translateY(-0.625rem) rotate(-45deg);
+  }
+}
+
+/* Menu Gaveta (Mobile) */
+.nav-mobile {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  background: var(--blue-default);
+  height: 100vh;
+  text-align: left;
+  padding: 2rem;
+  position: fixed; /* Usar fixed para cobrir a tela inteira */
+  top: 0;
+  left: 0;
+  transition: transform 0.3s ease-in-out;
+  transform: translateX(-100%);
+  width: 100%;
+
+  &.open {
+    transform: translateX(0);
+  }
+
+  ul {
+    list-style: none;
+    padding: 0;
+  }
+
+  li {
+    margin-bottom: 2rem;
+  }
+
+  a {
+    font-size: 1.5rem;
+    text-transform: uppercase;
+    font-weight: bold;
+    color: var(--white-default);
+    text-decoration: none;
+  }
+
+  .cta-button-mobile {
+    display: block;
+    width: 100%;
+    text-align: center;
+    background-color: var(--yellow-default);
+    color: var(--blue-default);
+    padding: 1rem;
+    border-radius: 5px;
+    margin-top: 1rem;
+    font-size: 1.2rem;
+  }
+}
+
+/* Media Query para Desktop */
+@media (min-width: 992px) {
+  .nav-desktop,
+  .actions-desktop {
+    display: flex;
+  }
+
+  .hamburger-button,
+  .nav-mobile {
+    display: none;
+  }
+}
+
+@media (max-width: 991px) {
+  .header-container {
+    padding: 0 1rem; /* 16px */
+  }
+}

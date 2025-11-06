@@ -1,0 +1,57 @@
+<div class="locacao-container">
+  <h1 class="section-title">Solicite sua Locação</h1>
+
+  <div class="form-wrapper">
+    <form [formGroup]="locacaoForm" (ngSubmit)="onSubmit()" class="rental-form">
+      <!-- Seus Dados -->
+      <fieldset>
+        <legend>Seus Dados</legend>
+        <div class="form-grid">
+          <div class="form-group">
+            <label for="fullName">Nome Completo</label>
+            <input id="fullName" type="text" formControlName="fullName" />
+          </div>
+          <div class="form-group">
+            <label for="email">Email</label>
+            <input id="email" type="email" formControlName="email" />
+          </div>
+          <div class="form-group">
+            <label for="phone">Telefone/WhatsApp</label>
+            <input id="phone" type="tel" formControlName="phone" />
+          </div>
+          <div class="form-group">
+            <label for="company">Empresa (Opcional)</label>
+            <input id="company" type="text" formControlName="company" />
+          </div>
+        </div>
+      </fieldset>
+
+      <!-- Detalhes da Locação -->
+      <fieldset>
+        <legend>Detalhes da Locação</legend>
+        <div class="form-grid">
+          <div class="form-group full-width">
+            <label for="equipment">Equipamento de Interesse</label>
+            <select id="equipment" formControlName="equipment">
+              <option value="" disabled>Selecione um equipamento</option>
+              <option value="betoneira">Betoneira</option>
+              <option value="andaime">Andaime</option>
+            </select>
+          </div>
+          <div class="form-group full-width">
+            <label for="location">Local da Obra / Endereço de Entrega</label>
+            <textarea id="location" rows="4" formControlName="location"></textarea>
+          </div>
+          <div class="form-group full-width">
+            <label for="message">Mensagem Adicional</label>
+            <textarea id="message" rows="4" formControlName="message"></textarea>
+          </div>
+        </div>
+      </fieldset>
+
+      <div class="submit-container">
+        <button type="submit" class="cta-button">Enviar Solicitação</button>
+      </div>
+    </form>
+  </div>
+</div>

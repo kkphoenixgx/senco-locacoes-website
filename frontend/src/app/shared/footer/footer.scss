@@ -1,0 +1,186 @@
+:host {
+  display: block;
+  background-color: #1a233a; // Cor de fundo especificada, próxima a var(--blue-default)
+  color: var(--white-default);
+  padding: 4rem 2rem 1rem;
+}
+
+.footer-container {
+  max-width: 1400px;
+  margin: 0 auto;
+}
+
+.footer-section {
+  padding-bottom: 3rem;
+  margin-bottom: 3rem;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+/* Section 1: Equipamentos */
+.equipments-section {
+  .equipments-content {
+    max-width: 400px;
+
+    h2 {
+      font-size: 1.75rem;
+      font-weight: bold;
+      margin-bottom: 1rem;
+    }
+
+    p {
+      color: var(--gray-default);
+      margin-bottom: 1.5rem;
+    }
+  }
+}
+
+/* Botão CTA genérico */
+.cta-button {
+  display: inline-block;
+  background-color: var(--yellow-default);
+  color: #10172a;
+  padding: 0.75rem 1.5rem;
+  border-radius: 8px;
+  text-decoration: none;
+  font-weight: bold;
+  border: none;
+  cursor: pointer;
+  transition: background-color 0.3s ease;
+
+  &:hover {
+    background-color: var(--yellow-lighter);
+  }
+}
+
+/* Section 2: Contato */
+.contact-info-section {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 2rem;
+
+  @media (min-width: 768px) {
+    grid-template-columns: 2fr 1fr;
+  }
+
+  @media (min-width: 1024px) {
+    grid-template-columns: 2fr 1fr auto;
+    align-items: flex-start;
+  }
+
+  h3 {
+    font-size: 1.5rem;
+    font-weight: bold;
+    margin-bottom: 1.5rem;
+  }
+
+  .contact-form {
+    display: flex;
+    flex-direction: column;
+    gap: 1rem;
+
+    .form-row {
+      display: flex;
+      gap: 1rem;
+    }
+
+    input,
+    textarea {
+      width: 100%;
+      background-color: #10172a;
+      border: 1px solid #10172a;
+      border-radius: 8px;
+      padding: 0.75rem 1rem;
+      color: var(--white-default);
+      font-family: inherit;
+
+      &::placeholder {
+        color: var(--gray-default);
+      }
+    }
+
+    .form-row-submit {
+      display: flex;
+      justify-content: flex-end;
+
+      .cta-button {
+        width: 55%; // Alinha com o campo de email
+      }
+    }
+  }
+
+  .contact-details {
+    ul {
+      list-style: none;
+      padding: 0;
+      margin: 0;
+      color: var(--gray-default);
+
+      li {
+        margin-bottom: 0.5rem;
+      }
+    }
+  }
+
+  .whatsapp-button-container {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+
+    .whatsapp-button {
+      display: grid;
+      place-items: center;
+      width: 80px;
+      height: 80px;
+      border-radius: 50%;
+      background-color: var(--yellow-default);
+      color: #10172a;
+      font-size: 2rem;
+      font-weight: bold;
+      text-decoration: none;
+      transition: transform 0.2s ease;
+
+      &:hover {
+        transform: scale(1.1);
+      }
+    }
+  }
+}
+
+/* Section 3: Sub-footer */
+.sub-footer {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 1rem;
+  border-bottom: none;
+  margin-bottom: 0;
+  padding-bottom: 0;
+  text-align: center;
+
+  @media (min-width: 768px) {
+    flex-direction: row;
+    justify-content: space-between;
+    text-align: left;
+  }
+
+  .copyright-text {
+    font-size: 0.875rem;
+    color: var(--gray-default);
+  }
+
+  .social-icons {
+    display: flex;
+    gap: 1.5rem;
+
+    a {
+      color: var(--gray-default);
+      text-decoration: none;
+      font-size: 1.25rem;
+      transition: color 0.3s ease;
+
+      &:hover {
+        color: var(--white-default);
+      }
+    }
+  }
+}

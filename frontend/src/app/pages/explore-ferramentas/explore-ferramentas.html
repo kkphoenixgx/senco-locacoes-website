@@ -1,0 +1,60 @@
+<div class="explore-container">
+  <h1 class="section-title">Equipamentos para Locação</h1>
+
+  <!-- Bloco de Filtros -->
+  <section class="filters-block">
+    <!-- Filtros para Desktop -->
+    <div class="filters-desktop">
+      <input type="text" placeholder="Busque por nome..." class="filter-input" />
+      <select class="filter-select">
+        <option disabled selected>Categoria</option>
+        <option>Terraplanagem</option>
+        <option>Elevação</option>
+        <option>Ferramentas Elétricas</option>
+      </select>
+      <select class="filter-select">
+        <option disabled selected>Tipo</option>
+        <option>Escavadeira</option>
+        <option>Andaime</option>
+        <option>Furadeira</option>
+      </select>
+    </div>
+
+    <!-- Botão de Filtro para Mobile -->
+    <button class="filters-mobile-toggle" (click)="toggleFilters()">Filtrar Equipamentos</button>
+  </section>
+
+  <!-- Grade de Equipamentos -->
+  <section class="equipment-grid">
+    <!-- Cards de equipamento seriam gerados aqui -->
+    <div class="product-card">
+      <div class="product-image-placeholder">Equipamento 1</div>
+      <h3>Betoneira 400L</h3>
+      <p class="category">Construção Civil</p>
+      <a href="#" class="cta-button">Solicitar Orçamento</a>
+    </div>
+    <!-- Repetir mais cards... -->
+  </section>
+
+  <!-- Paginação / Carregar Mais -->
+  <section class="pagination-section">
+    <button class="load-more-button">Carregar Mais Equipamentos</button>
+  </section>
+</div>
+
+<!-- Drawer de Filtros para Mobile -->
+<div class="filters-mobile-drawer" [ngClass]="{ 'open': isFilterOpen() }">
+  <div class="drawer-header">
+    <h3>Filtrar Equipamentos</h3>
+    <button class="close-button" (click)="toggleFilters()">X</button>
+  </div>
+  <div class="drawer-content">
+    <input type="text" placeholder="Busque por nome..." class="filter-input" />
+    <select class="filter-select">
+      <option disabled selected>Categoria</option>
+    </select>
+    <select class="filter-select">
+      <option disabled selected>Tipo</option>
+    </select>
+  </div>
+</div>

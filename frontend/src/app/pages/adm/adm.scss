@@ -1,0 +1,126 @@
+:host {
+  display: block;
+  height: 100vh;
+  background-color: #f4f7fa;
+}
+
+.admin-layout {
+  display: flex;
+  height: 100%;
+}
+
+/* --- Sidebar --- */
+.admin-sidebar {
+  width: 260px;
+  background-color: var(--blue-default);
+  color: var(--white-default);
+  display: flex;
+  flex-direction: column;
+  flex-shrink: 0;
+}
+
+.sidebar-header {
+  padding: 1.5rem;
+  text-align: center;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+
+  .logo {
+    font-size: 1.5rem;
+    font-weight: bold;
+    color: var(--white-default);
+    text-decoration: none;
+  }
+}
+
+.sidebar-nav {
+  ul {
+    list-style: none;
+    padding: 0;
+    margin: 1rem 0;
+  }
+
+  a {
+    display: block;
+    padding: 1rem 1.5rem;
+    color: var(--gray-default);
+    text-decoration: none;
+    font-weight: 500;
+    transition: background-color 0.2s ease, color 0.2s ease;
+
+    &:hover {
+      background-color: rgba(255, 255, 255, 0.05);
+      color: var(--white-default);
+    }
+
+    &.active {
+      background-color: var(--yellow-default);
+      color: var(--blue-default);
+    }
+  }
+}
+
+/* --- Main Content Area --- */
+.admin-main-content {
+  flex-grow: 1;
+  display: flex;
+  flex-direction: column;
+  overflow-y: auto;
+}
+
+.admin-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 1rem 2rem;
+  background-color: #ffffff;
+  border-bottom: 1px solid #e2e8f0;
+  flex-shrink: 0;
+
+  h2 {
+    font-size: 1.25rem;
+    color: var(--blue-default);
+  }
+
+  .logout-button {
+    background-color: transparent;
+    border: 1px solid var(--gray-default);
+    color: var(--blue-default);
+    padding: 0.5rem 1rem;
+    border-radius: 5px;
+    cursor: pointer;
+    font-weight: 500;
+
+    &:hover {
+      background-color: var(--blue-default);
+      color: var(--white-default);
+    }
+  }
+}
+
+.content-area {
+  padding: 2rem;
+  flex-grow: 1;
+}
+
+/* --- Responsiveness --- */
+@media (max-width: 768px) {
+  .admin-layout {
+    flex-direction: column;
+  }
+
+  .admin-sidebar {
+    width: 100%;
+    height: auto;
+    flex-direction: row;
+    justify-content: space-between;
+    align-items: center;
+
+    .sidebar-nav ul {
+      display: flex;
+      margin: 0;
+      li a {
+        padding: 1rem;
+      }
+    }
+  }
+}

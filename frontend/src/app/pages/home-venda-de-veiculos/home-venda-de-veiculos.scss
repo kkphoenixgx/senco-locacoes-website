@@ -1,0 +1,149 @@
+:host {
+  display: block;
+  background-color: var(--blue-default);
+  color: var(--white-default);
+}
+
+.home-container {
+  max-width: 1400px;
+  margin: 0 auto;
+  padding: 2rem;
+}
+
+/* Botão CTA Genérico (reutilizado do footer) */
+.cta-button {
+  display: inline-block;
+  background-color: var(--yellow-default);
+  color: var(--blue-default);
+  padding: 0.75rem 1.5rem;
+  border-radius: 8px;
+  text-decoration: none;
+  font-weight: bold;
+  border: none;
+  cursor: pointer;
+  transition: background-color 0.3s ease;
+  text-align: center;
+
+  &:hover {
+    background-color: var(--yellow-lighter);
+  }
+}
+
+/* Seção Hero */
+.hero-section {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 1.5rem;
+  margin-bottom: 4rem;
+}
+
+.hero-card {
+  position: relative;
+  height: 300px;
+  border-radius: 8px;
+  overflow: hidden;
+  background-color: #10172a; // Placeholder
+  background-size: cover;
+  background-position: center;
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-end;
+  padding: 1.5rem;
+
+  // Placeholders para imagens de fundo
+  &:nth-child(1) {
+    background-image: linear-gradient(rgba(0, 0, 0, 0.3), rgba(0, 0, 0, 0.7)),
+      url('https://via.placeholder.com/400x300/cccccc/000000?text=Caminhão');
+  }
+  &:nth-child(2) {
+    background-image: linear-gradient(rgba(0, 0, 0, 0.3), rgba(0, 0, 0, 0.7)),
+      url('https://via.placeholder.com/400x300/cccccc/000000?text=Moto');
+  }
+  &:nth-child(3) {
+    background-image: linear-gradient(rgba(0, 0, 0, 0.3), rgba(0, 0, 0, 0.7)),
+      url('https://via.placeholder.com/400x300/cccccc/000000?text=Escavadeira');
+  }
+
+  h2 {
+    font-size: 2rem;
+    font-weight: bold;
+    margin-bottom: 1rem;
+  }
+}
+
+/* Seção Veículos em Destaque */
+.featured-vehicles-section {
+  margin-bottom: 4rem;
+}
+
+.section-title {
+  font-size: 2.5rem;
+  font-weight: bold;
+  margin-bottom: 2rem;
+}
+
+.product-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+  gap: 1.5rem;
+}
+
+.product-card {
+  background-color: #1a233a;
+  border-radius: 8px;
+  padding: 1.5rem;
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+
+  .product-image-placeholder {
+    width: 100%;
+    height: 180px;
+    background-color: #10172a;
+    border-radius: 4px;
+    margin-bottom: 1rem;
+    display: grid;
+    place-items: center;
+    color: var(--gray-default);
+  }
+
+  h3 {
+    font-size: 1.25rem;
+    font-weight: 500;
+    margin-bottom: 0.5rem;
+  }
+
+  .price {
+    font-size: 1.5rem;
+    font-weight: bold;
+    margin-bottom: 1.5rem;
+  }
+
+  .cta-button {
+    width: 100%;
+    margin-top: auto; // Empurra o botão para o final do card
+  }
+}
+
+/* Responsividade */
+@media (max-width: 992px) {
+  .hero-section {
+    grid-template-columns: 1fr;
+  }
+}
+
+@media (max-width: 768px) {
+  .home-container {
+    padding: 1rem;
+  }
+
+  .section-title {
+    font-size: 2rem;
+  }
+
+  .product-grid {
+    // Conforme a descrição, 2 colunas em mobile.
+    // 'auto-fit' já pode cuidar disso, mas podemos forçar.
+    grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+  }
+}

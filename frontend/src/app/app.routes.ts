@@ -4,7 +4,6 @@ import { Routes } from '@angular/router';
 import { HomeVendaDeVeiculos } from './pages/home-venda-de-veiculos/home-venda-de-veiculos';
 import { Locacao } from './pages/locacao/locacao';
 import { ExploreVeiculos } from './pages/explore-veiculos/explore-veiculos';
-import { ExploreFerramentas } from './pages/explore-ferramentas/explore-ferramentas';
 import { About } from './pages/about/about';
 import { ContactUs } from './pages/contact-us/contact-us';
 import { AdmLogin } from './pages/adm-login/adm-login';
@@ -22,7 +21,6 @@ export const routes: Routes = [
   { path: '', component: HomeVendaDeVeiculos },
   { path: 'locacao', component: Locacao },
   { path: 'veiculos', component: ExploreVeiculos },
-  { path: 'ferramentas', component: ExploreFerramentas },
   { path: 'sobre', component: About },
   { path: 'contato', component: ContactUs },
 
@@ -36,9 +34,6 @@ export const routes: Routes = [
       { path: '', redirectTo: 'vendas', pathMatch: 'full' },
       { path: 'vendas', component: AdmDashboardVendas },
       { path: 'veiculos', component: AdmDashboardVeiculos },
-      { path: 'ferramentas', component: AdmDashboardFerramentas },
     ],
   },
-
-  { path: '**', redirectTo: '' },
 ];

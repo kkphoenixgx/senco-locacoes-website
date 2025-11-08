@@ -18,7 +18,7 @@ import { AdmDashboardFerramentas } from './pages/adm/partials/adm-dashboard-ferr
 
 export const routes: Routes = [
   // --- Rotas Públicas ---
-  // A rota raiz (/) será a página de venda de veículos.
+  
   { path: '', component: HomeVendaDeVeiculos },
   { path: 'locacao', component: Locacao },
   { path: 'veiculos', component: ExploreVeiculos },
@@ -31,7 +31,7 @@ export const routes: Routes = [
   {
     path: 'adm',
     component: Adm,
-    canActivate: [], //authGuard
+    canActivate: [],
     children: [
       { path: '', redirectTo: 'vendas', pathMatch: 'full' },
       { path: 'vendas', component: AdmDashboardVendas },

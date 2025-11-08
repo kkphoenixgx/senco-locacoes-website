@@ -1,9 +1,28 @@
 /* You can add global styles to this file, and also import other style files */
 
 *{
-    box-sizing: border-box;
-    margin: 0px;
-    padding: 0px;
+  box-sizing: border-box;
+  margin: 0px;
+  padding: 0px;
+}
+
+html, body {
+  height: 100%;
+  width: 100%;
+  background-color: var(--blue-default); /* Garante que o fundo da página tenha a cor da aplicação */
+  color: var(--white-default); /* Define a cor do texto padrão */
+}
+
+app-root {
+  display: flex;
+  flex-direction: column;
+  min-height: 100vh;
+  min-height: 100dvh; /* Garante que a altura mínima se ajuste dinamicamente em celulares */
+}
+
+/* Faz o conteúdo principal (onde o router-outlet está) crescer e ocupar o espaço */
+main {
+  flex: 1 0 auto;
 }
 
 /* Declarando variáveis CSS globais */

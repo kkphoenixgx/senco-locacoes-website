@@ -41,14 +41,14 @@
         "build": {
           "builder": "@ngx-env/builder:application",
           "options": {
+            "outputPath": "dist",
             "tsConfig": "tsconfig.app.json",
             "inlineStyleLanguage": "scss",
             "assets": [
               {
                 "glob": "**/*",
                 "input": "public"
-              },
-              "src/vercel.json"
+              }
             ],
             "styles": [
               "src/styles.scss"

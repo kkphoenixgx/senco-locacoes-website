@@ -16,7 +16,7 @@ import { AdmDashboardVendas } from './pages/adm/partials/adm-dashboard-vendas/ad
 
 export const routes: Routes = [
   // --- Rotas Públicas ---
-  // A rota raiz (/) será a página de venda de veículos.
+
   { path: '', component: HomeVendaDeVeiculos },
   { path: 'locacao', component: Locacao },
   { path: 'veiculos', component: ExploreVeiculos },

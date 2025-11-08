@@ -48,7 +48,8 @@
               {
                 "glob": "**/*",
                 "input": "public"
-              }
+              },
+              "src/vercel.json"
             ],
             "styles": [
               "src/styles.scss"

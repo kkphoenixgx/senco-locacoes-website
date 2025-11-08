@@ -13,7 +13,6 @@ import { Adm } from './pages/adm/adm';
 import { authGuard } from './shared/auth.guard';
 import { AdmDashboardVeiculos } from './pages/adm/partials/adm-dashboard-veiculos/adm-dashboard-veiculos';
 import { AdmDashboardVendas } from './pages/adm/partials/adm-dashboard-vendas/adm-dashboard-vendas';
-import { AdmDashboardFerramentas } from './pages/adm/partials/adm-dashboard-ferramentas/adm-dashboard-ferramentas';
 
 export const routes: Routes = [
   // --- Rotas Públicas ---

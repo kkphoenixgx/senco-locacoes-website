@@ -1,7 +1,6 @@
 import { Injectable } from '@angular/core';
 import { Observable, of } from 'rxjs';
 import CategoriaVeiculos from '../model/items/CategoriaVeiculos';
-import CategoriaFerramentas from '../model/items/CategoriaFerramentas';
 
 @Injectable({
   providedIn: 'root',
@@ -15,17 +14,9 @@ export class CategoriasService {
     new CategoriaVeiculos(3, 'Scooters'),
   ];
 
-  private mockCategoriasFerramentas: CategoriaFerramentas[] = [
-    new CategoriaFerramentas(1, 'Construção Civil'),
-    new CategoriaFerramentas(2, 'Acesso e Elevação'),
-    new CategoriaFerramentas(3, 'Ferramentas Elétricas'),
-  ];
 
   getCategoriasVeiculos(): Observable<CategoriaVeiculos[]> {
     return of(this.mockCategoriasVeiculos);
   }
 
-  getCategoriasFerramentas(): Observable<CategoriaFerramentas[]> {
-    return of(this.mockCategoriasFerramentas);
-  }
 }

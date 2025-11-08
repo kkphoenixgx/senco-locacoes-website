@@ -1,7 +1,10 @@
 import { Component, inject, OnInit, signal } from '@angular/core';
-import { Ferramenta, FerramentasService } from '../../../../core/services/ferramentas.service';
 import { FormBuilder, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
+import { FerramentasService } from '../../../../services/ferramentas.service';
+import Ferramentas from '../../../../model/items/Ferramentas';
 import { CommonModule } from '@angular/common';
+import { Observable } from 'rxjs';
+import CategoriaFerramentas from '../../../../model/items/CategoriaFerramentas';
 
 @Component({
   selector: 'app-adm-dashboard-ferramentas',
@@ -9,12 +12,11 @@ import { CommonModule } from '@angular/common';
   templateUrl: './adm-dashboard-ferramentas.html',
   styleUrl: './adm-dashboard-ferramentas.scss',
 })
-export class AdmDashboardFerramentas {
+export class AdmDashboardFerramentas implements OnInit {
   private fb = inject(FormBuilder);
   private ferramentasService = inject(FerramentasService);
 
-  // Signals for state management
-  ferramentas = this.ferramentasService.ferramentas;
+  ferramentas$!: Observable<Ferramentas[]>;
   showForm = signal(false);
   editingFerramentaId = signal<number | null>(null);
 
@@ -22,10 +24,16 @@ export class AdmDashboardFerramentas {
 
   constructor() {
     this.ferramentaForm = this.fb.group({
-      nome: ['', Validators.required],
-      categoria: ['', Validators.required],
+      // Adicionando todos os campos necessários para o modelo
+      titulo: ['', Validators.required],
+      preco: [0, [Validators.required, Validators.min(0)]],
+      categoriaId: [null, Validators.required],
       descricao: [''],
     });
+  }
+
+  ngOnInit(): void {
+    this.ferramentas$ = this.ferramentasService.getFerramentas();
   }
 
   onAddNew() {
@@ -34,11 +42,12 @@ export class AdmDashboardFerramentas {
     this.showForm.set(true);
   }
 
-  onEdit(ferramenta: Ferramenta) {
+  onEdit(ferramenta: Ferramentas) {
     this.editingFerramentaId.set(ferramenta.id);
     this.ferramentaForm.setValue({
-      nome: ferramenta.nome,
-      categoria: ferramenta.categoria,
+      titulo: ferramenta.titulo,
+      preco: ferramenta.preco,
+      categoriaId: ferramenta.categoriaId,
       descricao: ferramenta.descricao,
     });
     this.showForm.set(true);
@@ -48,11 +57,34 @@ export class AdmDashboardFerramentas {
     if (this.ferramentaForm.invalid) return;
 
     const id = this.editingFerramentaId();
+    const formValue = this.ferramentaForm.value;
+
     if (id) {
-      this.ferramentasService.updateFerramenta({ id, ...this.ferramentaForm.value });
+      // For updates, create a new class instance with the form data and existing ID
+      const updatedFerramenta = new Ferramentas(
+        id,
+        formValue.titulo,
+        formValue.preco,
+        formValue.descricao,
+        [], // images placeholder
+        formValue.categoriaId,
+        'Marca Padrão', // placeholder
+        'usada' // placeholder
+      );
+      this.ferramentasService.updateFerramenta(updatedFerramenta);
     } else {
-      this.ferramentasService.addFerramenta(this.ferramentaForm.value);
+      // For creation, the service will create the instance. We just need to pass the data.
+      const newFerramentaData = {
+        ...formValue,
+        marca: 'Marca Padrão',
+        condicao: 'usada',
+        imagens: [],
+      };
+
+      // We cast to Omit to satisfy the service method signature
+      this.ferramentasService.addFerramenta(newFerramentaData as Omit<Ferramentas, 'id'>);
     }
+
     this.showForm.set(false);
   }
 

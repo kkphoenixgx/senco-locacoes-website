@@ -1,5 +1,5 @@
 <div class="locacao-container">
-  <h1 class="section-title">Solicite sua Locação</h1>
+  <app-section-header title="Solicite sua Locação"></app-section-header>
 
   <div class="form-wrapper">
     <form [formGroup]="locacaoForm" (ngSubmit)="onSubmit()" class="rental-form">
@@ -39,12 +39,10 @@
             </select>
           </div>
           <div class="form-group full-width">
-            <label for="location">Local da Obra / Endereço de Entrega</label>
-            <textarea id="location" rows="4" formControlName="location"></textarea>
+            <app-default-form-text-area label="Local da Obra / Endereço de Entrega" formControlName="location"></app-default-form-text-area>
           </div>
           <div class="form-group full-width">
-            <label for="message">Mensagem Adicional</label>
-            <textarea id="message" rows="4" formControlName="message"></textarea>
+            <app-default-form-text-area label="Mensagem Adicional" formControlName="message"></app-default-form-text-area>
           </div>
         </div>
       </fieldset>

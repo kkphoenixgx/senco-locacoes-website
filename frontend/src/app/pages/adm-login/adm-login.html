@@ -4,31 +4,25 @@
     <p class="login-subtitle">Use suas credenciais para entrar no painel.</p>
 
     <form [formGroup]="loginForm" (ngSubmit)="onSubmit()" class="login-form">
-      <div class="form-group">
-        <label for="email">Email</label>
-        <input id="email" type="email" formControlName="email" placeholder="seu@email.com" [class.invalid]="loginForm.controls.email.invalid && loginForm.controls.email.touched" />
-        <div *ngIf="loginForm.controls.email.invalid && loginForm.controls.email.touched" class="error-message">
-          <span *ngIf="loginForm.controls.email.errors?.['required']">Email é obrigatório.</span>
-          <span *ngIf="loginForm.controls.email.errors?.['email']">Formato de email inválido.</span>
-        </div>
-      </div>
-
-      <div class="form-group">
-        <label for="password">Senha</label>
-        <input id="password" type="password" formControlName="password" [class.invalid]="loginForm.controls.password.invalid && loginForm.controls.password.touched" />
-        <div *ngIf="loginForm.controls.password.invalid && loginForm.controls.password.touched" class="error-message">
-          <span *ngIf="loginForm.controls.password.errors?.['required']">Senha é obrigatória.</span>
-        </div>
-      </div>
+      <app-default-form-input
+        label="Email"
+        type="email"
+        placeholder="seu@email.com"
+        formControlName="email"></app-default-form-input>
+      <app-default-form-input
+        label="Senha"
+        type="password"
+        formControlName="password"></app-default-form-input>
 
       <div *ngIf="errorMessage()" class="error-message server-error">
         {{ errorMessage() }}
       </div>
 
-      <button type="submit" class="cta-button" [disabled]="isLoading()">
-        <span *ngIf="!isLoading()">Entrar</span>
-        <span *ngIf="isLoading()">Carregando...</span>
-      </button>
+      <app-default-button
+        type="submit"
+        text="Entrar"
+        [isLoading]="isLoading()"
+        [disabled]="loginForm.invalid"></app-default-button>
     </form>
   </div>
 </div>

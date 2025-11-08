@@ -15,12 +15,12 @@
         </tr>
       </thead>
       <tbody>
-        <tr *ngFor="let venda of vendas()">
+        <tr *ngFor="let venda of vendas$ | async">
           <td>{{ venda.id }}</td>
-          <td>{{ venda.cliente }}</td>
-          <td>{{ venda.produto }}</td>
-          <td>{{ venda.data | date: 'dd/MM/yyyy' }}</td>
-          <td>{{ venda.valor | currency: 'BRL' }}</td>
+          <td>{{ venda.cliente?.nome || 'N/A' }}</td>
+          <td>{{ venda.items[0]?.titulo || 'N/A' }}</td>
+          <td>{{ venda.dataVenda | date: 'dd/MM/yyyy' }}</td>
+          <td>{{ venda.precoTotal | currency: 'BRL' }}</td>
         </tr>
       </tbody>
     </table>

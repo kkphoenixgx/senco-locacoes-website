@@ -40,37 +40,6 @@
   gap: 1.5rem;
 }
 
-.form-group {
-  display: flex;
-  flex-direction: column;
-
-  label {
-    margin-bottom: 0.5rem;
-    font-weight: 500;
-  }
-
-  input {
-    width: 100%;
-    background-color: #1e3050;
-    border: 1px solid var(--gray-default);
-    border-radius: 5px;
-    padding: 0.75rem 1rem;
-    color: var(--white-default);
-    font-family: inherit;
-    font-size: 1rem;
-
-    &:focus {
-      outline: none;
-      border-color: var(--yellow-default);
-      box-shadow: 0 0 0 2px rgba(250, 203, 39, 0.5);
-    }
-
-    &.invalid {
-      border-color: #e53e3e;
-    }
-  }
-}
-
 .error-message {
   color: #e53e3e;
   font-size: 0.875rem;
@@ -78,28 +47,5 @@
 
   &.server-error {
     text-align: center;
-  }
-}
-
-.cta-button {
-  background-color: var(--yellow-default);
-  color: var(--blue-default);
-  padding: 1rem;
-  border-radius: 8px;
-  text-decoration: none;
-  font-weight: bold;
-  border: none;
-  cursor: pointer;
-  font-size: 1.1rem;
-  margin-top: 1rem;
-  transition: background-color 0.3s ease;
-
-  &:hover:not(:disabled) {
-    background-color: var(--yellow-lighter);
-  }
-
-  &:disabled {
-    background-color: var(--gray-default);
-    cursor: not-allowed;
   }
 }

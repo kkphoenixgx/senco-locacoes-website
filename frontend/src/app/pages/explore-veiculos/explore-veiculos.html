@@ -1,5 +1,5 @@
 <div class="explore-container">
-  <h1 class="section-title">Nossos Veículos</h1>
+  <app-section-header title="Nossos Veículos"></app-section-header>
 
   <!-- Bloco de Filtros -->
   <section class="filters-block">
@@ -30,20 +30,13 @@
 
   <!-- Grade de Veículos -->
   <section class="vehicle-grid">
-    <!-- Cards de produto seriam gerados aqui, por exemplo com *ngFor -->
-    <div class="product-card">
-      <div class="product-image-placeholder">Veículo 1</div>
-      <h3>Honda CBR 500R</h3>
-      <p class="price">R$ 55.000</p>
-      <a href="#" class="cta-button">Tenho Interesse</a>
-    </div>
-    <div class="product-card">
-      <div class="product-image-placeholder">Veículo 2</div>
-      <h3>Mercedes-Benz Axor</h3>
-      <p class="price">R$ 320.000</p>
-      <a href="#" class="cta-button">Tenho Interesse</a>
-    </div>
-    <!-- Repetir mais cards... -->
+    <app-card-product *ngFor="let veiculo of veiculos$ | async"
+      [imagePlaceholder]="veiculo.categoria?.nome || 'Veículo'"
+      [title]="veiculo.titulo"
+      [info]="veiculo.getPrecoFormatado()"
+      infoType="price"
+      buttonText="Tenho Interesse"
+      buttonLink="/contato" />
   </section>
 
   <!-- Paginação / Carregar Mais -->

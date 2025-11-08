@@ -1,1 +1,9 @@
-<p>featured-card works!</p>
+<div
+  class="hero-card"
+  [ngStyle]="{ 'background-image': backgroundImageUrl ? 'linear-gradient(rgba(0, 0, 0, 0.3), rgba(0, 0, 0, 0.7)), url(' + backgroundImageUrl + ')' : null }"
+>
+  <div *ngIf="title && buttonText" class="hero-card-content">
+    <h2>{{ title }}</h2>
+    <app-default-button [text]="buttonText" [routerLink]="routerLink"></app-default-button>
+  </div>
+</div>

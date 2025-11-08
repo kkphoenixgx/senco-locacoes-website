@@ -1,23 +1,23 @@
 <div class="about-container">
-  <h1 class="section-title">Nossa História e Valores</h1>
+  <app-section-header title="Nossa História e Valores" textAlign="center"></app-section-header>
 
   <!-- Seção: Nossa Jornada -->
   <section class="content-block">
     <div class="text-content">
-      <h2 class="subsection-title">Nossa Jornada</h2>
+      <app-section-subheader title="Nossa Jornada"></app-section-subheader>
       <p>
         Fundada com a paixão por máquinas e o compromisso com o progresso, a SENCO Locações nasceu para ser uma parceira estratégica em cada projeto. Desde o início, nosso foco tem sido oferecer não apenas equipamentos, mas soluções completas que garantem eficiência, segurança e resultados excepcionais para nossos clientes.
       </p>
     </div>
     <div class="image-content">
-      <div class="image-placeholder">Imagem da Equipe</div>
+      <app-image-widget placeholderText="Imagem da Equipe"></app-image-widget>
     </div>
   </section>
 
   <!-- Seção: Nosso Propósito -->
   <section class="content-block reverse">
     <div class="text-content">
-      <h2 class="subsection-title">Nosso Propósito</h2>
+      <app-section-subheader title="Nosso Propósito"></app-section-subheader>
       <ul>
         <li><strong>Missão:</strong> Fornecer acesso a veículos e equipamentos de ponta, impulsionando a produtividade e o sucesso de empresas e indivíduos.</li>
         <li><strong>Visão:</strong> Ser a referência no mercado de locação e venda, reconhecida pela excelência, inovação e pelo relacionamento de confiança com nossos parceiros.</li>
@@ -25,7 +25,7 @@
       </ul>
     </div>
     <div class="image-content">
-      <div class="image-placeholder">Imagem de Valores</div>
+      <app-image-widget placeholderText="Imagem de Valores"></app-image-widget>
     </div>
   </section>
 
@@ -33,8 +33,8 @@
   <section class="cta-section">
     <h3>Ficou interessado? Entre em contato ou explore nossos equipamentos!</h3>
     <div class="cta-buttons">
-      <a routerLink="/contato" class="cta-button primary">Fale Conosco</a>
-      <a routerLink="/ferramentas" class="cta-button secondary">Ver Equipamentos</a>
+      <app-default-button text="Fale Conosco" routerLink="/contato" styleType="primary"></app-default-button>
+      <app-default-button text="Ver Equipamentos" routerLink="/ferramentas" styleType="secondary"></app-default-button>
     </div>
   </section>
 </div>

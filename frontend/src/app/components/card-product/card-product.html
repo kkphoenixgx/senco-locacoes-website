@@ -1,1 +1,11 @@
-<p>card-product works!</p>
+<div class="product-card">
+  <div class="product-image-placeholder">{{ imagePlaceholder }}</div>
+  <h3>{{ title }}</h3>
+
+  <p *ngIf="info" [ngClass]="{
+    'price': isPrice,
+    'category': !isPrice
+  }">{{ info }}</p>
+
+  <a [routerLink]="buttonLink" class="cta-button">{{ buttonText }}</a>
+</div>

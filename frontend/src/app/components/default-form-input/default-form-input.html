@@ -1,1 +1,15 @@
-<p>default-form-input works!</p>
+<div class="form-group">
+  <label *ngIf="label" [for]="ngControl.name">{{ label }}</label>
+  <input
+    [id]="ngControl.name"
+    [type]="type"
+    [formControl]="formControl"
+    [placeholder]="placeholder"
+    [ngClass]="{ 'invalid': ngControl.invalid && (ngControl.dirty || ngControl.touched) }"
+  />
+  <div *ngIf="ngControl.invalid && (ngControl.dirty || ngControl.touched)" class="error-message">
+    <!-- Specific error messages can be added here -->
+    <span *ngIf="formControl.hasError('required')">Este campo é obrigatório.</span>
+    <span *ngIf="formControl.hasError('email')">Formato de email inválido.</span>
+  </div>
+</div>

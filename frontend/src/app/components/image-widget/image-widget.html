@@ -1,1 +1,6 @@
-<p>image-widget works!</p>
+<div class="image-widget-container">
+  <img *ngIf="src" [src]="src" [alt]="placeholderText" />
+  <div *ngIf="!src" class="placeholder">
+    {{ placeholderText }}
+  </div>
+</div>

@@ -2,15 +2,20 @@ import { Component, inject, signal } from '@angular/core';
 import { FormControl, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
 import { Router } from '@angular/router';
 import { NgIf } from '@angular/common';
+import { AuthService } from '../../services/auth.service';
+import { finalize } from 'rxjs';
+import { DefaultButton } from '../../components/default-button/default-button';
+import { DefaultFormInput } from '../../components/default-form-input/default-form-input';
 
 @Component({
   selector: 'app-adm-login',
-  imports: [ReactiveFormsModule, NgIf],
+  imports: [ReactiveFormsModule, NgIf, DefaultButton, DefaultFormInput],
   templateUrl: './adm-login.html',
   styleUrl: './adm-login.scss',
 })
 export class AdmLogin {
   private router = inject(Router);
+  private authService = inject(AuthService);
 
   // Sinais para controle de estado da UI
   isLoading = signal(false);
@@ -29,19 +34,20 @@ export class AdmLogin {
     this.isLoading.set(true);
     this.errorMessage.set(null);
 
-    // Lógica de autenticação (placeholder)
-    // Em uma aplicação real, você chamaria um AuthService aqui.
     const { email, password } = this.loginForm.getRawValue();
 
-    // Simula uma chamada de API
-    setTimeout(() => {
-      if (email === 'admin@senco.com' && password === 'password') {
-        localStorage.setItem('admin-token', 'your-secure-token-here');
-        this.router.navigate(['/adm']);
-      } else {
-        this.errorMessage.set('Credenciais inválidas. Tente novamente.');
-      }
-      this.isLoading.set(false);
-    }, 1000);
+    if (email && password) {
+      this.authService
+        .login(email, password)
+        .pipe(finalize(() => this.isLoading.set(false)))
+        .subscribe({
+          next: () => {
+            this.router.navigate(['/adm']);
+          },
+          error: (err) => {
+            this.errorMessage.set(err.message);
+          },
+        });
+    }
   }
 }

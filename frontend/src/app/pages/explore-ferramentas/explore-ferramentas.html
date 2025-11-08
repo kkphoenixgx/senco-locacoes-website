@@ -1,5 +1,5 @@
 <div class="explore-container">
-  <h1 class="section-title">Equipamentos para Locação</h1>
+  <app-section-header title="Equipamentos para Locação"></app-section-header>
 
   <!-- Bloco de Filtros -->
   <section class="filters-block">
@@ -8,9 +8,9 @@
       <input type="text" placeholder="Busque por nome..." class="filter-input" />
       <select class="filter-select">
         <option disabled selected>Categoria</option>
-        <option>Terraplanagem</option>
-        <option>Elevação</option>
-        <option>Ferramentas Elétricas</option>
+        <option *ngFor="let categoria of categorias$ | async" [value]="categoria.id">
+          {{ categoria.nome }}
+        </option>
       </select>
       <select class="filter-select">
         <option disabled selected>Tipo</option>
@@ -26,14 +26,13 @@
 
   <!-- Grade de Equipamentos -->
   <section class="equipment-grid">
-    <!-- Cards de equipamento seriam gerados aqui -->
-    <div class="product-card">
-      <div class="product-image-placeholder">Equipamento 1</div>
-      <h3>Betoneira 400L</h3>
-      <p class="category">Construção Civil</p>
-      <a href="#" class="cta-button">Solicitar Orçamento</a>
-    </div>
-    <!-- Repetir mais cards... -->
+    <app-card-product *ngFor="let ferramenta of ferramentas$ | async"
+      [imagePlaceholder]="ferramenta.categoria?.nome || 'Ferramenta'"
+      [title]="ferramenta.titulo"
+      [info]="ferramenta.categoria?.nome || ''"
+      infoType="category"
+      buttonText="Solicitar Orçamento"
+      buttonLink="/locacao" />
   </section>
 
   <!-- Paginação / Carregar Mais -->
@@ -52,6 +51,9 @@
     <input type="text" placeholder="Busque por nome..." class="filter-input" />
     <select class="filter-select">
       <option disabled selected>Categoria</option>
+       <option *ngFor="let categoria of categorias$ | async" [value]="categoria.id">
+          {{ categoria.nome }}
+        </option>
     </select>
     <select class="filter-select">
       <option disabled selected>Tipo</option>

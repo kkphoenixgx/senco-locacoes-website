@@ -1,10 +1,12 @@
 import { Component } from '@angular/core';
 import { ReactiveFormsModule, FormGroup, FormControl } from '@angular/forms';
-import { RouterLink } from '@angular/router';
+import { DefaultFormInput } from '../../components/default-form-input/default-form-input';
+import { DefaultFormTextArea } from '../../components/default-form-text-area/default-form-text-area';
+import { SectionHeader } from '../../components/section-header/section-header';
 
 @Component({
   selector: 'app-locacao',
-  imports: [ReactiveFormsModule, RouterLink],
+  imports: [ReactiveFormsModule, DefaultFormTextArea, SectionHeader],
   templateUrl: './locacao.html',
   styleUrl: './locacao.scss',
 })

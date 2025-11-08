@@ -1,1 +1,14 @@
-<p>default-form-text-area works!</p>
+<div class="form-group">
+  <label *ngIf="label" [for]="ngControl.name">{{ label }}</label>
+  <textarea
+    [id]="ngControl.name"
+    [formControl]="formControl"
+    [placeholder]="placeholder"
+    [rows]="rows"
+    [ngClass]="{ 'invalid': ngControl.invalid && (ngControl.dirty || ngControl.touched) }"
+  ></textarea>
+  <div *ngIf="ngControl.invalid && (ngControl.dirty || ngControl.touched)" class="error-message">
+    <!-- Specific error messages can be added here -->
+    <span *ngIf="formControl.hasError('required')">Este campo é obrigatório.</span>
+  </div>
+</div>

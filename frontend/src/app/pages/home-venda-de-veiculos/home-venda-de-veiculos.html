@@ -1,47 +1,32 @@
 <div class="home-container">
   <!-- Seção Principal (Hero) -->
   <section class="hero-section">
-    <div class="hero-card">
-      <!-- Imagem de fundo via CSS -->
-      <div class="hero-card-content">
-        <h2>Honda Veículos</h2>
-        <a routerLink="/veiculos" class="cta-button">Explore Veículos</a>
-      </div>
-    </div>
-    <div class="hero-card">
-      <!-- Imagem de fundo via CSS -->
-      <div class="hero-card-content">
-        <h2>Locações de Equipamentos</h2>
-        <a routerLink="/ferramentas" class="cta-button">Veja Equipamentos</a>
-      </div>
-    </div>
-    <div class="hero-card">
-      <!-- Imagem de fundo via CSS -->
-    </div>
+    <app-featured-card
+      title="Honda Veículos"
+      buttonText="Explore Veículos"
+      routerLink="/veiculos"
+      backgroundImageUrl="https://via.placeholder.com/400x300/cccccc/000000?text=Caminhão"></app-featured-card>
+    <app-featured-card
+      title="Locações de Equipamentos"
+      buttonText="Veja Equipamentos"
+      routerLink="/ferramentas"
+      backgroundImageUrl="https://via.placeholder.com/400x300/cccccc/000000?text=Moto"></app-featured-card>
+    <app-featured-card
+      backgroundImageUrl="https://via.placeholder.com/400x300/cccccc/000000?text=Escavadeira"></app-featured-card>
   </section>
 
   <!-- Seção "Veículos em Destaque" -->
   <section class="featured-vehicles-section">
-    <h2 class="section-title">Veículos em Destaque</h2>
+    <app-section-header title="Veículos em Destaque"></app-section-header>
     <div class="product-grid">
-      <div class="product-card">
-        <div class="product-image-placeholder">Moto</div>
-        <h3>Honda CBR 500R</h3>
-        <p class="price">R$ 55.000</p>
-        <a routerLink="/contato" class="cta-button">Tenho Interesse</a>
-      </div>
-      <div class="product-card">
-        <div class="product-image-placeholder">Caminhão</div>
-        <h3>Mercedes-Benz Axor</h3>
-        <p class="price">R$ 320.000</p>
-        <a routerLink="/contato" class="cta-button">Tenho Interesse</a>
-      </div>
-      <div class="product-card">
-        <div class="product-image-placeholder">Scooter</div>
-        <h3>Voltz EV1 Sport</h3>
-        <p class="price">R$ 320.000</p>
-        <a routerLink="/contato" class="cta-button">Tenho Interesse</a>
-      </div>
+      <!-- Itera sobre os 3 primeiros veículos do serviço -->
+      <app-card-product *ngFor="let veiculo of (veiculos$ | async)?.slice(0, 3)"
+        [imagePlaceholder]="veiculo.categoria?.nome || 'Veículo'"
+        [title]="veiculo.titulo"
+        [info]="veiculo.getPrecoFormatado()"
+        infoType="price"
+        buttonText="Tenho Interesse"
+        buttonLink="/contato" />
     </div>
   </section>
 </div>

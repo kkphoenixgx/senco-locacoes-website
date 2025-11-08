@@ -1,1 +1,16 @@
-<p>default-button works!</p>
+<ng-container *ngIf="isLink; else buttonTpl">
+  <a
+    [routerLink]="routerLink"
+    class="default-button"
+    [ngClass]="[styleType, { 'full-width': fullWidth }]"
+  >
+    {{ text }}
+  </a>
+</ng-container>
+
+<ng-template #buttonTpl>
+  <button [type]="type" class="default-button" [ngClass]="[styleType, { 'full-width': fullWidth }]" [disabled]="disabled || isLoading">
+    <span *ngIf="!isLoading">{{ text }}</span>
+    <span *ngIf="isLoading">Carregando...</span>
+  </button>
+</ng-template>

@@ -9,8 +9,8 @@
     <h2>{{ editingVeiculoId() ? 'Editar Veículo' : 'Novo Veículo' }}</h2>
     <form [formGroup]="veiculoForm" (ngSubmit)="onSave()">
       <div class="form-group">
-        <label for="nome">Nome</label>
-        <input id="nome" type="text" formControlName="nome" />
+        <label for="titulo">Nome</label>
+        <input id="titulo" type="text" formControlName="titulo" />
       </div>
       <div class="form-group">
         <label for="marca">Marca</label>
@@ -45,18 +45,18 @@
         </tr>
       </thead>
       <tbody>
-        <tr *ngFor="let veiculo of veiculos()">
+        <tr *ngFor="let veiculo of veiculos$ | async">
           <td>{{ veiculo.id }}</td>
-          <td>{{ veiculo.nome }}</td>
-          <td>{{ veiculo.marca }}</td>
-          <td>{{ veiculo.ano }}</td>
+          <td>{{ veiculo.titulo }}</td>
+          <td>{{ veiculo.modelo }}</td>
+          <td>{{ veiculo.anoModelo }}</td>
           <td>{{ veiculo.preco | currency: 'BRL' }}</td>
           <td class="actions-cell">
             <button class="btn btn-sm btn-secondary" (click)="onEdit(veiculo)">Editar</button>
             <button class="btn btn-sm btn-danger" (click)="onDelete(veiculo.id)">Excluir</button>
           </td>
         </tr>
-        <tr *ngIf="veiculos().length === 0">
+        <tr *ngIf="(veiculos$ | async)?.length === 0">
           <td colspan="6" class="empty-state">Nenhum veículo cadastrado.</td>
         </tr>
       </tbody>

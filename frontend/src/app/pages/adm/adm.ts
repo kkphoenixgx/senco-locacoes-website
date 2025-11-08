@@ -1,5 +1,6 @@
 import { Component, inject } from '@angular/core';
 import { Router, RouterLink, RouterOutlet } from '@angular/router';
+import { AuthService } from '../../services/auth.service';
 
 @Component({
   selector: 'app-adm',
@@ -9,10 +10,10 @@ import { Router, RouterLink, RouterOutlet } from '@angular/router';
 })
 export class Adm {
   private router = inject(Router);
+  private authService = inject(AuthService);
 
   logout() {
-    // Remove the token from storage and redirect to the login page
-    localStorage.removeItem('admin-token');
+    this.authService.logout();
     this.router.navigate(['/adm/login']);
   }
 }

@@ -41,7 +41,7 @@
         "build": {
           "builder": "@ngx-env/builder:application",
           "options": {
-            "browser": "src/main.ts",
+            "outputPath": "dist",
             "tsConfig": "tsconfig.app.json",
             "inlineStyleLanguage": "scss",
             "assets": [

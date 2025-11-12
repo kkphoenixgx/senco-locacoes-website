@@ -4,34 +4,51 @@
 
 .default-button {
   display: inline-block;
-  padding: 1rem 2rem;
+  padding: 0.8rem 1.6rem; // Tamanho médio (padrão)
   border-radius: 8px;
   text-decoration: none;
   font-weight: bold;
-  font-size: 1.1rem;
+  font-size: 1rem;
   border: none;
   cursor: pointer;
   text-align: center;
-  transition: background-color 0.3s ease, opacity 0.3s ease;
+  transition: background-position 0.4s ease, opacity 0.3s ease;
   width: auto;
 
   // Style Variants
   &.primary {
-    background-color: var(--yellow-default);
+    // Prepara o gradiente para a animação
+    background-image: linear-gradient(to top, #e0b420 50%, var(--yellow-default) 50%);
+    background-size: 100% 200%;
+    background-position: bottom;
     color: var(--blue-default);
 
     &:hover:not(:disabled) {
-      background-color: var(--yellow-lighter);
+      // Move o gradiente para a posição final no hover
+      background-position: top;
     }
   }
 
   &.secondary {
-    background-color: var(--blue-lighter);
+    background-image: linear-gradient(to top, #b8c2d3 50%, var(--blue-lighter) 50%);
+    background-size: 100% 200%;
+    background-position: bottom;
     color: var(--blue-default);
 
     &:hover:not(:disabled) {
-      background-color: #d1d9e6; // Um tom um pouco mais escuro para o hover
+      background-position: top;
     }
+  }
+
+  // Modificadores de Tamanho
+  &.btn-large {
+    padding: 1rem 2rem;
+    font-size: 1.1rem;
+  }
+
+  &.btn-small {
+    padding: 0.6rem 1.2rem;
+    font-size: 0.9rem;
   }
 
   // Modifiers

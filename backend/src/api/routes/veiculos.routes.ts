@@ -1,22 +1,27 @@
 import { Router } from 'express';
 import multer from 'multer';
-import uploadConfig from '../upload';
-
-// Supondo que você terá um repositório para lidar com a lógica do banco de dados
-// import VeiculosRepository from '../repository/VeiculosRepository';
+import uploadConfig from '../config/upload';
+import ensureAuthenticated from '../middlewares/auth.middleware';
+import VeiculosController from '../controller/VeiculosController';
 
 const veiculosRoutes = Router();
 const upload = multer(uploadConfig);
+const veiculosController = new VeiculosController();
 
-// Exemplo de rota para fazer upload de uma imagem para um veículo específico
-veiculosRoutes.post('/veiculos/:id/imagens', upload.single('imagem'), (req, res) => {
-  console.log(req.file); // Informações do arquivo salvo pelo multer
-
-  // Lógica a ser implementada:
-  // 1. Instanciar o VeiculosRepository.
-  // 2. Chamar um método como `adicionarImagem(id, req.file.filename)`.
-  // 3. Esse método salvaria o `req.file.filename` no array de imagens do veículo no banco.
-  return res.json({ message: `Imagem ${req.file?.filename} recebida!` });
+// Rota para listar todos os veículos
+veiculosRoutes.get('/veiculos', (_, res) => {
+  // Lógica para buscar todos os veículos no repositório
+  return res.json([{ id: 1, titulo: 'Carro Exemplo' }]);
 });
+
+// Rota para buscar um veículo por ID
+veiculosRoutes.get('/veiculos/:id', (req, res) => {
+  const { id } = req.params;
+  // Lógica para buscar um veículo específico no repositório
+  return res.json({ id: parseInt(id), titulo: 'Carro Exemplo' });
+});
+
+// Rota para criar um novo veículo com várias imagens
+veiculosRoutes.post('/veiculos', ensureAuthenticated, upload.array('imagens', 10), veiculosController.create);
 
 export default veiculosRoutes;

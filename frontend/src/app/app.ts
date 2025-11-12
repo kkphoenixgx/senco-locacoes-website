@@ -21,9 +21,7 @@ import { NgIf } from '@angular/common';
 export class App {
   private router = inject(Router);
 
-  // Observe router events to get the current URL
   private currentUrl = toSignal(this.router.events.pipe(filter((e) => e instanceof NavigationEnd)));
 
-  // Computed signal to determine if the public layout should be shown
   protected showPublicLayout = computed(() => !this.currentUrl()?.url.startsWith('/adm'));
 }

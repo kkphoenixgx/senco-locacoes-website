@@ -1,4 +1,4 @@
-export default class VendasRepository {
+export default class VendasController {
   
   //? ----------- Constructor -----------
 

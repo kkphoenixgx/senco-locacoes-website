@@ -1,7 +1,7 @@
 import CategoriaVeiculos from "./CategoriaVeiculos";
 import ItemsVendidos from "../ItemsVendidos";
 
-export default class Veiculos extends ItemsVendidos {
+export default class Veiculo extends ItemsVendidos {
   
   //? ----------- Constructor -----------
 
@@ -27,9 +27,7 @@ export default class Veiculos extends ItemsVendidos {
 
   //? ----------- Getters and Setters -----------
 
-  /**
-   * Retorna o ano formatado para exibição, como "2007/2008" ou "2007".
-   */
+  /** * Retorna o ano formatado para exibição, como "2007/2008" ou "2007". */
   public getAnoFormatado(): string {
     if (this.anoFabricacao === this.anoModelo) {
       return this.anoFabricacao.toString();

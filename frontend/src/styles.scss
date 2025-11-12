@@ -1,36 +1,33 @@
-/* You can add global styles to this file, and also import other style files */
-
 *{
   box-sizing: border-box;
   margin: 0px;
   padding: 0px;
 }
 
+:root {
+  --blue-default: #15233c;
+  --blue-lighter: #5fa8cf;
+  --yellow-default: #facb27;
+  --yellow-lighter: #ffe411;
+  --white-default: #e1e4e6;
+  --gray-default: #9a968e;
+}
+
+
 html, body {
   height: 100%;
   width: 100%;
-  background-color: var(--blue-default); /* Garante que o fundo da página tenha a cor da aplicação */
-  color: var(--white-default); /* Define a cor do texto padrão */
+  background-color: var(--blue-default);
+  color: var(--white-default);
 }
 
 app-root {
   display: flex;
   flex-direction: column;
   min-height: 100vh;
-  min-height: 100dvh; /* Garante que a altura mínima se ajuste dinamicamente em celulares */
+  min-height: 100dvh;
 }
 
-/* Faz o conteúdo principal (onde o router-outlet está) crescer e ocupar o espaço */
 main {
   flex: 1 0 auto;
-}
-
-/* Declarando variáveis CSS globais */
-:root {
-  --blue-default: #15233c;
-  --blue-lighter: #5fa8cf;
-  --yellow-default: #facb27; /* Corrigido de yelow para yellow */
-  --yellow-lighter: #ffe411; /* Corrigido de yelow para yellow */
-  --white-default: #e1e4e6;
-  --gray-default: #9a968e;
 }

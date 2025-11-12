@@ -1,48 +1,50 @@
 <header class="main-header">
+
   <div class="header-container">
-    <!-- Logo -->
+
     <a class="logo" routerLink="/">
-      <!-- <img src="path/to/your/icon.svg" alt="Senco Icon"> -->
-      <div class="logo-icon-placeholder">S</div>
-      <span class="logo-text">
-        SENCO <br />
-        LOCAÇÕES
-      </span>
+      <img class="icon-login" src="assets/logo.png" alt="Logo">
     </a>
 
-    <!-- Menu de Navegação para Desktop -->
     <nav class="nav-desktop">
       <ul>
-        <li><a routerLink="/" routerLinkActive="active">Venda de Veículos</a></li>
+        <li><a routerLink="/" routerLinkActive="active" [routerLinkActiveOptions]="{exact: true}">Venda de Veículos</a></li>
         <li><a routerLink="/locacao" routerLinkActive="active">Locação</a></li>
         <li><a routerLink="/veiculos" routerLinkActive="active">Explore Veículos</a></li>
         <li><a routerLink="/sobre" routerLinkActive="active">Sobre Nós</a></li>
       </ul>
     </nav>
 
-    <!-- Ações do lado direito (Desktop) -->
     <div class="actions-desktop">
-      <a class="cta-button" routerLink="/contato">Fale Conosco</a>
-      <a class="login-link" routerLink="/adm/login">Login</a>
+      <app-default-button text="Fale Conosco" routerLink="/contato" styleType="primary" size="small"></app-default-button>
+      <a class="login-link" routerLink="/adm/login">
+        <img class="icon-login" src="assets/icons/login.png" alt="login"  >
+      </a>
     </div>
 
-    <!-- Botão Hamburger para Mobile -->
     <button class="hamburger-button" (click)="toggleMenu()" [class.open]="isMenuOpen()">
       <span></span>
       <span></span>
       <span></span>
     </button>
+
   </div>
 
-  <!-- Menu Gaveta (Drawer) para Mobile -->
   <nav class="nav-mobile" [ngClass]="{ 'open': isMenuOpen() }">
     <ul>
-      <li><a routerLink="/" routerLinkActive="active" (click)="toggleMenu()">Venda de Veículos</a></li>
-      <li><a routerLink="/locacao" routerLinkActive="active" (click)="toggleMenu()">Locação</a></li>
-      <li><a routerLink="/veiculos" routerLinkActive="active" (click)="toggleMenu()">Explore Veículos</a></li>
-      <li><a routerLink="/sobre" routerLinkActive="active" (click)="toggleMenu()">Sobre Nós</a></li>
+      <li><a [routerLinkActiveOptions]="{exact: true}" routerLink="/" routerLinkActive="active" (click)="toggleMenu()" >Venda de Veículos</a></li>
+      <li><a routerLink="/locacao"     routerLinkActive="active" (click)="toggleMenu()">Locação</a></li>
+      <li><a routerLink="/veiculos"    routerLinkActive="active" (click)="toggleMenu()">Explore Veículos</a></li>
+      <li><a routerLink="/sobre"       routerLinkActive="active" (click)="toggleMenu()">Sobre Nós</a></li>
+      
       <li><a class="cta-button-mobile" routerLink="/contato" (click)="toggleMenu()">Fale Conosco</a></li>
-      <li><a routerLink="/adm/login" (click)="toggleMenu()">Login</a></li>
+      
+      <li>
+        <a routerLink="/adm/login" (click)="toggleMenu()"> 
+          <img class="icon-login" src="assets/icons/login.png" alt="login"> 
+        </a>
+      </li>
+
     </ul>
   </nav>
 </header>

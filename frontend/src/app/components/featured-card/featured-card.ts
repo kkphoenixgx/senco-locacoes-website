@@ -1,12 +1,12 @@
 import { Component, Input } from '@angular/core';
 import { RouterLink } from '@angular/router';
 import { DefaultButton } from '../default-button/default-button';
-import { NgIf, NgStyle } from '@angular/common';
+import { CommonModule } from '@angular/common';
 
 @Component({
   selector: 'app-featured-card',
   standalone: true,
-  imports: [RouterLink, DefaultButton, NgIf, NgStyle],
+  imports: [RouterLink, DefaultButton, CommonModule ],
   templateUrl: './featured-card.html',
   styleUrl: './featured-card.scss',
 })

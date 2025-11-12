@@ -1,4 +1,4 @@
-export default class AdmRepository {
+export default class VendaRepository {
   
   //? ----------- Constructor -----------
 

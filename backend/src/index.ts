@@ -1,20 +1,26 @@
 import 'dotenv/config'; // Carrega as variáveis de ambiente
 import express from 'express';
-// import admRoutes from './api/routes/Adm.routes';
-import veiculosRoutes from './api/routes/veiculos.routes';
+import routes from './routes';
+import uploadConfig from './api/config/upload';
 
 export const app = express();
 
 const port = process.env.API_PORT || 3000;
 
-app.use(express.json());
-
-app.get('/', (req, res) => {
+app.get('/', (_, res) => {
   res.send('Olá, mundo com Vite + Node.js + TypeScript!');
 });
 
-// app.use('/api', admRoutes);
-app.use('/api', veiculosRoutes);
+//? ----------- Middlewares -----------
+
+app.use(express.json());
+app.use('/files', express.static(uploadConfig.directory));
+
+//? ----------- Routes -----------
+
+app.use('/', routes);
+
+//? ----------- Servidor -----------
 
 if (process.env.NODE_ENV !== 'test') { // Evita que o servidor inicie durante testes
   app.listen(port, () => {

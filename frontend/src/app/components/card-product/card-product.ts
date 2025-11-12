@@ -1,11 +1,11 @@
-import { NgClass } from '@angular/common';
+import { CommonModule } from '@angular/common';
 import { Component, Input } from '@angular/core';
 import { RouterLink } from '@angular/router';
 
 @Component({
   selector: 'app-card-product',
   standalone: true,
-  imports: [RouterLink, NgClass],
+  imports: [RouterLink, CommonModule],
   templateUrl: './card-product.html',
   styleUrl: './card-product.scss',
 })

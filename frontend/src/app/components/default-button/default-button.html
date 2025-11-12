@@ -2,14 +2,14 @@
   <a
     [routerLink]="routerLink"
     class="default-button"
-    [ngClass]="[styleType, { 'full-width': fullWidth }]"
+    [ngClass]="{ 'full-width': fullWidth, 'primary': styleType === 'primary', 'secondary': styleType === 'secondary' }"
   >
     {{ text }}
   </a>
 </ng-container>
 
 <ng-template #buttonTpl>
-  <button [type]="type" class="default-button" [ngClass]="[styleType, { 'full-width': fullWidth }]" [disabled]="disabled || isLoading">
+  <button [type]="type" class="default-button" [ngClass]="{ 'full-width': fullWidth, 'primary': styleType === 'primary', 'secondary': styleType === 'secondary' }" [disabled]="disabled || isLoading">
     <span *ngIf="!isLoading">{{ text }}</span>
     <span *ngIf="isLoading">Carregando...</span>
   </button>

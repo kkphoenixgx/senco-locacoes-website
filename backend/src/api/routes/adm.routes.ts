@@ -1,11 +1,32 @@
 import { Router } from 'express';
+import AdmsController from '../controller/AdmsController';
 
 const admRoutes = Router();
+const admsController = new AdmsController();
 
-admRoutes.get('/adms', (req, res) => {
-  // Em um caso real, você chamaria seu AdmRepository aqui para buscar os dados do banco.
-  console.log('Acessando a rota de administradores!');
-  return res.json([{ id: 1, name: 'Admin Exemplo' }]);
-});
+/**
+ * @swagger
+ * /api/adms/login:
+ *   post:
+ *     summary: Realiza o login de um administrador.
+ *     tags: [Administradores]
+ *     requestBody:
+ *       required: true
+ *       content:
+ *         application/json:
+ *           schema:
+ *             type: object
+ *             properties:
+ *               email:
+ *                 type: string
+ *               senha:
+ *                 type: string
+ *     responses:
+ *       200:
+ *         description: Login bem-sucedido, retorna um token de autenticação.
+ *       401:
+ *         description: Email ou senha incorretos.
+ */
+admRoutes.post('/adms/login', admsController.login);
 
 export default admRoutes;

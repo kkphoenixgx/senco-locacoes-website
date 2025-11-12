@@ -1,10 +1,10 @@
 import { Component, Input } from '@angular/core';
-import { NgIf } from '@angular/common';
+import { CommonModule } from '@angular/common';
 
 @Component({
   selector: 'app-image-widget',
   standalone: true,
-  imports: [NgIf],
+  imports: [ CommonModule ],
   templateUrl: './image-widget.html',
   styleUrl: './image-widget.scss',
 })

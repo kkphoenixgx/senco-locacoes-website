@@ -1,10 +1,10 @@
-import { NgStyle } from '@angular/common';
+import { CommonModule } from '@angular/common';
 import { Component, Input } from '@angular/core';
 
 @Component({
   selector: 'app-section-header',
   standalone: true,
-  imports: [NgStyle],
+  imports: [CommonModule ],
   templateUrl: './section-header.html',
   styleUrl: './section-header.scss',
 })

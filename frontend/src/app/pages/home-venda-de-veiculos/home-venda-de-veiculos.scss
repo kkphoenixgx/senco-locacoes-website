@@ -18,9 +18,29 @@
   margin-bottom: 4rem;
 }
 
-/* Seção Veículos em Destaque */
 .featured-vehicles-section {
   margin-bottom: 4rem;
+}
+
+.featured-equipments-section{
+  
+  padding-bottom: 3rem;
+  margin-bottom: 3rem;
+
+  .equipments-content {
+
+    h2 {
+      font-size: 1.75rem;
+      font-weight: bold;
+      margin-bottom: 1rem;
+    }
+
+    p {
+      color: var(--gray-default);
+      margin-bottom: 1.5rem;
+    }
+  }
+
 }
 
 .product-grid {

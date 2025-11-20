@@ -1,8 +1,9 @@
 :host {
   display: block;
-  background-color: #1a233a; // Cor de fundo especificada, próxima a var(--blue-default)
+  background-color: #1a233a;
   color: var(--white-default);
   padding: 4rem 2rem 1rem;
+  box-shadow: 0 -8px 15px rgba(0, 0, 0, 0.3); /* Sombra para cima */
 }
 
 .footer-container {
@@ -14,24 +15,6 @@
   padding-bottom: 3rem;
   margin-bottom: 3rem;
   border-bottom: 1px solid rgba(255, 255, 255, 0.1);
-}
-
-/* Section 1: Equipamentos */
-.equipments-section {
-  .equipments-content {
-    max-width: 400px;
-
-    h2 {
-      font-size: 1.75rem;
-      font-weight: bold;
-      margin-bottom: 1rem;
-    }
-
-    p {
-      color: var(--gray-default);
-      margin-bottom: 1.5rem;
-    }
-  }
 }
 
 /* Botão CTA genérico */
@@ -55,17 +38,9 @@
 /* Section 2: Contato */
 .contact-info-section {
   display: grid;
-  grid-template-columns: 1fr;
+  grid-template-columns: 60%;
   gap: 2rem;
-
-  @media (min-width: 768px) {
-    grid-template-columns: 2fr 1fr;
-  }
-
-  @media (min-width: 1024px) {
-    grid-template-columns: 2fr 1fr auto;
-    align-items: flex-start;
-  }
+  justify-content: center;
 
   h3 {
     font-size: 1.5rem;
@@ -170,7 +145,7 @@
 
   .social-icons {
     display: flex;
-    gap: 1.5rem;
+    gap: 1rem;
 
     a {
       color: var(--gray-default);
@@ -181,6 +156,12 @@
       &:hover {
         color: var(--white-default);
       }
+
+      .social-icons-image{
+        width: 20px;
+        border-radius: 16%;
+      }
+
     }
   }
 }

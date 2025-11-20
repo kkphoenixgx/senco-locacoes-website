@@ -1,0 +1,15 @@
+.whatsapp-floating-button-container{
+
+  position: fixed;
+  right: 3vw;
+  bottom: 15vh;
+  cursor: pointer;
+  padding: 1.5%;
+  border-radius: 95%;
+  background-color: var(--yellow-lighter);
+
+  img{
+    width: 35px;
+  }
+
+}

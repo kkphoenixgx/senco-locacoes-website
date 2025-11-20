@@ -1,32 +1,51 @@
 <div class="home-container">
-  <!-- Seção Principal (Hero) -->
+
   <section class="hero-section">
     <app-featured-card
       title="Honda Veículos"
       buttonText="Explore Veículos"
       routerLink="/veiculos"
-      backgroundImageUrl="https://via.placeholder.com/400x300/cccccc/000000?text=Caminhão"></app-featured-card>
+      backgroundImageUrl="assets/home-honda-veiculos.jpg"
+    ></app-featured-card>
+    
     <app-featured-card
       title="Locações de Equipamentos"
-      buttonText="Veja Equipamentos"
-      routerLink="/ferramentas"
-      backgroundImageUrl="https://via.placeholder.com/400x300/cccccc/000000?text=Moto"></app-featured-card>
+      buttonText="Em breve"
+      routerLink="#"
+      backgroundImageUrl="assets/home-equipamentos.webp"
+    ></app-featured-card>
+    
     <app-featured-card
-      backgroundImageUrl="https://via.placeholder.com/400x300/cccccc/000000?text=Escavadeira"></app-featured-card>
+      backgroundImageUrl="assets/home-escavadeira.jpg"
+    ></app-featured-card>
+
   </section>
 
-  <!-- Seção "Veículos em Destaque" -->
+
   <section class="featured-vehicles-section">
     <app-section-header title="Veículos em Destaque"></app-section-header>
+    
     <div class="product-grid">
-      <!-- Itera sobre os 3 primeiros veículos do serviço -->
       <app-card-product *ngFor="let veiculo of (veiculos$ | async)?.slice(0, 3)"
         [imagePlaceholder]="veiculo.categoria?.nome || 'Veículo'"
         [title]="veiculo.titulo"
         [info]="veiculo.getPrecoFormatado()"
         infoType="price"
         buttonText="Tenho Interesse"
-        buttonLink="/contato" />
+        buttonLink="/contato" 
+      />
     </div>
+
   </section>
+
+  <section class="featured-equipments-section">
+
+    <div class="equipments-content">
+      <h2>Equipamentos para Locação</h2>
+      <p>Em breve: Alugue betoneiras, andaimes e muito mais!</p>
+      <app-default-button text="Em breve" />
+    </div>
+
+  </section>
+
 </div>

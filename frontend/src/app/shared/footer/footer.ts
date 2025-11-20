@@ -1,9 +1,9 @@
 import { Component } from '@angular/core';
-import { RouterLink } from '@angular/router';
+import { WhatsappFloatingButton } from '../whatsapp-floating-button/whatsapp-floating-button';
 
 @Component({
   selector: 'app-footer',
-  imports: [RouterLink],
+  imports: [WhatsappFloatingButton],
   templateUrl: './footer.html',
   styleUrl: './footer.scss',
 })

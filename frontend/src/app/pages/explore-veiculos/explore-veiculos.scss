@@ -34,6 +34,11 @@
   .filter-input {
     flex-grow: 1;
   }
+
+  .price-filter-group {
+    display: flex;
+    gap: 1rem;
+  }
 }
 
 .filters-mobile-toggle {
@@ -109,8 +114,9 @@
 .vehicle-grid {
   display: grid;
   gap: 1.5rem;
-  // Mobile-first: 2 colunas por padrão
-  grid-template-columns: repeat(2, 1fr);
+  // Mobile-first: 1 coluna por padrão
+  grid-template-columns: 1fr;
+  align-items: start; // Alinha os cards no topo da célula da grade
 }
 
 /* --- Paginação --- */
@@ -133,8 +139,16 @@
   cursor: pointer;
 }
 
-/* --- Media Queries para Desktop --- */
+/* --- Media Queries para Responsividade --- */
+
 @media (min-width: 768px) {
+  // A partir de 768px (tablets), a grade passa a ter 2 colunas
+  .vehicle-grid {
+    grid-template-columns: repeat(2, 1fr);
+  }
+}
+
+@media (min-width: 1130px) {
   .filters-desktop {
     display: flex;
   }
@@ -143,13 +157,14 @@
     display: none;
   }
 
+  // A partir de 1130px (desktops), a grade passa a ter 3 colunas
   .vehicle-grid {
-    // 3 ou 4 colunas no desktop
     grid-template-columns: repeat(3, 1fr);
   }
 }
 
-@media (min-width: 1200px) {
+@media (min-width: 1400px) {
+  // Em telas bem largas, a grade passa a ter 4 colunas
   .vehicle-grid {
     grid-template-columns: repeat(4, 1fr);
   }

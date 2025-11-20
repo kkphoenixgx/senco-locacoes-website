@@ -24,6 +24,7 @@ export class AdmDashboardVeiculos implements OnInit {
   constructor() {
     this.veiculoForm = this.fb.group({
       titulo: ['', Validators.required],
+      marca: ['', Validators.required],
       modelo: ['', Validators.required],
       anoModelo: ['', [Validators.required, Validators.min(1900)]],
       preco: ['', [Validators.required, Validators.min(0)]],
@@ -48,6 +49,7 @@ export class AdmDashboardVeiculos implements OnInit {
     this.editingVeiculoId.set(veiculo.id);
     this.veiculoForm.setValue({
       titulo: veiculo.titulo,
+      marca: veiculo.marca,
       modelo: veiculo.modelo,
       anoModelo: veiculo.anoModelo,
       preco: veiculo.preco,
@@ -72,6 +74,7 @@ export class AdmDashboardVeiculos implements OnInit {
         formValue.preco,
         'Descrição padrão', // Descrição placeholder
         [], // Imagens placeholder
+        formValue.marca,
         formValue.categoriaId,
         formValue.modelo,
         formValue.anoModelo, // Simplificação: anoFabricacao = anoModelo

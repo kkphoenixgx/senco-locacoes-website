@@ -9,9 +9,9 @@ export class VeiculosService {
   private apiUrl = `${import.meta.env['NG_APP_API_URL']}/veiculos`;
 
   private mockVeiculos: Veiculos[] = [
-    new Veiculos(1, 'Honda CBR 500R', 55000, 'Moto esportiva em excelente estado.', [], 1, 'CBR 500R', 2022, 2022, 5000, 'Vermelha'),
-    new Veiculos(2, 'Mercedes-Benz Axor', 320000, 'Caminhão robusto para longas distâncias.', [], 2, 'Axor 2544', 2020, 2020, 150000, 'Branco'),
-    new Veiculos(3, 'Voltz EV1 Sport', 20000, 'Scooter elétrica, econômica e moderna.', [], 3, 'EV1 Sport', 2023, 2023, 1000, 'Cinza'),
+    new Veiculos(1, 'Honda CBR 500R', 55000, 'Moto esportiva em excelente estado.', [], 1, 'Honda', 'CBR 500R', 2022, 2022, 5000, 'Vermelha'),
+    new Veiculos(2, 'Mercedes-Benz Axor', 320000, 'Caminhão robusto para longas distâncias.', [], 2, 'Mercedes-Benz', 'Axor 2544', 2020, 2020, 150000, 'Branco'),
+    new Veiculos(3, 'Voltz EV1 Sport', 20000, 'Scooter elétrica, econômica e moderna.', [], 3, 'Voltz', 'EV1 Sport', 2023, 2023, 1000, 'Cinza'),
   ];
 
   private veiculosSubject = new BehaviorSubject<Veiculos[]>(this.mockVeiculos);
@@ -25,7 +25,7 @@ export class VeiculosService {
 
   addVeiculo(veiculo: Omit<Veiculos, 'id'>) {
     const currentVeiculos = this.veiculosSubject.getValue();
-    const newVeiculo = new Veiculos(this.nextId++, veiculo.titulo, veiculo.preco, veiculo.descricao, [], veiculo.categoriaId, veiculo.modelo, veiculo.anoFabricacao, veiculo.anoModelo, veiculo.quilometragem, veiculo.cor);
+    const newVeiculo = new Veiculos(this.nextId++, veiculo.titulo, veiculo.preco, veiculo.descricao, [], veiculo.categoriaId, veiculo.marca, veiculo.modelo, veiculo.anoFabricacao, veiculo.anoModelo, veiculo.quilometragem, veiculo.cor);
     this.veiculosSubject.next([...currentVeiculos, newVeiculo]);
   }
 

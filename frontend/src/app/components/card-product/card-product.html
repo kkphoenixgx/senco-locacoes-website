@@ -1,11 +1,31 @@
-<div class="product-card">
-  <div class="product-image-placeholder">{{ imagePlaceholder }}</div>
-  <h3>{{ title }}</h3>
+<div class="card-container" [class.flipped]="isFlipped()">
+  
+  <div class="product-card card-front" (click)="flipCard()">
+    <div class="product-image-placeholder">{{ veiculo.categoria?.nome || 'Veículo' }}</div>
+    <h3>{{ veiculo.titulo }}</h3>
+    <p class="price">{{ veiculo.getPrecoFormatado() }}</p>
+    <div class="cta-button-container">
+      <a [routerLink]="buttonLink" class="cta-button" (click)="$event.stopPropagation()">{{ buttonText }}</a>
+    </div>
+    <div class="flip-indicator">
+      Clique para ver mais
+    </div>
+  </div>
 
-  <p *ngIf="info" [ngClass]="{
-    'price': isPrice,
-    'category': !isPrice
-  }">{{ info }}</p>
+  <div class="product-card card-back" (click)="flipCard()">
+    <div class="back-header">
+      <h4>Detalhes</h4>
+    </div>
+    <ul class="details-list">
+      <li><strong>Ano: </strong> {{ veiculo.getAnoFormatado() }}</li>
+      <li><strong>KM: </strong> {{ veiculo.quilometragem | number }} km</li>
+      <li><strong>Cor: </strong> {{ veiculo.cor }}</li>
+      <li><strong>Marca: </strong> {{ veiculo.marca }}</li>
+      <li><strong>Modelo: </strong> {{ veiculo.modelo }}</li>
+    </ul>
+    <div class="cta-button-container">
+      <a [routerLink]="buttonLink" class="cta-button" (click)="$event.stopPropagation()">{{ buttonText }}</a>
+    </div>
+  </div>
 
-  <a [routerLink]="buttonLink" class="cta-button">{{ buttonText }}</a>
 </div>

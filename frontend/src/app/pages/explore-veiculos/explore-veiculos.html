@@ -1,66 +1,65 @@
 <div class="explore-container">
   <app-section-header title="Nossos Veículos"></app-section-header>
 
-  <!-- Bloco de Filtros -->
   <section class="filters-block">
-    <!-- Filtros para Desktop -->
+
     <div class="filters-desktop">
-      <input type="text" placeholder="Busque por nome..." class="filter-input" />
-      <select class="filter-select">
-        <option disabled selected>Marca</option>
-        <option>Honda</option>
-        <option>Mercedes-Benz</option>
-        <option>Voltz</option>
+      <input type="text" placeholder="Busque por nome..." class="filter-input" [ngModel]="filterChanges$.getValue().nome" (ngModelChange)="onFilterChange('nome', $event)" />
+
+      <select class="filter-select" [ngModel]="filterChanges$.getValue().marca" (ngModelChange)="onFilterChange('marca', $event)">
+        <option [ngValue]="null">Marca</option>
+        <option *ngFor="let marca of marcas$ | async" [value]="marca">{{ marca }}</option>
       </select>
-      <select class="filter-select">
-        <option disabled selected>Ano</option>
-        <option>2024</option>
-        <option>2023</option>
+
+      <select class="filter-select" [ngModel]="filterChanges$.getValue().ano" (ngModelChange)="onFilterChange('ano', $event)">
+        <option [ngValue]="null">Ano</option>
+        <option *ngFor="let ano of anos$ | async" [value]="ano">{{ ano }}</option>
       </select>
-      <select class="filter-select">
-        <option disabled selected>Preço</option>
-        <option>Até R$ 50.000</option>
-        <option>Acima de R$ 50.000</option>
-      </select>
+      
+      <div class="price-filter-group">
+        <input type="number" placeholder="Preço Mín." class="filter-input" [ngModel]="filterChanges$.getValue().precoMin" (ngModelChange)="onFilterChange('precoMin', $event)" />
+        <input type="number" placeholder="Preço Máx." class="filter-input" [ngModel]="filterChanges$.getValue().precoMax" (ngModelChange)="onFilterChange('precoMax', $event)" />
+      </div>
+
     </div>
 
-    <!-- Botão de Filtro para Mobile -->
     <button class="filters-mobile-toggle" (click)="toggleFilters()">Filtrar e Ordenar</button>
   </section>
 
-  <!-- Grade de Veículos -->
   <section class="vehicle-grid">
-    <app-card-product *ngFor="let veiculo of veiculos$ | async"
-      [imagePlaceholder]="veiculo.categoria?.nome || 'Veículo'"
-      [title]="veiculo.titulo"
-      [info]="veiculo.getPrecoFormatado()"
-      infoType="price"
+    <app-card-product *ngFor="let veiculo of filteredVeiculos$ | async"
+      [veiculo]="veiculo"
       buttonText="Tenho Interesse"
       buttonLink="/contato" />
   </section>
 
-  <!-- Paginação / Carregar Mais -->
   <section class="pagination-section">
     <button class="load-more-button">Carregar Mais Veículos</button>
   </section>
+
 </div>
 
-<!-- Drawer de Filtros para Mobile -->
 <div class="filters-mobile-drawer" [ngClass]="{ 'open': isFilterOpen() }">
   <div class="drawer-header">
     <h3>Filtrar e Ordenar</h3>
     <button class="close-button" (click)="toggleFilters()">X</button>
   </div>
+  
   <div class="drawer-content">
-    <input type="text" placeholder="Busque por nome..." class="filter-input" />
-    <select class="filter-select">
-      <option disabled selected>Marca</option>
+    <input type="text" placeholder="Busque por nome..." class="filter-input" [ngModel]="filterChanges$.getValue().nome" (ngModelChange)="onFilterChange('nome', $event)" />
+    
+    <select class="filter-select" [ngModel]="filterChanges$.getValue().marca" (ngModelChange)="onFilterChange('marca', $event)">
+      <option [ngValue]="null">Marca</option>
+      <option *ngFor="let marca of marcas$ | async" [value]="marca">{{ marca }}</option>
     </select>
-    <select class="filter-select">
-      <option disabled selected>Ano</option>
+    
+    <select class="filter-select" [ngModel]="filterChanges$.getValue().ano" (ngModelChange)="onFilterChange('ano', $event)">
+      <option [ngValue]="null">Ano</option>
+      <option *ngFor="let ano of anos$ | async" [value]="ano">{{ ano }}</option>
     </select>
-    <select class="filter-select">
-      <option disabled selected>Preço</option>
-    </select>
+    
+    <input type="number" placeholder="Preço Mín." class="filter-input" [ngModel]="filterChanges$.getValue().precoMin" (ngModelChange)="onFilterChange('precoMin', $event)" />
+    <input type="number" placeholder="Preço Máx." class="filter-input" [ngModel]="filterChanges$.getValue().precoMax" (ngModelChange)="onFilterChange('precoMax', $event)" />
+
   </div>
 </div>

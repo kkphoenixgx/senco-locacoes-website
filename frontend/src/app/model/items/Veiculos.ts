@@ -13,6 +13,7 @@ export default class Veiculos extends ItemsVendidos {
     imagens: string[] | undefined,
 
     public categoriaId: number,
+    public marca: string,
     public modelo: string,
     public anoFabricacao: number,
     public anoModelo: number,

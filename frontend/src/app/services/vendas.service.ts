@@ -13,7 +13,7 @@ export class VendasService {
   private mockVendas: Venda[] = [
     new Venda(
       1,
-      [new Veiculos(1, 'Honda CBR 500R', 55000, 'Moto esportiva.', [], 1, 'CBR 500R', 2022, 2022, 5000, 'Vermelha')],
+      [new Veiculos(1, 'Honda CBR 500R', 55000, 'Moto esportiva.', [], 1, 'Honda', 'CBR 500R', 2022, 2022, 5000, 'Vermelha')],
       new Date('2025-10-26'),
       55000,
       1,
@@ -21,7 +21,7 @@ export class VendasService {
     ),
     new Venda(
       2,
-      [new Veiculos(2, 'Mercedes-Benz Axor', 320000, 'Caminhão robusto.', [], 2, 'Axor 2544', 2020, 2020, 150000, 'Branco')],
+      [new Veiculos(2, 'Mercedes-Benz Axor', 320000, 'Caminhão robusto.', [], 2, 'Mercedes-Benz', 'Axor 2544', 2020, 2020, 150000, 'Branco')],
       new Date('2025-11-05'),
       320000,
       2,

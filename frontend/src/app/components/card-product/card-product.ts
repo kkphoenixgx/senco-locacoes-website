@@ -1,6 +1,7 @@
 import { CommonModule } from '@angular/common';
-import { Component, Input } from '@angular/core';
+import { Component, Input, signal } from '@angular/core';
 import { RouterLink } from '@angular/router';
+import Veiculo from '../../model/items/Veiculos';
 
 @Component({
   selector: 'app-card-product',
@@ -10,14 +11,17 @@ import { RouterLink } from '@angular/router';
   styleUrl: './card-product.scss',
 })
 export class CardProduct {
-  @Input() imagePlaceholder = 'Produto';
-  @Input() title = 'Nome do Produto';
-  @Input() info = '';
-  @Input() infoType: 'price' | 'category' = 'category';
+  @Input() veiculo!: Veiculo;
   @Input() buttonText = 'Ver Detalhes';
   @Input() buttonLink = '/';
 
-  get isPrice(): boolean {
-    return this.infoType === 'price';
+  isFlipped = signal(false);
+
+  flipCard() {
+    this.isFlipped.set(!this.isFlipped());
+  }
+
+  get infoType(): 'price' | 'category' {
+    return 'price';
   }
 }

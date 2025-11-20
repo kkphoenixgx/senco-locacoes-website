@@ -27,10 +27,7 @@
     
     <div class="product-grid">
       <app-card-product *ngFor="let veiculo of (veiculos$ | async)?.slice(0, 3)"
-        [imagePlaceholder]="veiculo.categoria?.nome || 'Veículo'"
-        [title]="veiculo.titulo"
-        [info]="veiculo.getPrecoFormatado()"
-        infoType="price"
+        [veiculo]="veiculo"
         buttonText="Tenho Interesse"
         buttonLink="/contato" 
       />

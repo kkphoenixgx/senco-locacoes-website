@@ -13,6 +13,7 @@ CREATE TABLE veiculos (
     preco NUMERIC(10, 2) NOT NULL,
     descricao TEXT,
     modelo VARCHAR(100) NOT NULL,
+    marca VARCHAR(100) NOT NULL,
     ano_fabricacao INT NOT NULL,
     ano_modelo INT NOT NULL,
     quilometragem INT NOT NULL,

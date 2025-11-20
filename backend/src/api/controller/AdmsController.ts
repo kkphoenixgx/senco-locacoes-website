@@ -23,7 +23,7 @@ export default class AdmsController {
         );
       }
 
-      const token = JWT.generate({ email: adm.email });
+      const token = JWT.generate({ email: adm.email, role: 'admin' });
 
       return res.json({ user: { email: adm.email }, token });
     } 

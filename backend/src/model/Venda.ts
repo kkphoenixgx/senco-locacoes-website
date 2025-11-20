@@ -1,6 +1,29 @@
 import Cliente from "./Cliente";
 import ItemsVendidos from "./ItemsVendidos";
 
+/**
+ * @swagger
+ * components:
+ *   schemas:
+ *     Venda:
+ *       type: object
+ *       properties:
+ *         id:
+ *           type: integer
+ *         items:
+ *           type: array
+ *           items:
+ *             $ref: '#/components/schemas/Veiculo'
+ *         dataVenda:
+ *           type: string
+ *           format: date-time
+ *         precoTotal:
+ *           type: number
+ *         clienteId:
+ *           type: integer
+ *         cliente:
+ *           $ref: '#/components/schemas/Cliente'
+ */
 export default class Venda {
   
   //? ----------- Constructor -----------

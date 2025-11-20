@@ -2,7 +2,8 @@ import { Request, Response } from 'express';
 import VeiculoRepository from '../../repository/VeiculoRepository'; 
 
 export default class VeiculosController {
-
+  private veiculoRepository = new VeiculoRepository();
+  
   public async create(req: Request, res: Response): Promise<Response> {
     const veiculoData = req.body;
     const { files } = req;
@@ -18,10 +19,9 @@ export default class VeiculosController {
     veiculoData.quilometragem = parseInt(veiculoData.quilometragem, 10);
 
     const nomesDasImagens = files.map(file => file.filename);
-    const veiculosRepository = new VeiculoRepository();
 
     try {
-      const novoVeiculo = await veiculosRepository.create(veiculoData, nomesDasImagens);
+      const novoVeiculo = await this.veiculoRepository.create(veiculoData, nomesDasImagens);
       return res.status(201).json(novoVeiculo);
     } catch (error) {
       if (error instanceof Error) {
@@ -34,5 +34,56 @@ export default class VeiculosController {
 
       return res.status(500).json({ message: 'Ocorreu um erro inesperado ao criar o veículo.' });
     }
+  }
+
+  public async findAll(req: Request, res: Response): Promise<Response> {
+    try {
+      const veiculos = await this.veiculoRepository.findAll();
+      return res.json(veiculos);
+    } catch (error: any) {
+      return res.status(500).json({ message: error.message });
+    }
+  }
+
+  public async findById(req: Request, res: Response): Promise<Response> {
+    const { id } = req.params;
+    try {
+      const veiculo = await this.veiculoRepository.findById(Number(id));
+      if (!veiculo) {
+        return res.status(404).json({ message: 'Veículo não encontrado.' });
+      }
+      return res.json(veiculo);
+    } catch (error: any) {
+      return res.status(500).json({ message: error.message });
+    }
+  }
+
+  public async findMaisVendidos(req: Request, res: Response): Promise<Response> {
+    try {
+      const veiculos = await this.veiculoRepository.findMaisVendidos();
+      return res.json(veiculos);
+    } catch (error: any) {
+      return res.status(500).json({ message: error.message });
+    }
+  }
+
+  public async update(req: Request, res: Response): Promise<Response> {
+    const { id } = req.params;
+    const veiculoData = req.body;
+    try {
+      const veiculoAtualizado = await this.veiculoRepository.update(Number(id), veiculoData);
+      return res.json(veiculoAtualizado);
+    } catch (error: any) {
+      return res.status(500).json({ message: error.message });
+    }
+  }
+
+  public async delete(req: Request, res: Response): Promise<Response> {
+    const { id } = req.params;
+    const success = await this.veiculoRepository.delete(Number(id));
+    if (!success) {
+      return res.status(404).json({ message: 'Veículo não encontrado.' });
+    }
+    return res.status(204).send();
   }
 }

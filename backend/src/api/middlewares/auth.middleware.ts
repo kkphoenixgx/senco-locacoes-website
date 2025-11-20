@@ -15,7 +15,7 @@ export default function ensureAuthenticated( req: Request, res: Response, next: 
   try {
     const payload = JWT.verify(token);
 
-    req.user = payload as { email: string };
+    req.user = payload as { id: number, email: string, role?: 'admin' };
 
     return next();
   } catch (error) {

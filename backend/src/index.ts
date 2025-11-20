@@ -2,6 +2,8 @@ import 'dotenv/config'; // Carrega as variáveis de ambiente
 import express from 'express';
 import routes from './routes';
 import uploadConfig from './api/config/upload';
+import swaggerUi from 'swagger-ui-express';
+import { swaggerSpec } from './api/config/swagger';
 
 export const app = express();
 
@@ -15,6 +17,7 @@ app.get('/', (_, res) => {
 
 app.use(express.json());
 app.use('/files', express.static(uploadConfig.directory));
+app.use('/api-docs', swaggerUi.serve, swaggerUi.setup(swaggerSpec));
 
 //? ----------- Routes -----------
 

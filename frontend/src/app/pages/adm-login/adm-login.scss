@@ -49,3 +49,13 @@
     text-align: center;
   }
 }
+
+.back-to-site-link {
+  display: block;
+  text-align: center;
+  margin-top: 2rem;
+  color: var(--gray-default);
+  text-decoration: none;
+  font-size: 0.9rem;
+  cursor: pointer;
+}

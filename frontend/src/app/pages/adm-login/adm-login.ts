@@ -1,6 +1,6 @@
 import { Component, inject, signal } from '@angular/core';
 import { FormControl, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
-import { Router } from '@angular/router';
+import { Router, RouterLink } from '@angular/router';
 import { NgIf } from '@angular/common';
 import { AuthService } from '../../services/auth.service';
 import { finalize } from 'rxjs';
@@ -9,7 +9,7 @@ import { DefaultFormInput } from '../../components/default-form-input/default-fo
 
 @Component({
   selector: 'app-adm-login',
-  imports: [ReactiveFormsModule, NgIf, DefaultButton, DefaultFormInput],
+  imports: [ReactiveFormsModule, NgIf, DefaultButton, DefaultFormInput, RouterLink],
   templateUrl: './adm-login.html',
   styleUrl: './adm-login.scss',
 })

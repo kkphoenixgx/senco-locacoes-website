@@ -20,6 +20,6 @@ export class HomeVendaDeVeiculos implements OnInit {
   veiculos$!: Observable<Veiculos[]>;
 
   ngOnInit(): void {
-    this.veiculos$ = this.veiculosService.getVeiculos();
+    this.veiculos$ = this.veiculosService.getVeiculosMaisVendidos();
   }
 }

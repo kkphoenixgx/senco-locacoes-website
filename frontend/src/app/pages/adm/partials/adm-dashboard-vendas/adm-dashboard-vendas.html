@@ -1,6 +1,36 @@
 <div class="page-container">
   <div class="page-header">
     <h1>Relatório de Vendas</h1>
+    <button class="btn btn-primary" (click)="onAddNew()">Adicionar Nova Venda</button>
+  </div>
+
+  <!-- Formulário de Adicionar/Editar -->
+  <div *ngIf="showForm()" class="form-container">
+    <h2>{{ editingVendaId() ? 'Editar Venda' : 'Nova Venda' }}</h2>
+    <form [formGroup]="vendaForm" (ngSubmit)="onSave()">
+      <div class="form-group">
+        <label for="clienteId">Cliente</label>
+        <select id="clienteId" formControlName="clienteId">
+          <option [ngValue]="null" disabled>Selecione um cliente</option>
+          <option *ngFor="let cliente of clientes$ | async" [value]="cliente.id">{{ cliente.nome }}</option>
+        </select>
+      </div>
+      <div class="form-group">
+        <label for="veiculoId">Veículo</label>
+        <select id="veiculoId" formControlName="veiculoId">
+          <option [ngValue]="null" disabled>Selecione um veículo</option>
+          <option *ngFor="let veiculo of veiculos$ | async" [value]="veiculo.id">{{ veiculo.titulo }}</option>
+        </select>
+      </div>
+      <div class="form-group">
+        <label for="dataVenda">Data da Venda</label>
+        <input id="dataVenda" type="date" formControlName="dataVenda" />
+      </div>
+      <div class="form-actions">
+        <button type="submit" class="btn btn-primary" [disabled]="vendaForm.invalid">Salvar</button>
+        <button type="button" class="btn btn-secondary" (click)="onCancel()">Cancelar</button>
+      </div>
+    </form>
   </div>
 
   <div class="table-container">
@@ -12,6 +42,7 @@
           <th>Produto</th>
           <th>Data</th>
           <th>Valor</th>
+          <th>Ações</th>
         </tr>
       </thead>
       <tbody>
@@ -21,6 +52,10 @@
           <td>{{ venda.items[0]?.titulo || 'N/A' }}</td>
           <td>{{ venda.dataVenda | date: 'dd/MM/yyyy' }}</td>
           <td>{{ venda.precoTotal | currency: 'BRL' }}</td>
+          <td class="actions-cell">
+            <button class="btn btn-sm btn-secondary" (click)="onEdit(venda)">Editar</button>
+            <button class="btn btn-sm btn-danger" (click)="onDelete(venda.id)">Excluir</button>
+          </td>
         </tr>
       </tbody>
     </table>

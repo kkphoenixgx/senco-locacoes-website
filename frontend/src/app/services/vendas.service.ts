@@ -1,5 +1,5 @@
 import { Injectable } from '@angular/core';
-import { Observable, of } from 'rxjs';
+import { BehaviorSubject, Observable, of } from 'rxjs';
 import Venda from '../model/Venda';
 import Veiculos from '../model/items/Veiculos';
 import Cliente from '../model/Cliente';
@@ -29,9 +29,39 @@ export class VendasService {
     ),
   ];
 
-  constructor() {}
+  private vendasSubject = new BehaviorSubject<Venda[]>(this.mockVendas);
+  private nextId = 3;
 
   getVendas(): Observable<Venda[]> {
-    return of(this.mockVendas);
+    return this.vendasSubject.asObservable();
+  }
+
+  addVenda(vendaData: Omit<Venda, 'id'>) {
+    const currentVendas = this.vendasSubject.getValue();
+    const newVenda = new Venda(
+      this.nextId++,
+      vendaData.items,
+      vendaData.dataVenda,
+      vendaData.precoTotal,
+      vendaData.clienteId,
+      vendaData.cliente
+    );
+    this.vendasSubject.next([...currentVendas, newVenda]);
+  }
+
+  updateVenda(updatedVenda: Venda) {
+    const currentVendas = this.vendasSubject.getValue();
+    const index = currentVendas.findIndex(v => v.id === updatedVenda.id);
+    if (index !== -1) {
+      const newVendas = [...currentVendas];
+      newVendas[index] = updatedVenda;
+      this.vendasSubject.next(newVendas);
+    }
+  }
+
+  deleteVenda(id: number) {
+    const currentVendas = this.vendasSubject.getValue();
+    const newVendas = currentVendas.filter(v => v.id !== id);
+    this.vendasSubject.next(newVendas);
   }
 }

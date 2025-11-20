@@ -1,11 +1,13 @@
-import { Injectable } from '@angular/core';
-import { BehaviorSubject, Observable, of } from 'rxjs';
+import { Injectable, inject } from '@angular/core';
+import { BehaviorSubject, Observable, of, map } from 'rxjs';
 import Veiculos from '../model/items/Veiculos';
+import { VendasService } from './vendas.service';
 
 @Injectable({
   providedIn: 'root',
 })
 export class VeiculosService {
+  private vendasService = inject(VendasService);
   private apiUrl = `${import.meta.env['NG_APP_API_URL']}/veiculos`;
 
   private mockVeiculos: Veiculos[] = [
@@ -21,6 +23,32 @@ export class VeiculosService {
 
   getVeiculos(): Observable<Veiculos[]> {
     return this.veiculosSubject.asObservable();
+  }
+
+  getVeiculosMaisVendidos(): Observable<Veiculos[]> {
+    return this.vendasService.getVendas().pipe(
+      map(vendas => {
+        const salesCount = new Map<number, number>();
+
+        // Conta as vendas de cada veículo
+        vendas.forEach(venda => {
+          venda.items.forEach(item => {
+            if (item instanceof Veiculos) {
+              salesCount.set(item.id, (salesCount.get(item.id) || 0) + 1);
+            }
+          });
+        });
+
+        // Ordena os veículos do mock com base na contagem de vendas
+        const sortedVeiculos = [...this.mockVeiculos].sort((a, b) => {
+          const countA = salesCount.get(a.id) || 0;
+          const countB = salesCount.get(b.id) || 0;
+          return countB - countA; // Ordem decrescente
+        });
+
+        return sortedVeiculos;
+      })
+    );
   }
 
   addVeiculo(veiculo: Omit<Veiculos, 'id'>) {

@@ -2,6 +2,8 @@ import Veiculo from "../model/items/Veiculo";
 import ConnectionFactory from "../database/ConnectionFactory";
 import { ResultSetHeader, RowDataPacket } from "mysql2";
 import CategoriaVeiculos from "../model/items/CategoriaVeiculos";
+import fs from 'fs/promises';
+import path from 'path';
 
 export default class VeiculoRepository {
   
@@ -208,29 +210,56 @@ export default class VeiculoRepository {
   }
 
   /** Atualiza os dados de um veículo. */
-  public async update(id: number, veiculoData: Partial<Omit<Veiculo, 'id' | 'getAnoFormatado'>>): Promise<Veiculo | null> {
+  public async update(id: number, veiculoData: Partial<Omit<Veiculo, 'id' | 'getAnoFormatado'>>, nomesNovasImagens?: string[]): Promise<Veiculo | null> {
     const pool = ConnectionFactory.getPool();
     const connection = await pool.getConnection();
     
     try {
       await connection.beginTransaction();
 
+      // 1. Atualiza as imagens, se houver novas
+      if (nomesNovasImagens && nomesNovasImagens.length > 0) {
+        // Busca os nomes dos arquivos de imagem antigos para deletá-los do disco
+        const [oldImagesRows] = await connection.execute<RowDataPacket[]>('SELECT caminho_imagem FROM veiculo_imagens WHERE veiculo_id = ?', [id]);
+        const oldImageFiles = oldImagesRows.map(row => row.caminho_imagem);
+
+        // Deleta as referências antigas no banco
+        await connection.execute('DELETE FROM veiculo_imagens WHERE veiculo_id = ?', [id]);
+
+        // Insere as novas referências
+        const imagemQuery = 'INSERT INTO veiculo_imagens (veiculo_id, caminho_imagem) VALUES ?';
+        const imagensValues = nomesNovasImagens.map(nome => [id, nome]);
+        await connection.query(imagemQuery, [imagensValues]);
+
+        // Deleta os arquivos antigos do sistema de arquivos
+        const uploadDir = path.resolve(__dirname, '..', '..', 'uploads');
+        for (const filename of oldImageFiles) {
+          try {
+            await fs.unlink(path.join(uploadDir, filename));
+          } catch (err) {
+            // Loga o erro mas não interrompe a transação, pois o DB já está atualizado
+            console.error(`Falha ao deletar arquivo de imagem antigo: ${filename}`, err);
+          }
+        }
+      }
+
+      // 2. Atualiza os outros campos do veículo
       const camposParaAtualizar = Object.keys(veiculoData)
         .filter(key => key !== 'imagens' && (veiculoData as any)[key] !== undefined)
         .map(key => `${key.replace(/[A-Z]/g, letter => `_${letter.toLowerCase()}`)} = ?`)
         .join(', ');
 
       if (camposParaAtualizar.length > 0) {
-        const valores = Object.entries(veiculoData)
+        const valores = Object.entries(veiculoData) // Garante que os valores numéricos sejam convertidos
           .filter(([key, value]) => key !== 'imagens' && value !== undefined)
-          .map(([, value]) => value);
+          .map(([key, value]) => {
+            const numericFields = ['preco', 'categoriaId', 'anoFabricacao', 'anoModelo', 'quilometragem'];
+            return numericFields.includes(key) ? Number(value) : value;
+          });
 
         const updateQuery = `UPDATE veiculos SET ${camposParaAtualizar} WHERE id = ?`;
         await connection.execute(updateQuery, [...valores, id]);
       }
-
-      // A lógica para atualizar imagens seria mais complexa (ex: remover antigas, adicionar novas)
-      // e foi omitida para simplificar.
 
       await connection.commit();
 

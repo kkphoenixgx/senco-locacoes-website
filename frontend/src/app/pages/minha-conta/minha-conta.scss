@@ -1,0 +1,74 @@
+:host {
+  display: block;
+  background-color: #f4f7fa; // Usa o mesmo fundo do painel ADM
+  color: var(--blue-default);
+  padding: 2rem 0 4rem;
+  min-height: 80vh;
+}
+
+.page-container {
+  max-width: 900px;
+  margin: 0 auto;
+  padding: 0 1rem;
+}
+
+.profile-card {
+  background-color: #ffffff;
+  padding: 2rem;
+  border-radius: 8px;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
+}
+
+.profile-form {
+  display: grid;
+  gap: 1.5rem;
+
+  @media (min-width: 768px) {
+    grid-template-columns: 1fr 1fr;
+
+    // Faz nome e endereço ocuparem a linha toda
+    & > *:nth-child(1), & > *:nth-child(4) {
+      grid-column: 1 / -1;
+    }
+  }
+}
+
+.form-actions {
+  grid-column: 1 / -1; // Ocupa a linha toda
+  display: flex;
+  justify-content: flex-end;
+  margin-top: 1rem;
+}
+
+/* Estilos para as mensagens de feedback */
+.feedback-message {
+  padding: 1rem;
+  border-radius: 5px;
+  margin-bottom: 1.5rem;
+  text-align: center;
+  font-weight: 500;
+
+  &.success {
+    background-color: #c6f6d5;
+    color: #2f855a;
+  }
+
+  &.error {
+    background-color: #fed7d7;
+    color: #c53030;
+  }
+}
+
+/* Desabilita o campo de email */
+app-default-form-input[formControlName="email"] {
+  // O ::ng-deep é necessário para estilizar o componente encapsulado
+  ::ng-deep input {
+    background-color: #e9ecef;
+    cursor: not-allowed;
+    color: #6c757d;
+  }
+
+  ::ng-deep label {
+    color: #6c757d;
+  }
+}

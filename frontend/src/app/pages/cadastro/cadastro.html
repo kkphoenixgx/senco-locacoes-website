@@ -1,0 +1,50 @@
+<div class="auth-container">
+  <div class="auth-card">
+    <h1 class="auth-title">Crie sua Conta</h1>
+    <p class="auth-subtitle">Preencha os dados abaixo para se registrar.</p>
+
+    <form [formGroup]="registerForm" (ngSubmit)="onSubmit()" class="auth-form">
+      <app-default-form-input
+        label="Nome Completo"
+        formControlName="nome"></app-default-form-input>
+      <app-default-form-input
+        label="Email"
+        type="email"
+        formControlName="email"></app-default-form-input>
+      <app-default-form-input
+        label="Telefone"
+        type="tel"
+        formControlName="telefone"></app-default-form-input>
+      <app-default-form-input
+        label="Endereço"
+        formControlName="endereco"></app-default-form-input>
+      <app-default-form-input
+        label="Senha"
+        type="password"
+        formControlName="senhaPlana"></app-default-form-input>
+      <app-default-form-input
+        label="Confirme a Senha"
+        type="password"
+        formControlName="confirmarSenha"></app-default-form-input>
+
+      <div *ngIf="registerForm.errors?.['passwordMismatch'] && registerForm.get('confirmarSenha')?.touched" class="error-message server-error">
+        As senhas não coincidem.
+      </div>
+
+      <div *ngIf="errorMessage()" class="error-message server-error">
+        {{ errorMessage() }}
+      </div>
+
+      <app-default-button
+        type="submit"
+        text="Cadastrar"
+        [isLoading]="isLoading()"
+        [disabled]="registerForm.invalid || isLoading()"></app-default-button>
+    </form>
+
+    <div class="switch-form-link">
+      <span>Já tem uma conta?</span>
+      <a routerLink="/login">Faça o login aqui</a>
+    </div>
+  </div>
+</div>

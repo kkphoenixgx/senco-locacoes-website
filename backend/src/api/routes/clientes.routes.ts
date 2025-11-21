@@ -71,6 +71,22 @@ clientesRoutes.post('/clientes/login', clientesController.login);
 
 /**
  * @swagger
+ * /api/clientes/me:
+ *   get:
+ *     summary: Retorna o perfil do cliente autenticado.
+ *     tags: [Clientes]
+ *     security:
+ *       - bearerAuth: []
+ *     responses:
+ *       200:
+ *         description: Dados do perfil do cliente.
+ *       401:
+ *         description: Não autenticado.
+ */
+clientesRoutes.get('/clientes/me', ensureAuthenticated, clientesController.getProfile);
+
+/**
+ * @swagger
  * /api/clientes:
  *   get:
  *     summary: Retorna uma lista de todos os clientes (Apenas para Administradores).

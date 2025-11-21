@@ -1,15 +1,10 @@
-/* Reusing styles from other admin pages for consistency */
+/* Reutilizando os estilos da tabela de veículos para consistência */
 
 .page-header {
   display: flex;
   justify-content: space-between;
   align-items: center;
   margin-bottom: 2rem;
-
-  h1 {
-    font-size: 1.75rem;
-    color: var(--blue-default);
-  }
 }
 
 .table-container {
@@ -23,44 +18,64 @@
   width: 100%;
   border-collapse: collapse;
 
-  th,
-  td {
-    padding: 1rem 1.5rem;
+  th, td {
+    padding: 1rem 1.25rem;
     text-align: left;
     border-bottom: 1px solid #e2e8f0;
-    color: #2d3748; /* Cor de texto escura para melhor contraste */
+    vertical-align: middle;
+    white-space: nowrap;
   }
 
-  thead th {
-    background-color: #f7fafc;
-    font-weight: 600;
-    color: #4a5568;
-    text-transform: uppercase;
-    font-size: 0.875rem;
+  thead {
+    background-color: #f8fafc;
+    th {
+      font-size: 0.875rem;
+      font-weight: 600;
+      color: #4a5568;
+      text-transform: uppercase;
+    }
   }
 
-  tbody tr:last-child td {
-    border-bottom: none;
-  }
-
-  tbody tr:hover {
-    background-color: #f7fafc;
+  tbody {
+    tr:hover {
+      background-color: #f7fafc;
+    }
+    td {
+      color: #2d3748;
+    }
   }
 }
 
+.actions-cell {
+  display: flex;
+  gap: 0.5rem;
+}
+
 .btn {
-  padding: 0.65rem 1.25rem;
+  padding: 0.4rem 0.8rem;
   border: none;
   border-radius: 5px;
-  font-weight: bold;
   cursor: pointer;
-  transition: background-color 0.2s ease;
+  font-weight: 500;
+  font-size: 0.875rem;
+  transition: background-color 0.2s, color 0.2s;
 
-  &.btn-primary {
-    background-color: var(--yellow-default);
-    color: var(--blue-default);
+  &.btn-sm {
+    padding: 0.3rem 0.6rem;
+    font-size: 0.8rem;
+  }
+
+  &.btn-secondary {
+    background-color: #e2e8f0;
+    color: #2d3748;
     &:hover {
-      background-color: var(--yellow-lighter);
+      background-color: #cbd5e0;
     }
   }
+}
+
+.empty-state {
+  text-align: center;
+  padding: 2rem;
+  color: #718096;
 }

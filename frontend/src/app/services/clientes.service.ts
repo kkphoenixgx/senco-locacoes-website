@@ -1,20 +1,57 @@
-import { Injectable } from '@angular/core';
+import { Injectable, inject } from '@angular/core';
+import { HttpClient } from '@angular/common/http';
 import { Observable, of } from 'rxjs';
+import { catchError, map } from 'rxjs/operators';
+import { environment } from '../../../environment';
 import Cliente from '../model/Cliente';
 
 @Injectable({
-  providedIn: 'root',
+  providedIn: 'root'
 })
 export class ClientesService {
-  private mockClientes: Cliente[] = [
-    new Cliente(1, 'João Silva', '(11) 98765-4321', 'joao.silva@example.com', 'Rua Fictícia, 123'),
-    new Cliente(2, 'Maria Souza', '(21) 91234-5678', 'maria.souza@example.com', 'Avenida de Testes, 456'),
-    new Cliente(3, 'Carlos Pereira', '(31) 99999-8888', 'carlos.p@example.com', 'Praça da Liberdade, 789'),
-  ];
+  private http = inject(HttpClient);
+  private clientesUrl = `${environment.apiUrl}/clientes`;
 
-  constructor() {}
-
+  /**
+   * Busca todos os clientes da API (requer autenticação de admin).
+   */
   getClientes(): Observable<Cliente[]> {
-    return of(this.mockClientes);
+    return this.http.get<any[]>(this.clientesUrl).pipe(
+      map(data => data.map(item => this.mapToCliente(item))),
+      catchError(err => {
+        console.error('Erro ao buscar clientes:', err);
+        return of([]);
+      })
+    );
+  }
+
+  /**
+   * Busca os dados do perfil do cliente autenticado.
+   */
+  getProfile(): Observable<Cliente> {
+    return this.http.get<any>(`${this.clientesUrl}/me`).pipe(
+      map(item => this.mapToCliente(item))
+    );
+  }
+
+  /**
+   * Atualiza os dados do perfil do cliente autenticado.
+   * @param clienteData Os dados a serem atualizados.
+   */
+  updateProfile(clienteData: Partial<Cliente>): Observable<Cliente> {
+    return this.http.put<Cliente>(`${this.clientesUrl}/me`, clienteData);
+  }
+
+  /**
+   * Deleta um cliente da API.
+   * @param id O ID do cliente a ser deletado.
+   */
+  deleteCliente(id: number): Observable<void> {
+    return this.http.delete<void>(`${this.clientesUrl}/${id}`);
+  }
+
+  private mapToCliente(item: any): Cliente {
+    // O backend já envia os dados no formato esperado pelo construtor do Cliente.
+    return new Cliente(item.id, item.nome, item.telefone, item.email, item.endereco);
   }
 }

@@ -1,11 +1,26 @@
 <div class="card-container" [class.flipped]="isFlipped()">
   
   <div class="product-card card-front" (click)="flipCard()">
-    <div class="product-image-placeholder">{{ veiculo.categoria?.nome || 'Veículo' }}</div>
+    <div class="product-image-container">
+      <img *ngIf="veiculo.imagens && veiculo.imagens.length > 0" [src]="veiculo.imagens[0]" [alt]="veiculo.titulo">
+      <div *ngIf="!veiculo.imagens || veiculo.imagens.length === 0" class="product-image-placeholder">
+        {{ veiculo.categoria?.nome || 'Veículo' }}
+      </div>
+    </div>
     <h3>{{ veiculo.titulo }}</h3>
     <p class="price">{{ veiculo.getPrecoFormatado() }}</p>
     <div class="cta-button-container">
-      <a [routerLink]="buttonLink" class="cta-button" (click)="$event.stopPropagation()">{{ buttonText }}</a>
+      <ng-container *ngIf="authService.authState().role === 'client'; else interestButton">
+        <app-default-button text="Solicitar Compra" (click)="onPurchaseClick($event)"></app-default-button>
+      </ng-container>
+      <ng-template #interestButton>
+        <app-default-button
+          text="Tenho Interesse"
+          [routerLink]="['/contato']"
+          [queryParams]="{ veiculo: veiculo.titulo }"
+          (click)="$event.stopPropagation()">
+        </app-default-button>
+      </ng-template>
     </div>
     <div class="flip-indicator">
       Clique para ver mais
@@ -24,7 +39,17 @@
       <li><strong>Modelo: </strong> {{ veiculo.modelo }}</li>
     </ul>
     <div class="cta-button-container">
-      <a [routerLink]="buttonLink" class="cta-button" (click)="$event.stopPropagation()">{{ buttonText }}</a>
+      <ng-container *ngIf="authService.authState().role === 'client'; else interestButtonBack">
+        <app-default-button text="Solicitar Compra" (click)="onPurchaseClick($event)"></app-default-button>
+      </ng-container>
+      <ng-template #interestButtonBack>
+        <app-default-button
+          text="Tenho Interesse"
+          [routerLink]="['/contato']"
+          [queryParams]="{ veiculo: veiculo.titulo }"
+          (click)="$event.stopPropagation()">
+        </app-default-button>
+      </ng-template>
     </div>
   </div>
 

@@ -114,7 +114,7 @@ veiculosRoutes.get('/veiculos/:id', veiculosController.findById);
 veiculosRoutes.post('/veiculos', ensureAuthenticated, upload.array('imagens', 10), veiculosController.create);
 
 // As rotas PUT e DELETE seguiriam um padrão similar de documentação
-veiculosRoutes.put('/veiculos/:id', ensureAuthenticated, veiculosController.update);
+veiculosRoutes.put('/veiculos/:id', ensureAuthenticated, upload.array('imagens', 10), veiculosController.update);
 veiculosRoutes.delete('/veiculos/:id', ensureAuthenticated, veiculosController.delete);
 
 export default veiculosRoutes;

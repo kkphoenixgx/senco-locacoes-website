@@ -8,13 +8,21 @@
     <!-- Seção: Formulário de Contato -->
     <section class="contact-form-section">
       <app-section-subheader title="Envie uma Mensagem"></app-section-subheader>
-      <form [formGroup]="contactForm" (ngSubmit)="onSubmit()" class="contact-form">
+
+      <div *ngIf="successMessage()" class="feedback-message success">
+        {{ successMessage() }}
+      </div>
+      <div *ngIf="errorMessage()" class="feedback-message error">
+        {{ errorMessage() }}
+      </div>
+
+      <form *ngIf="!successMessage()" [formGroup]="contactForm" (ngSubmit)="onSubmit()" class="contact-form">
         <app-default-form-input placeholder="Nome" formControlName="name"></app-default-form-input>
         <app-default-form-input type="email" placeholder="Email" formControlName="email"></app-default-form-input>
         <app-default-form-input type="tel" placeholder="Telefone" formControlName="phone"></app-default-form-input>
         <app-default-form-input placeholder="Assunto" formControlName="subject"></app-default-form-input>
         <app-default-form-text-area placeholder="Sua Mensagem" [rows]="5" formControlName="message"></app-default-form-text-area>
-        <app-default-button type="submit" text="Enviar Mensagem"></app-default-button>
+        <app-default-button type="submit" text="Enviar Mensagem" [isLoading]="isLoading()" [disabled]="contactForm.invalid || isLoading()"></app-default-button>
       </form>
     </section>
   </div>

@@ -8,6 +8,8 @@ import { SectionHeader } from '../../components/section-header/section-header';
 import { FormsModule } from '@angular/forms';
 import { map, startWith, debounceTime, distinctUntilChanged } from 'rxjs/operators';
 import localePt from '@angular/common/locales/pt';
+import { PurchaseService } from '../../services/purchase.service';
+import { DefaultButton } from '../../components/default-button/default-button';
 
 registerLocaleData(localePt);
 
@@ -21,12 +23,13 @@ interface VehicleFilters {
 
 @Component({
   selector: 'app-explore-veiculos',
-  imports: [CommonModule, CardProduct, SectionHeader, FormsModule],
+  imports: [CommonModule, CardProduct, SectionHeader, FormsModule, DefaultButton],
   templateUrl: './explore-veiculos.html',
   styleUrl: './explore-veiculos.scss',
 })
 export class ExploreVeiculos implements OnInit {
   private veiculosService = inject(VeiculosService);
+  private purchaseService = inject(PurchaseService);
   
   private allVeiculos$ = new BehaviorSubject<Veiculo[]>([]);
   filteredVeiculos$!: Observable<Veiculo[]>;
@@ -81,5 +84,14 @@ export class ExploreVeiculos implements OnInit {
 
   toggleFilters() {
     this.isFilterOpen.set(!this.isFilterOpen());
+  }
+
+  handlePurchaseRequest(vehicleId: number) {
+    this.purchaseService.requestPurchase(vehicleId).subscribe({
+      next: (response) => {
+        alert(response.message); // Exibe um alerta de sucesso
+      },
+      error: (err) => alert(err.error?.message || 'Não foi possível completar a solicitação.')
+    });
   }
 }

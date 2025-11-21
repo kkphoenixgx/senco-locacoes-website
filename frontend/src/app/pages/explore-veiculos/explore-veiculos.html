@@ -28,9 +28,7 @@
 
   <section class="vehicle-grid">
     <app-card-product *ngFor="let veiculo of filteredVeiculos$ | async"
-      [veiculo]="veiculo"
-      buttonText="Tenho Interesse"
-      buttonLink="/contato" />
+      [veiculo]="veiculo" (purchaseRequest)="handlePurchaseRequest($event)" />
   </section>
 
   <section class="pagination-section">

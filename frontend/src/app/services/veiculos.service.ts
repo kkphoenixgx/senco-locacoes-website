@@ -1,75 +1,108 @@
-import { Injectable, inject } from '@angular/core';
-import { BehaviorSubject, Observable, of, map } from 'rxjs';
-import Veiculos from '../model/items/Veiculos';
-import { VendasService } from './vendas.service';
+import { Injectable } from '@angular/core';
+import { HttpClient } from '@angular/common/http';
+import { Observable, of } from 'rxjs';
+import { map, catchError } from 'rxjs/operators';
+import Veiculo from '../model/items/Veiculos';
+import { environment } from '../../../environment';
 
 @Injectable({
   providedIn: 'root',
 })
 export class VeiculosService {
-  private vendasService = inject(VendasService);
-  private apiUrl = `${import.meta.env['NG_APP_API_URL']}/veiculos`;
+  private veiculosUrl = `${environment.apiUrl}/veiculos`;
 
-  private mockVeiculos: Veiculos[] = [
-    new Veiculos(1, 'Honda CBR 500R', 55000, 'Moto esportiva em excelente estado.', [], 1, 'Honda', 'CBR 500R', 2022, 2022, 5000, 'Vermelha'),
-    new Veiculos(2, 'Mercedes-Benz Axor', 320000, 'Caminhão robusto para longas distâncias.', [], 2, 'Mercedes-Benz', 'Axor 2544', 2020, 2020, 150000, 'Branco'),
-    new Veiculos(3, 'Voltz EV1 Sport', 20000, 'Scooter elétrica, econômica e moderna.', [], 3, 'Voltz', 'EV1 Sport', 2023, 2023, 1000, 'Cinza'),
-  ];
+  constructor(private http: HttpClient) {}
 
-  private veiculosSubject = new BehaviorSubject<Veiculos[]>(this.mockVeiculos);
-  private nextId = 4;
-
-  constructor() {}
-
-  getVeiculos(): Observable<Veiculos[]> {
-    return this.veiculosSubject.asObservable();
-  }
-
-  getVeiculosMaisVendidos(): Observable<Veiculos[]> {
-    return this.vendasService.getVendas().pipe(
-      map(vendas => {
-        const salesCount = new Map<number, number>();
-
-        // Conta as vendas de cada veículo
-        vendas.forEach(venda => {
-          venda.items.forEach(item => {
-            if (item instanceof Veiculos) {
-              salesCount.set(item.id, (salesCount.get(item.id) || 0) + 1);
-            }
-          });
-        });
-
-        // Ordena os veículos do mock com base na contagem de vendas
-        const sortedVeiculos = [...this.mockVeiculos].sort((a, b) => {
-          const countA = salesCount.get(a.id) || 0;
-          const countB = salesCount.get(b.id) || 0;
-          return countB - countA; // Ordem decrescente
-        });
-
-        return sortedVeiculos;
-      })
+  /**
+   * Busca todos os veículos da API.
+   */
+  getVeiculos(): Observable<Veiculo[]> {
+    return this.http.get<any[]>(this.veiculosUrl).pipe(
+      map((data) => data.map((item) => this.mapToVeiculo(item))),
+      catchError(this.handleError)
     );
   }
 
-  addVeiculo(veiculo: Omit<Veiculos, 'id'>) {
-    const currentVeiculos = this.veiculosSubject.getValue();
-    const newVeiculo = new Veiculos(this.nextId++, veiculo.titulo, veiculo.preco, veiculo.descricao, [], veiculo.categoriaId, veiculo.marca, veiculo.modelo, veiculo.anoFabricacao, veiculo.anoModelo, veiculo.quilometragem, veiculo.cor);
-    this.veiculosSubject.next([...currentVeiculos, newVeiculo]);
+  /**
+   * Busca os veículos mais vendidos da API.
+   */
+  getVeiculosMaisVendidos(): Observable<Veiculo[]> {
+    return this.http.get<any[]>(`${this.veiculosUrl}/mais-vendidos`).pipe(
+      map((data) => data.map((item) => this.mapToVeiculo(item))),
+      catchError(this.handleError)
+    );
   }
 
-  updateVeiculo(updatedVeiculo: Veiculos) {
-    const currentVeiculos = this.veiculosSubject.getValue();
-    const index = currentVeiculos.findIndex(v => v.id === updatedVeiculo.id);
-    if (index !== -1) {
-      const newVeiculos = [...currentVeiculos];
-      newVeiculos[index] = updatedVeiculo;
-      this.veiculosSubject.next(newVeiculos);
+  /**
+   * Cria um novo veículo enviando os dados para a API.
+   * @param veiculoData Os dados do veículo (sem o ID).
+   * @param imagens Os arquivos de imagem.
+   */
+  createVeiculo(veiculoData: Omit<Veiculo, 'id' | 'getAnoFormatado' | 'categoria'>, imagens: File[]): Observable<Veiculo> {
+    const formData = new FormData();
+
+    // Adiciona os campos do veículo ao FormData
+    Object.entries(veiculoData).forEach(([key, value]) => {
+      if (value !== null && value !== undefined) {
+        // FormData só aceita string ou Blob. Convertemos todos os valores para string.
+        formData.append(key, String(value));
+      }
+    });
+    // Adiciona os arquivos de imagem
+    imagens.forEach(imagem => formData.append('imagens', imagem));
+
+    return this.http.post<Veiculo>(this.veiculosUrl, formData);
+  }
+
+  /**
+   * Deleta um veículo da API.
+   * @param id O ID do veículo a ser deletado.
+   */
+  deleteVeiculo(id: number): Observable<void> {
+    return this.http.delete<void>(`${this.veiculosUrl}/${id}`);
+  }
+
+  /**
+   * Atualiza os dados de um veículo existente, com suporte para substituição de imagens.
+   * @param id O ID do veículo a ser atualizado.
+   * @param veiculoData Os dados a serem atualizados.
+   * @param imagens Os novos arquivos de imagem (opcional). Se fornecido, substituirá as imagens existentes.
+   */
+  updateVeiculo(id: number, veiculoData: Partial<Veiculo>, imagens?: File[]): Observable<Veiculo> {
+    const formData = new FormData();
+
+    // Adiciona os campos do veículo ao FormData, convertendo para string
+    Object.entries(veiculoData).forEach(([key, value]) => {
+      // Não enviar o array de strings de imagens antigas nem valores nulos
+      if (value !== null && value !== undefined && key !== 'imagens') {
+        formData.append(key, String(value));
+      }
+    });
+
+    // Adiciona os novos arquivos de imagem, se houver
+    if (imagens && imagens.length > 0) {
+      imagens.forEach(imagem => formData.append('imagens', imagem));
     }
+
+    return this.http.put<Veiculo>(`${this.veiculosUrl}/${id}`, formData);
   }
 
-  deleteVeiculo(id: number) {
-    const currentVeiculos = this.veiculosSubject.getValue();
-    const newVeiculos = currentVeiculos.filter(v => v.id !== id);
-    this.veiculosSubject.next(newVeiculos);
+  private mapToVeiculo(item: any): Veiculo {
+    // O construtor da classe Veiculo no frontend espera 'Veiculos', mas o backend envia 'Veiculo'
+    // e os nomes dos campos estão em snake_case. Aqui fazemos a adaptação e montamos a URL completa da imagem.
+    const imagensComUrlCompleta = item.imagens?.map(
+      (nomeArquivo: string) => `${environment.apiUrl.replace('/api', '')}/files/${nomeArquivo}`
+    );
+
+    return new Veiculo(
+      item.id, item.titulo, item.preco, item.descricao, 
+      imagensComUrlCompleta, 
+      item.categoria_id, item.marca, item.modelo, item.ano_fabricacao, item.ano_modelo, item.quilometragem, item.cor, item.documentacao, item.revisoes, item.categoria
+    );
+  }
+
+  private handleError(error: any): Observable<any[]> {
+    console.error('Ocorreu um erro ao buscar os veículos:', error);
+    return of([]); // Retorna um array vazio em caso de erro para não quebrar a aplicação
   }
 }

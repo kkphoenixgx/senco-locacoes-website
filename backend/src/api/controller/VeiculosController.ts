@@ -70,8 +70,11 @@ export default class VeiculosController {
   public async update(req: Request, res: Response): Promise<Response> {
     const { id } = req.params;
     const veiculoData = req.body;
+    const { files } = req;
+    const novasImagens = Array.isArray(files) ? files.map(file => file.filename) : undefined;
+
     try {
-      const veiculoAtualizado = await this.veiculoRepository.update(Number(id), veiculoData);
+      const veiculoAtualizado = await this.veiculoRepository.update(Number(id), veiculoData, novasImagens);
       return res.json(veiculoAtualizado);
     } catch (error: any) {
       return res.status(500).json({ message: error.message });

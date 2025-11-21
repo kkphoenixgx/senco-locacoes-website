@@ -1,62 +1,36 @@
 <div class="page-container">
   <div class="page-header">
-    <h1>Relatório de Vendas</h1>
-    <button class="btn btn-primary" (click)="onAddNew()">Adicionar Nova Venda</button>
-  </div>
-
-  <!-- Formulário de Adicionar/Editar -->
-  <div *ngIf="showForm()" class="form-container">
-    <h2>{{ editingVendaId() ? 'Editar Venda' : 'Nova Venda' }}</h2>
-    <form [formGroup]="vendaForm" (ngSubmit)="onSave()">
-      <div class="form-group">
-        <label for="clienteId">Cliente</label>
-        <select id="clienteId" formControlName="clienteId">
-          <option [ngValue]="null" disabled>Selecione um cliente</option>
-          <option *ngFor="let cliente of clientes$ | async" [value]="cliente.id">{{ cliente.nome }}</option>
-        </select>
-      </div>
-      <div class="form-group">
-        <label for="veiculoId">Veículo</label>
-        <select id="veiculoId" formControlName="veiculoId">
-          <option [ngValue]="null" disabled>Selecione um veículo</option>
-          <option *ngFor="let veiculo of veiculos$ | async" [value]="veiculo.id">{{ veiculo.titulo }}</option>
-        </select>
-      </div>
-      <div class="form-group">
-        <label for="dataVenda">Data da Venda</label>
-        <input id="dataVenda" type="date" formControlName="dataVenda" />
-      </div>
-      <div class="form-actions">
-        <button type="submit" class="btn btn-primary" [disabled]="vendaForm.invalid">Salvar</button>
-        <button type="button" class="btn btn-secondary" (click)="onCancel()">Cancelar</button>
-      </div>
-    </form>
+    <app-section-header title="Gerenciamento de Vendas"></app-section-header>
   </div>
 
   <div class="table-container">
     <table class="data-table">
       <thead>
         <tr>
-          <th>ID Venda</th>
+          <th>ID da Venda</th>
           <th>Cliente</th>
-          <th>Produto</th>
           <th>Data</th>
-          <th>Valor</th>
+          <th>Valor Total</th>
+          <th>Itens</th>
           <th>Ações</th>
         </tr>
       </thead>
       <tbody>
-        <tr *ngFor="let venda of vendas$ | async">
-          <td>{{ venda.id }}</td>
-          <td>{{ venda.cliente?.nome || 'N/A' }}</td>
-          <td>{{ venda.items[0]?.titulo || 'N/A' }}</td>
-          <td>{{ venda.dataVenda | date: 'dd/MM/yyyy' }}</td>
-          <td>{{ venda.precoTotal | currency: 'BRL' }}</td>
-          <td class="actions-cell">
-            <button class="btn btn-sm btn-secondary" (click)="onEdit(venda)">Editar</button>
-            <button class="btn btn-sm btn-danger" (click)="onDelete(venda.id)">Excluir</button>
-          </td>
-        </tr>
+        <ng-container *ngIf="(vendas$ | async) as vendas">
+          <tr *ngFor="let venda of vendas">
+            <td>#{{ venda.id }}</td>
+            <td>{{ venda.cliente?.nome }} ({{ venda.cliente?.email }})</td>
+            <td>{{ venda.dataVenda | date:'dd/MM/yyyy HH:mm' }}</td>
+            <td>{{ venda.getPrecoTotalFormatado() }}</td>
+            <td>{{ venda.items.length }}</td>
+            <td class="actions-cell">
+              <a [routerLink]="['/adm/vendas', venda.id]" class="btn btn-sm btn-secondary">Ver Detalhes</a>
+            </td>
+          </tr>
+          <tr *ngIf="vendas.length === 0">
+            <td colspan="6" class="empty-state">Nenhuma venda registrada.</td>
+          </tr>
+        </ng-container>
       </tbody>
     </table>
   </div>

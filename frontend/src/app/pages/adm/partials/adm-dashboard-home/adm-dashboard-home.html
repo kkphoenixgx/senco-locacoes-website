@@ -1,0 +1,39 @@
+<div class="page-container">
+  <app-section-header title="Dashboard"></app-section-header>
+
+  <ng-container *ngIf="!isLoading(); else loading">
+    <div *ngIf="stats() as statsData" class="stats-grid">
+      <!-- Card Faturamento Total -->
+      <div class="stat-card primary">
+        <div class="card-header">Faturamento Total</div>
+        <div class="card-value">{{ statsData.faturamentoTotal | currency:'BRL':'symbol':'1.2-2' }}</div>
+        <div class="card-footer">Valor bruto das vendas</div>
+      </div>
+
+      <!-- Card Total de Vendas -->
+      <div class="stat-card">
+        <div class="card-header">Total de Vendas</div>
+        <div class="card-value">{{ statsData.totalVendas }}</div>
+        <div class="card-footer">Transações concluídas</div>
+      </div>
+
+      <!-- Card Total de Veículos -->
+      <div class="stat-card">
+        <div class="card-header">Veículos Cadastrados</div>
+        <div class="card-value">{{ statsData.totalVeiculos }}</div>
+        <div class="card-footer">Itens no catálogo</div>
+      </div>
+
+      <!-- Card Total de Clientes -->
+      <div class="stat-card">
+        <div class="card-header">Clientes Registrados</div>
+        <div class="card-value">{{ statsData.totalClientes }}</div>
+        <div class="card-footer">Usuários no sistema</div>
+      </div>
+    </div>
+  </ng-container>
+
+  <ng-template #loading>
+    <p>Carregando estatísticas...</p>
+  </ng-template>
+</div>

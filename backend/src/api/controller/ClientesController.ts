@@ -41,6 +41,23 @@ export default class ClientesController {
     return res.json({ user: { id: cliente.id, email: cliente.email, nome: cliente.nome }, token });
   }
 
+  /** Retorna o perfil do cliente atualmente autenticado. */
+  public async getProfile(req: Request, res: Response): Promise<Response> {
+    const clienteId = req.user?.id;
+
+    if (!clienteId) {
+      return res.status(401).json({ message: 'Usuário não autenticado.' });
+    }
+
+    try {
+      const cliente = await this.clienteRepository.findById(clienteId);
+      if (!cliente) return res.status(404).json({ message: 'Cliente não encontrado.' });
+      return res.json(cliente);
+    } catch (error: any) {
+      return res.status(500).json({ message: error.message });
+    }
+  }
+
   /** Retorna todos os clientes (rota de administrador). */
   public async findAll(req: Request, res: Response): Promise<Response> {
     try {

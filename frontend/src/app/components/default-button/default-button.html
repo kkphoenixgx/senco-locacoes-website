@@ -2,6 +2,7 @@
   <a
     [routerLink]="routerLink"
     class="default-button"
+    [queryParams]="queryParams"
     [ngClass]="{ 'full-width': fullWidth, 'primary': styleType === 'primary', 'secondary': styleType === 'secondary' }"
   >
     {{ text }}

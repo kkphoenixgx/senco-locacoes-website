@@ -1,67 +1,46 @@
-import { Injectable } from '@angular/core';
-import { BehaviorSubject, Observable, of } from 'rxjs';
+import { Injectable, inject } from '@angular/core';
+import { HttpClient } from '@angular/common/http';
+import { Observable, of } from 'rxjs';
+import { catchError, map } from 'rxjs/operators';
+import { environment } from '../../../environment';
 import Venda from '../model/Venda';
-import Veiculos from '../model/items/Veiculos';
 import Cliente from '../model/Cliente';
+import Veiculo from '../model/items/Veiculos';
 
 @Injectable({
-  providedIn: 'root',
+  providedIn: 'root'
 })
 export class VendasService {
-  private apiUrl = `${import.meta.env['NG_APP_API_URL']}/vendas`;
+  private http = inject(HttpClient);
+  private vendasUrl = `${environment.apiUrl}/vendas`;
 
-  private mockVendas: Venda[] = [
-    new Venda(
-      1,
-      [new Veiculos(1, 'Honda CBR 500R', 55000, 'Moto esportiva.', [], 1, 'Honda', 'CBR 500R', 2022, 2022, 5000, 'Vermelha')],
-      new Date('2025-10-26'),
-      55000,
-      1,
-      new Cliente(1, 'João Silva', '(11) 98765-4321', 'joao.silva@example.com', 'Rua Fictícia, 123')
-    ),
-    new Venda(
-      2,
-      [new Veiculos(2, 'Mercedes-Benz Axor', 320000, 'Caminhão robusto.', [], 2, 'Mercedes-Benz', 'Axor 2544', 2020, 2020, 150000, 'Branco')],
-      new Date('2025-11-05'),
-      320000,
-      2,
-      new Cliente(2, 'Maria Souza', '(21) 91234-5678', 'maria.souza@example.com', 'Avenida de Testes, 456')
-    ),
-  ];
-
-  private vendasSubject = new BehaviorSubject<Venda[]>(this.mockVendas);
-  private nextId = 3;
-
+  /**
+   * Busca todas as vendas da API.
+   */
   getVendas(): Observable<Venda[]> {
-    return this.vendasSubject.asObservable();
-  }
-
-  addVenda(vendaData: Omit<Venda, 'id'>) {
-    const currentVendas = this.vendasSubject.getValue();
-    const newVenda = new Venda(
-      this.nextId++,
-      vendaData.items,
-      vendaData.dataVenda,
-      vendaData.precoTotal,
-      vendaData.clienteId,
-      vendaData.cliente
+    return this.http.get<any[]>(this.vendasUrl).pipe(
+      map(data => data.map(item => this.mapToVenda(item))),
+      catchError(err => {
+        console.error('Erro ao buscar vendas:', err);
+        return of([]); // Retorna um array vazio em caso de erro
+      })
     );
-    this.vendasSubject.next([...currentVendas, newVenda]);
   }
 
-  updateVenda(updatedVenda: Venda) {
-    const currentVendas = this.vendasSubject.getValue();
-    const index = currentVendas.findIndex(v => v.id === updatedVenda.id);
-    if (index !== -1) {
-      const newVendas = [...currentVendas];
-      newVendas[index] = updatedVenda;
-      this.vendasSubject.next(newVendas);
-    }
+  /**
+   * Busca uma única venda pelo seu ID.
+   * @param id O ID da venda.
+   */
+  getVendaById(id: number): Observable<Venda> {
+    return this.http.get<any>(`${this.vendasUrl}/${id}`).pipe(
+      map(item => this.mapToVenda(item))
+    );
   }
 
-  deleteVenda(id: number) {
-    const currentVendas = this.vendasSubject.getValue();
-    const newVendas = currentVendas.filter(v => v.id !== id);
-    this.vendasSubject.next(newVendas);
+  private mapToVenda(item: any): Venda {
+    const cliente = new Cliente(item.cliente.id, item.cliente.nome, item.cliente.telefone, item.cliente.email, item.cliente.endereco);
+    const veiculos = item.items.map((v: any) => new Veiculo(v.id, v.titulo, v.preco, v.descricao, v.imagens, v.categoriaId, v.marca, v.modelo, v.anoFabricacao, v.anoModelo, v.quilometragem, v.cor, v.documentacao, v.revisoes, v.categoria));
+    
+    return new Venda(item.id, veiculos, new Date(item.dataVenda), item.precoTotal, item.clienteId, cliente);
   }
 }

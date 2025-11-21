@@ -1,10 +1,10 @@
 <div class="page-container">
   <div class="page-header">
-    <h1>Gerenciamento de Veículos</h1>
-    <button class="btn btn-primary" (click)="onAddNew()">Adicionar Novo Veículo</button>
+    <app-section-header title="Gerenciamento de Veículos"></app-section-header>
+    <app-default-button text="Adicionar Novo Veículo" (click)="onAddNew()"></app-default-button>
   </div>
 
-  <!-- Formulário de Adicionar/Editar -->
+  <!-- Formulário de Adicionar/Editar (será implementado no próximo passo) -->
   <div *ngIf="showForm()" class="form-container">
     <h2>{{ editingVeiculoId() ? 'Editar Veículo' : 'Novo Veículo' }}</h2>
     <form [formGroup]="veiculoForm" (ngSubmit)="onSave()">
@@ -36,9 +36,9 @@
     <table class="data-table">
       <thead>
         <tr>
-          <th>ID</th>
-          <th>Nome</th>
+          <th>Título</th>
           <th>Marca</th>
+          <th>Modelo</th>
           <th>Ano</th>
           <th>Preço</th>
           <th>Ações</th>
@@ -46,11 +46,11 @@
       </thead>
       <tbody>
         <tr *ngFor="let veiculo of veiculos$ | async">
-          <td>{{ veiculo.id }}</td>
           <td>{{ veiculo.titulo }}</td>
+          <td>{{ veiculo.marca }}</td>
           <td>{{ veiculo.modelo }}</td>
-          <td>{{ veiculo.anoModelo }}</td>
-          <td>{{ veiculo.preco | currency: 'BRL' }}</td>
+          <td>{{ veiculo.getAnoFormatado() }}</td>
+          <td>{{ veiculo.getPrecoFormatado() }}</td>
           <td class="actions-cell">
             <button class="btn btn-sm btn-secondary" (click)="onEdit(veiculo)">Editar</button>
             <button class="btn btn-sm btn-danger" (click)="onDelete(veiculo.id)">Excluir</button>

@@ -27,9 +27,7 @@
     
     <div class="product-grid">
       <app-card-product *ngFor="let veiculo of (veiculos$ | async)?.slice(0, 3)"
-        [veiculo]="veiculo"
-        buttonText="Tenho Interesse"
-        buttonLink="/contato" 
+        [veiculo]="veiculo" (purchaseRequest)="handlePurchaseRequest($event)"
       />
     </div>
 

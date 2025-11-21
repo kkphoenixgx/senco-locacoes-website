@@ -1,0 +1,55 @@
+<div class="page-container" *ngIf="venda$ | async as venda; else loading">
+  <div class="page-header">
+    <app-section-header [title]="'Detalhes da Venda #' + venda.id"></app-section-header>
+    <app-default-button text="Voltar para Vendas" routerLink="/adm/vendas" styleType="secondary"></app-default-button>
+  </div>
+
+  <!-- Resumo da Venda -->
+  <div class="card summary-card">
+    <div class="summary-item">
+      <span class="label">Data da Venda</span>
+      <span class="value">{{ venda.dataVenda | date:'dd/MM/yyyy HH:mm' }}</span>
+    </div>
+    <div class="summary-item">
+      <span class="label">Valor Total</span>
+      <span class="value price">{{ venda.getPrecoTotalFormatado() }}</span>
+    </div>
+  </div>
+
+  <!-- Detalhes do Cliente -->
+  <div class="card client-card">
+    <h3>Informações do Cliente</h3>
+    <ul>
+      <li><strong>Nome:</strong> {{ venda.cliente?.nome }}</li>
+      <li><strong>Email:</strong> {{ venda.cliente?.email }}</li>
+      <li><strong>Telefone:</strong> {{ venda.cliente?.telefone }}</li>
+      <li><strong>Endereço:</strong> {{ venda.cliente?.endereco }}</li>
+    </ul>
+  </div>
+
+  <!-- Itens da Venda -->
+  <div class="card items-card">
+    <h3>Veículos Vendidos ({{ venda.items.length }})</h3>
+    <div class="items-grid">
+      <div class="item" *ngFor="let item of venda.items">
+        <img [src]="item.imagens?.[0]" alt="{{ item.titulo }}" class="item-image" *ngIf="item.imagens && item.imagens.length > 0">
+        <div class="item-info">
+          <span class="item-title">{{ item.titulo }}</span>
+          <span class="item-price">{{ item.getPrecoFormatado() }}</span>
+        </div>
+      </div>
+    </div>
+  </div>
+
+</div>
+
+<ng-template #loading>
+  <p>Carregando detalhes da venda...</p>
+</ng-template>
+
+<ng-template #error>
+  <div class="error-message">
+    <p>Não foi possível carregar os detalhes da venda. Tente novamente mais tarde.</p>
+    <app-default-button text="Voltar para Vendas" routerLink="/adm/vendas" styleType="secondary"></app-default-button>
+  </div>
+</ng-template>

@@ -4,6 +4,14 @@ import CategoriaVeiculosRepository from '../../repository/CategoriaVeiculosRepos
 export default class CategoriaVeiculosController {
   private repository = new CategoriaVeiculosRepository();
 
+  constructor() {
+    // Garante o 'this' correto nos métodos
+    this.findAll = this.findAll.bind(this);
+    this.create = this.create.bind(this);
+    this.update = this.update.bind(this);
+    this.delete = this.delete.bind(this);
+  }
+
   public async findAll(req: Request, res: Response): Promise<Response> {
     try {
       const categorias = await this.repository.findAll();

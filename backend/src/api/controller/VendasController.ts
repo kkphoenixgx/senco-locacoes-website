@@ -2,7 +2,15 @@ import { Request, Response } from 'express';
 import VendaRepository from '../../repository/VendaRepository';
 
 export default class VendasController {
-  private vendaRepository = new VendaRepository();
+  private vendaRepository: VendaRepository;
+
+  constructor() {
+    this.vendaRepository = new VendaRepository();
+    this.create = this.create.bind(this);
+    this.findAll = this.findAll.bind(this);
+    this.findById = this.findById.bind(this);
+    this.delete = this.delete.bind(this);
+  }
 
   public async create(req: Request, res: Response): Promise<Response> {
     const vendaData = req.body;

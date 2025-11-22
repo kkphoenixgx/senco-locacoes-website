@@ -81,9 +81,9 @@ export default class VeiculoRepository {
   }
 
   /** Busca todos os veículos no banco de dados. */
-  public async findAll(): Promise<Veiculo[]> {
+  public async findAll(filters: any = {}, page: number = 1, limit: number = 12): Promise<Veiculo[]> {
     const pool = ConnectionFactory.getPool();
-    const query = `
+    let query = `
       SELECT 
         v.*,
         c.nome as categoria_nome,
@@ -92,9 +92,40 @@ export default class VeiculoRepository {
       FROM veiculos v
       JOIN categoria_veiculos c ON v.categoria_id = c.id
     `;
+    
+    const params: (string | number)[] = [];
+    const whereClauses: string[] = [];
+
+    if (filters.nome) {
+      whereClauses.push("v.titulo LIKE ?");
+      params.push(`%${filters.nome}%`);
+    }
+    if (filters.marca) {
+      whereClauses.push("v.marca = ?");
+      params.push(filters.marca);
+    }
+    if (filters.ano) {
+      whereClauses.push("v.ano_fabricacao = ?");
+      params.push(Number(filters.ano));
+    }
+    if (filters.precoMin) {
+      whereClauses.push("v.preco >= ?");
+      params.push(Number(filters.precoMin));
+    }
+    if (filters.precoMax) {
+      whereClauses.push("v.preco <= ?");
+      params.push(Number(filters.precoMax));
+    }
+
+    if (whereClauses.length > 0) {
+      query += ` WHERE ${whereClauses.join(' AND ')}`;
+    }
+
+    query += ` ORDER BY v.id DESC LIMIT ? OFFSET ?`;
+    params.push(limit, (page - 1) * limit);
 
     try {
-      const [rows] = await pool.execute<RowDataPacket[]>(query);
+      const [rows] = await pool.execute<RowDataPacket[]>(query, params);
       
       return rows.map(row => {
         const categoria = new CategoriaVeiculos(row.categoria_id, row.categoria_nome, row.categoria_descricao);
@@ -282,16 +313,27 @@ export default class VeiculoRepository {
     try {
       await connection.beginTransaction();
 
-      // As imagens são deletadas em cascata (ON DELETE CASCADE)
+      // 1. Verifica se o veículo está em alguma venda
+      const [vendaItens] = await connection.execute<RowDataPacket[]>('SELECT venda_id FROM venda_itens WHERE veiculo_id = ? LIMIT 1', [id]);
+      if (vendaItens.length > 0) {
+        throw new Error('Não é possível excluir o veículo, pois ele já foi vendido e está associado a um histórico de vendas.');
+      }
+
+      // 2. Deleta as imagens associadas (a tabela veiculo_imagens já tem ON DELETE CASCADE, mas é bom ser explícito se necessário)
+      // Esta etapa é redundante se o ON DELETE CASCADE estiver funcionando, mas não causa mal.
+      await connection.execute('DELETE FROM veiculo_imagens WHERE veiculo_id = ?', [id]);
+
+      // 3. Deleta o veículo
       const [result] = await connection.execute<ResultSetHeader>('DELETE FROM veiculos WHERE id = ?', [id]);
       
       await connection.commit();
 
       return result.affectedRows > 0;
-
     } catch (error) {
       await connection.rollback();
       console.error(`Erro ao deletar veículo com ID ${id}:`, error);
+      // Repassa a mensagem de erro específica para o controller
+      if (error instanceof Error) throw error;
       throw new Error('Erro ao deletar veículo no banco de dados.');
     } finally {
       connection.release();

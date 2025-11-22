@@ -4,13 +4,15 @@ import { Observable } from 'rxjs';
 import Venda from '../../../../model/Venda';
 import { VendasService } from '../../../../services/vendas.service';
 import { SectionHeader } from '../../../../components/section-header/section-header';
+import { RouterLink } from '@angular/router';
 
 @Component({
   selector: 'app-adm-dashboard-vendas',
   standalone: true,
   imports: [
     CommonModule,
-    SectionHeader
+    SectionHeader,
+    RouterLink
   ],
   templateUrl: './adm-dashboard-vendas.html',
   styleUrls: ['./adm-dashboard-vendas.scss']

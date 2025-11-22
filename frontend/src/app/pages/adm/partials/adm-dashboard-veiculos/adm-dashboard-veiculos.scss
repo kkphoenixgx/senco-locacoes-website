@@ -85,13 +85,18 @@
   color: #718096;
 }
 
-// Estilos para o formulário (serão mais relevantes no próximo passo)
 .form-container {
   background-color: #ffffff;
   padding: 2rem;
   border-radius: 8px;
   margin-bottom: 2rem;
   box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
+
+  h2{
+    color: #000;
+    margin-bottom: 5%;
+  }
+
 }
 
 .server-error-message {
@@ -142,6 +147,11 @@
     &.invalid {
       border-color: #e53e3e;
     }
+  }
+
+  #descricao{
+    margin-bottom: 3%;
+    max-width: 100%;
   }
 }
 

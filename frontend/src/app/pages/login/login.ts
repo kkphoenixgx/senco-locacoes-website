@@ -39,8 +39,15 @@ export class LoginComponent {
       this.authService.loginCliente(email, password)
         .pipe(finalize(() => this.isLoading.set(false)))
         .subscribe({
-          next: () => this.router.navigate(['/']), // Redireciona para a home após o login
-          error: (err) => this.errorMessage.set(err.message),
+          next: () => {
+            // Após o login bem-sucedido, o estado de autenticação é atualizado.
+            // Navegamos para a página inicial, e o guardião de rota cuidará do resto.
+            this.router.navigate(['/']);
+          },
+          error: (err) => {
+            // Extrai a mensagem de erro, seja de um HttpErrorResponse ou de um Error padrão.
+            this.errorMessage.set(err.error?.message || err.message || 'Ocorreu um erro inesperado.');
+          },
         });
     }
   }

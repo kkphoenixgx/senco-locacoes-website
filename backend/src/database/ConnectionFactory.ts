@@ -7,27 +7,26 @@ import mysql from 'mysql2/promise';
 export default class ConnectionFactory {
   private static pool: mysql.Pool | null = null;
 
-  /** O construtor é privado para impedir a instanciação direta. */
   private constructor() {}
 
   /**
-   * Cria e configura o pool de conexões com base nas variáveis de ambiente.
+   * Retorna a instância única do pool de conexões, criando-a se ainda não existir.
+   * Este é o único ponto de acesso ao pool, garantindo o padrão Singleton.
    */
-  private static createPool(): void {
-    this.pool = mysql.createPool({
-      host: process.env.DB_HOST || 'localhost',
-      user: process.env.DB_USER || 'root',
-      password: process.env.DB_PASSWORD,
-      database: process.env.DB_NAME,
-      waitForConnections: true,
-      connectionLimit: 10, // Ajuste conforme a necessidade
-      queueLimit: 0,
-    });
-  }
-
-  /** Retorna a instância única do pool de conexões. */
   public static getPool(): mysql.Pool {
-    if (!this.pool) this.createPool();
+    if (!this.pool) {
+      // A criação do pool é feita aqui, garantindo que as variáveis de ambiente
+      // já foram carregadas pelo 'dotenv/config' no ponto de entrada da aplicação.
+      this.pool = mysql.createPool({
+        host: process.env.DB_HOST || 'localhost',
+        user: process.env.DB_USER || 'root',
+        password: process.env.DB_PASSWORD,
+        database: process.env.DB_NAME,
+        waitForConnections: true,
+        connectionLimit: 10,
+        queueLimit: 0,
+      });
+    }
     return this.pool!;
   }
 }

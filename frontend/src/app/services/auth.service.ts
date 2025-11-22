@@ -1,9 +1,10 @@
-import { Injectable, signal } from '@angular/core';
+import { computed, Injectable, signal } from '@angular/core';
 import { HttpClient, HttpErrorResponse } from '@angular/common/http';
-import { Observable, of, throwError } from 'rxjs';
+import { Observable, throwError } from 'rxjs';
 import { catchError, tap } from 'rxjs/operators';
 import { environment } from '../../../environment';
 import Cliente from '../model/Cliente';
+import { Router } from '@angular/router';
 
 interface AuthResponse {
   user: {
@@ -23,13 +24,14 @@ export class AuthService {
   private readonly TOKEN_KEY = 'senco_auth_token';
   private readonly USER_KEY = 'senco_user_role';
 
-  // Sinal para saber se o usuário está logado e qual o seu papel
-  public authState = signal<{ isAuthenticated: boolean; role: UserRole | null }>({
+
+  public authState = signal<{ isAuthenticated: boolean; role: UserRole | null; user: any | null }>({
     isAuthenticated: this.hasToken(),
     role: this.getRole(),
+    user: this.getUser()
   });
 
-  constructor(private http: HttpClient) {}
+  constructor(private http: HttpClient, private router: Router) {}
 
   /**
    * Realiza o login do administrador.
@@ -38,14 +40,13 @@ export class AuthService {
    * @returns Um Observable com a resposta da autenticação.
    */
   login(email: string, password: string): Observable<AuthResponse> {
-    // O backend espera 'senha', mas o formulário envia 'password'.
-    // Fazemos a conversão aqui para manter o serviço desacoplado do formulário.
     const credentials = { email, senha: password };
+    
     return this.http
       .post<AuthResponse>(`${environment.apiUrl}/adms/login`, credentials)
       .pipe(
         tap((response) => this.handleAuthentication(response.token, 'admin', response.user)),
-        catchError(this.handleError)
+        catchError(AuthService.handleError)
       );
   }
 
@@ -59,7 +60,7 @@ export class AuthService {
       .post<AuthResponse>(`${environment.apiUrl}/clientes/login`, { email, senha })
       .pipe(
         tap((response) => this.handleAuthentication(response.token, 'client', response.user)),
-        catchError(this.handleError)
+        catchError(AuthService.handleError)
       );
   }
 
@@ -77,9 +78,12 @@ export class AuthService {
    * Realiza o logout do usuário, limpando o armazenamento local e atualizando o estado.
    */
   logout(): void {
-    localStorage.removeItem(this.TOKEN_KEY);
-    localStorage.removeItem(this.USER_KEY);
-    this.authState.set({ isAuthenticated: false, role: null });
+    // Limpa o armazenamento local de forma síncrona.
+    localStorage.clear();
+    // Atualiza o estado da aplicação para refletir que o usuário não está mais autenticado.
+    this.authState.set({ isAuthenticated: false, role: null, user: null });
+    // Navega para a página de login, permitindo que o Angular gerencie o estado da rota.
+    this.router.navigate(['/login']);
   }
 
   /**
@@ -87,6 +91,7 @@ export class AuthService {
    * @returns O token JWT ou `null` se não existir.
    */
   getToken(): string | null {
+    // Lê diretamente do localStorage para garantir que o interceptor sempre obtenha o token mais recente.
     return localStorage.getItem(this.TOKEN_KEY);
   }
 
@@ -102,6 +107,15 @@ export class AuthService {
     return localStorage.getItem(this.USER_KEY) as UserRole | null;
   }
 
+  private getUser(): any | null {
+    const user = localStorage.getItem('senco_user');
+    try {
+      return user ? JSON.parse(user) : null;
+    } catch (e) {
+      return null;
+    }
+  }
+
   /**
    * Armazena o token e o papel do usuário no localStorage e atualiza o estado de autenticação.
    * @param token O token JWT.
@@ -111,8 +125,9 @@ export class AuthService {
   private handleAuthentication(token: string, role: UserRole, user: any): void {
     localStorage.setItem(this.TOKEN_KEY, token);
     localStorage.setItem(this.USER_KEY, role);
-    // TODO: Armazenar dados do usuário se necessário
-    this.authState.set({ isAuthenticated: true, role });
+    localStorage.setItem('senco_user', JSON.stringify(user));
+
+    this.authState.set({ isAuthenticated: true, role, user });
   }
 
   /**
@@ -120,23 +135,7 @@ export class AuthService {
    * @param error O objeto de erro.
    * @returns Um Observable que emite o erro.
    */
-  private handleError(error: HttpErrorResponse) {
-    let errorMessage = 'Ocorreu um erro desconhecido. Tente novamente.';
-    if (error.error instanceof ErrorEvent) {
-      // Erro do lado do cliente
-      errorMessage = `Erro: ${error.error.message}`;
-    } else {
-      // Erro retornado pelo backend
-      if (error.status === 401) {
-        errorMessage = 'Email ou senha incorretos.';
-      } else if (error.status === 400) {
-        errorMessage = 'Dados inválidos. Verifique os campos e tente novamente.';
-      } else if (error.status >= 500) {
-        errorMessage = 'Ocorreu um erro no servidor. Tente novamente mais tarde.';
-      } else if (error.error && error.error.message) {
-        errorMessage = error.error.message;
-      }
-    }
-    return throwError(() => new Error(errorMessage));
+  private static handleError(error: HttpErrorResponse) {
+    return throwError(() => error);
   }
 }

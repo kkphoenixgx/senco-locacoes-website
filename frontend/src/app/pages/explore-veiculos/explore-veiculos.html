@@ -27,12 +27,21 @@
   </section>
 
   <section class="vehicle-grid">
-    <app-card-product *ngFor="let veiculo of filteredVeiculos$ | async"
-      [veiculo]="veiculo" (purchaseRequest)="handlePurchaseRequest($event)" />
+    <app-card-product *ngFor="let veiculo of veiculos()"
+      [veiculo]="veiculo" (purchaseRequest)="handlePurchaseRequest($event)" 
+    />
   </section>
 
+  <div *ngIf="showEmptyState()" class="empty-state">
+    <p>Nenhum veículo encontrado com os filtros selecionados.</p>
+  </div>
+
   <section class="pagination-section">
-    <button class="load-more-button">Carregar Mais Veículos</button>
+    <app-default-button 
+      *ngIf="hasMoreVehicles() || isLoading()"
+      [text]="isLoading() ? 'Carregando...' : 'Carregar Mais Veículos'" 
+      (click)="loadMore()"
+      [disabled]="isLoading()"></app-default-button>
   </section>
 
 </div>

@@ -17,7 +17,7 @@
 }
 
 .filters-desktop {
-  display: none; // Oculto por padrão, visível no desktop
+  display: none;
   gap: 1rem;
 
   .filter-input,
@@ -42,7 +42,7 @@
 }
 
 .filters-mobile-toggle {
-  display: block; // Visível por padrão, oculto no desktop
+  display: block;
   width: 100%;
   padding: 1rem;
   background-color: var(--yellow-default);
@@ -114,9 +114,9 @@
 .vehicle-grid {
   display: grid;
   gap: 1.5rem;
-  // Mobile-first: 1 coluna por padrão
+
   grid-template-columns: 1fr;
-  align-items: start; // Alinha os cards no topo da célula da grade
+  align-items: start;
 }
 
 /* --- Paginação --- */
@@ -139,10 +139,17 @@
   cursor: pointer;
 }
 
+.empty-state {
+  text-align: center;
+  padding: 4rem 1rem;
+  color: var(--gray-light);
+  font-style: italic;
+  font-size: 1.1rem;
+}
+
 /* --- Media Queries para Responsividade --- */
 
 @media (min-width: 768px) {
-  // A partir de 768px (tablets), a grade passa a ter 2 colunas
   .vehicle-grid {
     grid-template-columns: repeat(2, 1fr);
   }
@@ -152,19 +159,17 @@
   .filters-desktop {
     display: flex;
   }
-  .filters-mobile-toggle,
-  .filters-mobile-drawer {
+
+  .filters-mobile-toggle, .filters-mobile-drawer {
     display: none;
   }
 
-  // A partir de 1130px (desktops), a grade passa a ter 3 colunas
   .vehicle-grid {
     grid-template-columns: repeat(3, 1fr);
   }
 }
 
 @media (min-width: 1400px) {
-  // Em telas bem largas, a grade passa a ter 4 colunas
   .vehicle-grid {
     grid-template-columns: repeat(4, 1fr);
   }

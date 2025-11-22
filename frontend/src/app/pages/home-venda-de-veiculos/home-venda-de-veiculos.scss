@@ -49,6 +49,13 @@
   gap: 1.5rem;
 }
 
+.empty-state {
+  text-align: center;
+  padding: 3rem 1rem;
+  color: var(--gray-light);
+  font-style: italic;
+}
+
 /* Responsividade */
 @media (max-width: 992px) {
   .hero-section {

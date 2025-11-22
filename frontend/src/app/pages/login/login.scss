@@ -69,3 +69,14 @@
     margin-left: 0.5rem;
   }
 }
+
+.admin-login-link {
+  margin-top: 1.5rem;
+  text-align: center;
+  font-size: 0.8rem;
+
+  a {
+    color: var(--gray-light);
+    text-decoration: none;
+  }
+}

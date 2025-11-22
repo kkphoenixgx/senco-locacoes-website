@@ -218,7 +218,16 @@
     padding: 1rem;
     border-radius: 5px;
     margin-top: 1rem;
-    font-size: 1.2rem;
+    font-size: 1.2rem;    
+  }
+}
+
+.mobile-login-action {
+  position: absolute;
+  top: 1.5rem;
+  right: 5rem;
+  a {
+    padding: 0.5rem;
   }
 }
 

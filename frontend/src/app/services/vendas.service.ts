@@ -37,6 +37,17 @@ export class VendasService {
     );
   }
 
+  /**
+   * Cria uma nova venda.
+   * @param vendaData Os dados da venda, incluindo o ID do cliente e os itens.
+   */
+  createVenda(vendaData: { clienteId?: number, items: { id: number }[] }): Observable<Venda> {
+    // O clienteId é opcional aqui, pois o backend o obtém do token de autenticação.
+    return this.http.post<any>(this.vendasUrl, vendaData).pipe(
+      map(item => this.mapToVenda(item))
+    );
+  }
+
   private mapToVenda(item: any): Venda {
     const cliente = new Cliente(item.cliente.id, item.cliente.nome, item.cliente.telefone, item.cliente.email, item.cliente.endereco);
     const veiculos = item.items.map((v: any) => new Veiculo(v.id, v.titulo, v.preco, v.descricao, v.imagens, v.categoriaId, v.marca, v.modelo, v.anoFabricacao, v.anoModelo, v.quilometragem, v.cor, v.documentacao, v.revisoes, v.categoria));

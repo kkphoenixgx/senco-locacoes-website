@@ -17,9 +17,17 @@
 
     <div class="actions-desktop">
       <app-default-button text="Fale Conosco" routerLink="/contato" styleType="primary" size="small"></app-default-button>
-      <a class="login-link" routerLink="/adm/login">
+      
+      <!-- Se não estiver logado -->
+      <a *ngIf="!authService.authState().isAuthenticated" class="login-link" routerLink="/login">
         <img class="icon-login" src="assets/icons/login.png" alt="login"  >
       </a>
+
+      <!-- Se for cliente logado -->
+      <ng-container *ngIf="authService.authState().isAuthenticated && authService.authState().role === 'client'">
+        <a class="login-link" routerLink="/minha-conta" title="Minha Conta">Minha Conta</a>
+        <a class="login-link" (click)="logout()" title="Sair">Sair</a>
+      </ng-container>
     </div>
 
     <button class="hamburger-button" (click)="toggleMenu()" [class.open]="isMenuOpen()">
@@ -32,19 +40,24 @@
 
   <nav class="nav-mobile" [ngClass]="{ 'open': isMenuOpen() }">
     <ul>
-      <li><a [routerLinkActiveOptions]="{exact: true}" routerLink="/" routerLinkActive="active" (click)="toggleMenu()" >Venda de Veículos</a></li>
-      <li><a routerLink="/locacao"     routerLinkActive="active" (click)="toggleMenu()">Locação</a></li>
-      <li><a routerLink="/veiculos"    routerLinkActive="active" (click)="toggleMenu()">Explore Veículos</a></li>
-      <li><a routerLink="/sobre"       routerLinkActive="active" (click)="toggleMenu()">Sobre Nós</a></li>
+      <li><a routerLink="/" routerLinkActive="active" [routerLinkActiveOptions]="{exact: true}">Venda de Veículos</a></li>
+      <li><a routerLink="/veiculos" routerLinkActive="active">Explore Veículos</a></li>
+      <li><a routerLink="/sobre" routerLinkActive="active">Sobre Nós</a></li>
+      <li><a routerLink="/contato" routerLinkActive="active">Contato</a></li>
       
       <li><a class="cta-button-mobile" routerLink="/contato" (click)="toggleMenu()">Fale Conosco</a></li>
       
-      <li>
-        <a routerLink="/adm/login" (click)="toggleMenu()"> 
-          <img class="icon-login" src="assets/icons/login.png" alt="login"> 
-        </a>
-      </li>
-
+      <!-- Se for cliente logado -->
+      <ng-container *ngIf="authService.authState().isAuthenticated && authService.authState().role === 'client'">
+        <li><a routerLink="/minha-conta" (click)="toggleMenu()">Minha Conta</a></li>
+        <li><a (click)="logout()">Sair</a></li>
+      </ng-container>
     </ul>
+    <!-- Login separado para mobile -->
+    <div class="mobile-login-action" *ngIf="!authService.authState().isAuthenticated">
+      <a routerLink="/login" (click)="toggleMenu()"> 
+        <img class="icon-login" src="assets/icons/login.png" alt="login"> 
+      </a>
+    </div>
   </nav>
 </header>

@@ -7,6 +7,11 @@ export default class PurchaseController {
   private clienteRepository = new ClienteRepository();
   private veiculoRepository = new VeiculoRepository();
 
+  constructor() {
+    // Garante o 'this' correto no método.
+    this.request = this.request.bind(this);
+  }
+
   public async request(req: Request, res: Response): Promise<Response> {
     const { vehicleId } = req.body;
     const clienteId = req.user?.id;

@@ -6,10 +6,10 @@ import Veiculo from '../../../../model/items/Veiculos';
 import { VeiculosService } from '../../../../services/veiculos.service';
 import { SectionHeader } from '../../../../components/section-header/section-header';
 import { DefaultButton } from '../../../../components/default-button/default-button';
-import { DefaultFormInput } from '../../../../components/default-form-input/default-form-input';
-import { DefaultFormTextArea } from '../../../../components/default-form-text-area/default-form-text-area';
 import { CategoriasService } from '../../../../services/categorias.service';
 import CategoriaVeiculos from '../../../../model/items/CategoriaVeiculos';
+// import { DefaultFormInput } from '../../../../components/default-form-input/default-form-input';
+// import { DefaultFormTextArea } from '../../../../components/default-form-text-area/default-form-text-area';
 
 
 @Component({
@@ -20,8 +20,8 @@ import CategoriaVeiculos from '../../../../model/items/CategoriaVeiculos';
     ReactiveFormsModule,
     SectionHeader,
     DefaultButton,
-    DefaultFormInput,
-    DefaultFormTextArea
+    // DefaultFormInput,
+    // DefaultFormTextArea
   ],
   templateUrl: './adm-dashboard-veiculos.html',
   styleUrls: ['./adm-dashboard-veiculos.scss']
@@ -47,6 +47,7 @@ export class AdmDashboardVeiculosComponent implements OnInit {
     this.veiculos$ = this.refreshVeiculos$.pipe(
       switchMap(() => this.veiculosService.getVeiculos())
     );
+    
     this.categorias$ = this.categoriasService.getCategorias();
 
     this.veiculoForm = this.fb.group({
@@ -62,7 +63,7 @@ export class AdmDashboardVeiculosComponent implements OnInit {
       cor: ['', Validators.required],
       documentacao: [''],
       revisoes: [''],
-      imagens: [null, Validators.required] // Apenas para validação
+      imagens: [null, Validators.required]
     });
   }
 
@@ -70,7 +71,7 @@ export class AdmDashboardVeiculosComponent implements OnInit {
     const input = event.target as HTMLInputElement;
     if (input.files) {
       this.selectedFiles = Array.from(input.files);
-      // Atualiza o valor do controle para satisfazer o validador 'required'
+
       this.veiculoForm.get('imagens')?.setValue(this.selectedFiles.length > 0 ? this.selectedFiles : null);
     }
   }
@@ -79,7 +80,7 @@ export class AdmDashboardVeiculosComponent implements OnInit {
     this.editingVeiculoId.set(null);
     this.veiculoForm.reset();
     this.showForm.set(true);
-    // Re-adiciona o validador de imagem para o modo de criação
+
     this.veiculoForm.get('imagens')?.setValidators([Validators.required]);
     this.veiculoForm.get('imagens')?.updateValueAndValidity();
     this.errorMessage.set(null);
@@ -100,22 +101,24 @@ export class AdmDashboardVeiculosComponent implements OnInit {
     this.isLoading.set(true);
     this.errorMessage.set(null);
 
-    const id = this.editingVeiculoId();
-    const veiculoData = this.veiculoForm.value;
-    let action$: Observable<Veiculo>;
+    const formData = new FormData();
 
-    if (id) {
-      // Modo de Edição
-      // O backend não suporta atualização de imagem, então removemos o campo.
-      delete veiculoData.imagens;
-      action$ = this.veiculosService.updateVeiculo(id, veiculoData);
-    } else {
-      // Modo de Criação
-      // Omitimos 'imagens' do form, pois ele será enviado separadamente como File[]
-      const { imagens, ...createData } = veiculoData;
-      action$ = this.veiculosService.createVeiculo(createData, this.selectedFiles);
+    const veiculoData = this.veiculoForm.value;
+    for (const key in veiculoData) {
+      if (veiculoData.hasOwnProperty(key) && key !== 'imagens') {
+        formData.append(key, veiculoData[key]);
+      }
     }
 
+    this.selectedFiles.forEach(file => {
+      formData.append('imagens', file, file.name);
+    });
+
+    const id = this.editingVeiculoId();
+
+    const action$: Observable<Veiculo> = id
+      ? this.veiculosService.updateVeiculo(id, formData)
+      : this.veiculosService.createVeiculo(formData);
     action$
       .pipe(
         finalize(() => this.isLoading.set(false))
@@ -136,13 +139,11 @@ export class AdmDashboardVeiculosComponent implements OnInit {
     this.editingVeiculoId.set(veiculo.id);
     this.errorMessage.set(null);
 
-    // Remove o validador de imagem para o modo de edição, pois não vamos atualizá-las
     this.veiculoForm.get('imagens')?.clearValidators();
     this.veiculoForm.get('imagens')?.updateValueAndValidity();
 
     this.veiculoForm.patchValue({
       ...veiculo,
-      // O backend espera categoriaId, não o objeto categoria
       categoriaId: veiculo.categoria?.id
     });
 
@@ -162,7 +163,7 @@ export class AdmDashboardVeiculosComponent implements OnInit {
       .pipe(finalize(() => this.isLoading.set(false)))
       .subscribe({
         next: () => {
-          this.refreshVeiculos$.next(); // Atualiza a lista
+          this.refreshVeiculos$.next();
         },
         error: (err) => {
           console.error('Erro ao excluir veículo:', err);

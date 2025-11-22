@@ -1,15 +1,19 @@
 <div class="page-container">
   <div class="page-header">
-    <app-section-header title="Gerenciamento de Categorias"></app-section-header>
+    <app-section-header title="Gerenciamento de Categorias" color="black" ></app-section-header>
     <app-default-button *ngIf="!showForm()" text="Adicionar Nova Categoria" (click)="onAddNew()"></app-default-button>
   </div>
 
   <!-- Formulário de Adicionar/Editar -->
   <div *ngIf="showForm()" class="form-container">
     <h2>{{ editingCategoriaId() ? 'Editar Categoria' : 'Nova Categoria' }}</h2>
+    
     <form [formGroup]="categoriaForm" (ngSubmit)="onSave()">
-      <app-default-form-input label="Nome da Categoria" formControlName="nome"></app-default-form-input>
-      <app-default-form-text-area label="Descrição (Opcional)" formControlName="descricao" [rows]="3"></app-default-form-text-area>
+
+      <div class="formFields">
+        <app-default-form-input color="black" label="Nome da Categoria" formControlName="nome"></app-default-form-input>
+        <app-default-form-text-area color="black" label="Descrição (Opcional)" formControlName="descricao" [rows]="3"></app-default-form-text-area>
+      </div>
 
       <div *ngIf="errorMessage()" class="server-error-message">
         {{ errorMessage() }}

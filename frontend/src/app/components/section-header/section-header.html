@@ -1,1 +1,7 @@
-<h1 class="section-title" [ngStyle]="{ 'text-align': textAlign }">{{ title }}</h1>
+<h1 
+  class="section-title" 
+  [style.text-align]="textAlign"
+  [style.color]="color"
+>
+  {{ title }}
+</h1>

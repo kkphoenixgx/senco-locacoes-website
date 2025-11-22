@@ -13,6 +13,8 @@ export class DefaultFormTextArea implements ControlValueAccessor {
   @Input() label = '';
   @Input() placeholder = '';
   @Input() rows = 4;
+  @Input() color = '';
+  @Input() backgroundColor = '';
 
   constructor(@Self() public ngControl: NgControl) {
     this.ngControl.valueAccessor = this;

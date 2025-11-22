@@ -85,6 +85,7 @@
 
 .form-container {
   background-color: #ffffff;
+  color: black;
   padding: 2rem;
   border-radius: 8px;
   margin-bottom: 2rem;
@@ -93,6 +94,14 @@
 
   h2 {
     margin-top: 0;
+    margin-bottom: 5%;
+  }
+
+  .formFields {
+    display: flex;
+    flex-direction: column;
+    gap: 1.5rem;
+    margin-bottom: 1.5rem;
   }
 
   .form-actions {

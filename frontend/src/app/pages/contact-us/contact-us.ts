@@ -10,11 +10,22 @@ import { DefaultFormTextArea } from '../../components/default-form-text-area/def
 import { SectionHeader } from '../../components/section-header/section-header';
 import { ContactService } from '../../services/contact.service';
 import { CommonModule } from '@angular/common';
+import { MapFrame } from '../../components/map-frame/map-frame';
 
 
 @Component({
   selector: 'app-contact-us',
-  imports: [CommonModule, ReactiveFormsModule, SectionSubheader, ContactInfoBlock, DefaultButton, DefaultFormInput, DefaultFormTextArea, SectionHeader],
+  imports: [
+    CommonModule, 
+    ReactiveFormsModule, 
+    SectionSubheader,
+    MapFrame, 
+    ContactInfoBlock, 
+    DefaultButton, 
+    DefaultFormInput, 
+    DefaultFormTextArea, 
+    SectionHeader
+  ],
   templateUrl: './contact-us.html',
   styleUrl: './contact-us.scss',
 })

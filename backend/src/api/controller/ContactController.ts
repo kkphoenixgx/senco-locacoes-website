@@ -2,6 +2,11 @@ import { Request, Response } from 'express';
 import MailService from '../../services/MailService';
 
 export default class ContactController {
+  constructor() {
+    // Garante o 'this' correto no método.
+    this.send = this.send.bind(this);
+  }
+
   public async send(req: Request, res: Response): Promise<Response> {
     const { name, email, phone, subject, message } = req.body;
 
@@ -35,6 +40,7 @@ export default class ContactController {
       });
       return res.status(200).json({ message: 'Mensagem enviada com sucesso!' });
     } catch (error) {
+      console.error('Erro ao enviar mensagem de contato:', error);
       return res.status(500).json({ message: 'Não foi possível enviar a mensagem. Tente novamente mais tarde.' });
     }
   }

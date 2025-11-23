@@ -4,6 +4,10 @@ import { ResultSetHeader, RowDataPacket } from "mysql2";
 import CategoriaVeiculos from "../model/items/CategoriaVeiculos";
 import fs from 'fs/promises';
 import path from 'path';
+import { fileURLToPath } from 'url';
+
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = path.dirname(__filename);
 
 export default class VeiculoRepository {
   
@@ -248,21 +252,16 @@ export default class VeiculoRepository {
     try {
       await connection.beginTransaction();
 
-      // 1. Atualiza as imagens, se houver novas
       if (nomesNovasImagens && nomesNovasImagens.length > 0) {
-        // Busca os nomes dos arquivos de imagem antigos para deletá-los do disco
         const [oldImagesRows] = await connection.execute<RowDataPacket[]>('SELECT caminho_imagem FROM veiculo_imagens WHERE veiculo_id = ?', [id]);
         const oldImageFiles = oldImagesRows.map(row => row.caminho_imagem);
 
-        // Deleta as referências antigas no banco
         await connection.execute('DELETE FROM veiculo_imagens WHERE veiculo_id = ?', [id]);
 
-        // Insere as novas referências
         const imagemQuery = 'INSERT INTO veiculo_imagens (veiculo_id, caminho_imagem) VALUES ?';
         const imagensValues = nomesNovasImagens.map(nome => [id, nome]);
         await connection.query(imagemQuery, [imagensValues]);
 
-        // Deleta os arquivos antigos do sistema de arquivos
         const uploadDir = path.resolve(__dirname, '..', '..', 'uploads');
         for (const filename of oldImageFiles) {
           try {
@@ -274,7 +273,6 @@ export default class VeiculoRepository {
         }
       }
 
-      // 2. Atualiza os outros campos do veículo
       const camposParaAtualizar = Object.keys(veiculoData)
         .filter(key => key !== 'imagens' && (veiculoData as any)[key] !== undefined)
         .map(key => `${key.replace(/[A-Z]/g, letter => `_${letter.toLowerCase()}`)} = ?`)
@@ -313,27 +311,24 @@ export default class VeiculoRepository {
     try {
       await connection.beginTransaction();
 
-      // 1. Verifica se o veículo está em alguma venda
       const [vendaItens] = await connection.execute<RowDataPacket[]>('SELECT venda_id FROM venda_itens WHERE veiculo_id = ? LIMIT 1', [id]);
       if (vendaItens.length > 0) {
         throw new Error('Não é possível excluir o veículo, pois ele já foi vendido e está associado a um histórico de vendas.');
       }
 
-      // 2. Deleta as imagens associadas (a tabela veiculo_imagens já tem ON DELETE CASCADE, mas é bom ser explícito se necessário)
-      // Esta etapa é redundante se o ON DELETE CASCADE estiver funcionando, mas não causa mal.
       await connection.execute('DELETE FROM veiculo_imagens WHERE veiculo_id = ?', [id]);
 
-      // 3. Deleta o veículo
       const [result] = await connection.execute<ResultSetHeader>('DELETE FROM veiculos WHERE id = ?', [id]);
       
       await connection.commit();
 
       return result.affectedRows > 0;
-    } catch (error) {
+    } 
+    catch (error) {
       await connection.rollback();
       console.error(`Erro ao deletar veículo com ID ${id}:`, error);
-      // Repassa a mensagem de erro específica para o controller
       if (error instanceof Error) throw error;
+  
       throw new Error('Erro ao deletar veículo no banco de dados.');
     } finally {
       connection.release();

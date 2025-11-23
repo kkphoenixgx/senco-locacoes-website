@@ -14,5 +14,13 @@
       color: var(--blue-lighter);
       font-weight: 500;
     }
+
+    a {
+      color: inherit; // Herda a cor do texto do elemento pai
+      text-decoration: none; // Remove o sublinhado padrão
+      transition: color 0.2s ease-in-out;
+
+      &:hover { color: var(--yellow-default); }
+    }
   }
 }

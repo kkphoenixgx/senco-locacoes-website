@@ -11,7 +11,8 @@ export default class Venda {
     public dataVenda: Date,
     public precoTotal: number,
     public clienteId: number,
-    public cliente?: Cliente
+    public cliente?: Cliente,
+    public efetivada: boolean = false
   ){}
 
   //? ----------- Methods -----------

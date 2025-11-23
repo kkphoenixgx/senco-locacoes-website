@@ -17,9 +17,21 @@
 
     <div class="actions-desktop">
       <app-default-button text="Fale Conosco" routerLink="/contato" styleType="primary" size="small"></app-default-button>
-      <a class="login-link" routerLink="/adm/login">
-        <img class="icon-login" src="assets/icons/login.png" alt="login"  >
+      
+      <!-- Se não for cliente logado (visitante ou admin) -->
+      <a *ngIf="!authState().isAuthenticated || authState().role !== 'client'" class="login-link" routerLink="/login">
+        <mat-icon fontIcon="login" matTooltip="Login"></mat-icon>
       </a>
+
+      <!-- Se for cliente logado -->
+      <ng-container *ngIf="authState().isAuthenticated && authState().role === 'client'">
+        <a class="login-link" routerLink="/minha-conta">
+          <mat-icon fontIcon="account_circle" matTooltip="Minha Conta"></mat-icon>
+        </a>
+        <a class="login-link" (click)="logout()">
+          <mat-icon fontIcon="logout" matTooltip="Sair"></mat-icon>
+        </a>
+      </ng-container>
     </div>
 
     <button class="hamburger-button" (click)="toggleMenu()" [class.open]="isMenuOpen()">
@@ -32,19 +44,31 @@
 
   <nav class="nav-mobile" [ngClass]="{ 'open': isMenuOpen() }">
     <ul>
-      <li><a [routerLinkActiveOptions]="{exact: true}" routerLink="/" routerLinkActive="active" (click)="toggleMenu()" >Venda de Veículos</a></li>
-      <li><a routerLink="/locacao"     routerLinkActive="active" (click)="toggleMenu()">Locação</a></li>
-      <li><a routerLink="/veiculos"    routerLinkActive="active" (click)="toggleMenu()">Explore Veículos</a></li>
-      <li><a routerLink="/sobre"       routerLinkActive="active" (click)="toggleMenu()">Sobre Nós</a></li>
+      <li><a routerLink="/" routerLinkActive="active" [routerLinkActiveOptions]="{exact: true}" (click)="toggleMenu()">Venda de Veículos</a></li>
+      <li><a routerLink="/veiculos" routerLinkActive="active" (click)="toggleMenu()">Explore Veículos</a></li>
+      <li><a routerLink="/sobre" routerLinkActive="active" (click)="toggleMenu()">Sobre Nós</a></li>
+      <li><a routerLink="/contato" routerLinkActive="active" (click)="toggleMenu()">Contato</a></li>
       
       <li><a class="cta-button-mobile" routerLink="/contato" (click)="toggleMenu()">Fale Conosco</a></li>
       
-      <li>
-        <a routerLink="/adm/login" (click)="toggleMenu()"> 
-          <img class="icon-login" src="assets/icons/login.png" alt="login"> 
-        </a>
-      </li>
-
     </ul>
+    
+    <div class="mobile-login-action">
+      <!-- Se não for cliente logado (visitante ou admin) -->
+      <a *ngIf="!authState().isAuthenticated || authState().role !== 'client'" routerLink="/login" (click)="toggleMenu()" matTooltip="Login"> 
+        <mat-icon fontIcon="login"></mat-icon>
+      </a>
+
+      <!-- Se for cliente logado -->
+      <ng-container *ngIf="authState().isAuthenticated && authState().role === 'client'">
+        <a routerLink="/minha-conta" (click)="toggleMenu()" matTooltip="Minha Conta">
+          <mat-icon fontIcon="account_circle"></mat-icon>
+        </a>
+        <a (click)="logout(); toggleMenu()" matTooltip="Sair">
+          <mat-icon fontIcon="logout"></mat-icon>
+        </a>
+      </ng-container>
+    </div>
+  
   </nav>
 </header>

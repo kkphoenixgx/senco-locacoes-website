@@ -1,14 +1,21 @@
+-- Apaga o banco de dados se ele já existir, para garantir um ambiente limpo.
+DROP DATABASE IF EXISTS senco_engenharia_db;
+
+-- Cria o novo banco de dados.
+CREATE DATABASE senco_engenharia_db;
+
+-- Seleciona o banco de dados para usar nos comandos seguintes.
+USE senco_engenharia_db;
+
 -- Tabela para armazenar as categorias dos veículos
 CREATE TABLE categoria_veiculos (
-    id SERIAL PRIMARY KEY,
+    id INT AUTO_INCREMENT PRIMARY KEY,
     nome VARCHAR(100) NOT NULL,
     descricao TEXT
 );
 
--- Tabela para armazenar os veículos (que herdam de ItemsVendidos)
--- Esta abordagem combina os campos da classe base e da classe derivada em uma única tabela.
 CREATE TABLE veiculos (
-    id SERIAL PRIMARY KEY,
+    id INT AUTO_INCREMENT PRIMARY KEY,
     titulo VARCHAR(255) NOT NULL,
     preco NUMERIC(10, 2) NOT NULL,
     descricao TEXT,
@@ -21,12 +28,12 @@ CREATE TABLE veiculos (
     documentacao VARCHAR(255),
     revisoes TEXT,
     categoria_id INT NOT NULL,
-    FOREIGN KEY (categoria_id) REFERENCES categoria_veiculos(id)
+    FOREIGN KEY (categoria_id) REFERENCES categoria_veiculos(id) ON DELETE RESTRICT
 );
 
 -- Tabela para armazenar os caminhos das imagens dos veículos (relação 1-N)
 CREATE TABLE veiculo_imagens (
-    id SERIAL PRIMARY KEY,
+    id INT AUTO_INCREMENT PRIMARY KEY,
     veiculo_id INT NOT NULL,
     caminho_imagem VARCHAR(255) NOT NULL,
     FOREIGN KEY (veiculo_id) REFERENCES veiculos(id) ON DELETE CASCADE
@@ -34,7 +41,7 @@ CREATE TABLE veiculo_imagens (
 
 -- Tabela para os clientes
 CREATE TABLE clientes (
-    id SERIAL PRIMARY KEY,
+    id INT AUTO_INCREMENT PRIMARY KEY,
     nome VARCHAR(255) NOT NULL,
     telefone VARCHAR(20),
     email VARCHAR(255) UNIQUE NOT NULL,
@@ -44,31 +51,30 @@ CREATE TABLE clientes (
 
 -- Tabela para os administradores
 CREATE TABLE adms (
-    id SERIAL PRIMARY KEY,
+    id INT AUTO_INCREMENT PRIMARY KEY,
     email VARCHAR(255) UNIQUE NOT NULL,
     senha_hash VARCHAR(255) NOT NULL
 );
 
 -- Tabela para registrar as vendas
 CREATE TABLE vendas (
-    id SERIAL PRIMARY KEY,
-    data_venda TIMESTAMP WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP,
+    id INT AUTO_INCREMENT PRIMARY KEY,
+    data_venda TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
     preco_total NUMERIC(12, 2) NOT NULL,
-    cliente_id INT NOT NULL,
-    FOREIGN KEY (cliente_id) REFERENCES clientes(id)
+    cliente_id INT,
+    efetivada BOOLEAN NOT NULL DEFAULT FALSE,
+    FOREIGN KEY (cliente_id) REFERENCES clientes(id) ON DELETE CASCADE
 );
 
--- Tabela de junção para registrar os itens de uma venda (relação N-M)
--- Como 'ItemsVendidos' é abstrata, criamos a relação com a tabela concreta 'veiculos'.
 CREATE TABLE venda_itens (
     venda_id INT NOT NULL,
     veiculo_id INT NOT NULL,
     PRIMARY KEY (venda_id, veiculo_id),
     FOREIGN KEY (venda_id) REFERENCES vendas(id) ON DELETE CASCADE,
-    FOREIGN KEY (veiculo_id) REFERENCES veiculos(id) ON DELETE RESTRICT -- Evita que um veículo vendido seja excluído
+    FOREIGN KEY (veiculo_id) REFERENCES veiculos(id) ON DELETE RESTRICT
 );
 
 
 -- Inserção do Administrador Padrão
 INSERT INTO adms (email, senha_hash) VALUES 
-('senco-engenharia-adm@gmail.com', '$2b$10$1daZSajmRSap9wA35gUAHe6f5NiOlZfM.QIMpNs1tRLENSEf.tPNq');
+('senco.engenharia.adm@gmail.com', '$2b$10$1daZSajmRSap9wA35gUAHe6f5NiOlZfM.QIMpNs1tRLENSEf.tPNq');

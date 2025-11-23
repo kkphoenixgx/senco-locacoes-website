@@ -2,8 +2,26 @@
   display: block;
   background-color: #1a233a;
   color: var(--white-default);
-  padding: 4rem 2rem 1rem;
+  padding: 3rem 2rem 1rem; // Reduzido o preenchimento superior
   box-shadow: 0 -8px 15px rgba(0, 0, 0, 0.3); /* Sombra para cima */
+}
+
+.feedback-message {
+  padding: 1rem;
+  border-radius: 5px;
+  margin-bottom: 1.5rem;
+  text-align: center;
+  font-weight: 500;
+
+  &.success {
+    background-color: #c6f6d5;
+    color: #2f855a;
+  }
+
+  &.error {
+    background-color: #fed7d7;
+    color: #c53030;
+  }
 }
 
 .footer-container {
@@ -37,13 +55,22 @@
 
 /* Section 2: Contato */
 .contact-info-section {
+  .grid-container {
+    display: grid;
+    grid-template-columns: 1fr 1fr; // Duas colunas em todas as telas
+    gap: 2rem; // Gap menor para telas menores
+    align-items: flex-start;
+
+    @media (min-width: 992px) { // Em telas maiores, o formulário ganha mais espaço
+      grid-template-columns: 1.5fr 1fr;
+      gap: 3rem;
+    }
+  }
+
   display: grid;
-  grid-template-columns: 60%;
-  gap: 2rem;
-  justify-content: center;
 
   h3 {
-    font-size: 1.5rem;
+    font-size: 1.25rem; // Fonte menor
     font-weight: bold;
     margin-bottom: 1.5rem;
   }
@@ -61,8 +88,8 @@
     input,
     textarea {
       width: 100%;
-      background-color: #10172a;
-      border: 1px solid #10172a;
+      background-color: #10172a; // Fundo mais escuro
+      border: 1px solid #2d3748; // Borda sutil
       border-radius: 8px;
       padding: 0.75rem 1rem;
       color: var(--white-default);
@@ -78,7 +105,7 @@
       justify-content: flex-end;
 
       .cta-button {
-        width: 55%; // Alinha com o campo de email
+        width: auto;
       }
     }
   }
@@ -139,29 +166,49 @@
   }
 
   .copyright-text {
-    font-size: 0.875rem;
+    font-size: 0.8rem; // Fonte menor
     color: var(--gray-default);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    flex-direction: row;
+    
+    .kkphoenix-info{
+      color: var(--gray-default); 
+      font-size: 0.8rem; // Fonte menor
+      align-items: center;
+      display: flex;
+      margin-left: 3px;
+      text-decoration: none;
+      
+      img{
+        margin-right: 3px;
+        height: 1rem;
+      }
+    }
   }
-
+  
   .social-icons {
     display: flex;
     gap: 1rem;
-
+    
     a {
       color: var(--gray-default);
       text-decoration: none;
       font-size: 1.25rem;
       transition: color 0.3s ease;
-
+      
       &:hover {
         color: var(--white-default);
       }
-
+      
       .social-icons-image{
         width: 20px;
         border-radius: 16%;
       }
-
+      
     }
   }
+  
+  
 }

@@ -11,4 +11,5 @@ import { Component, Input } from '@angular/core';
 export class SectionHeader {
   @Input() title = 'Título da Seção';
   @Input() textAlign: 'left' | 'center' | 'right' = 'left';
+  @Input() color?: string;
 }

@@ -1,0 +1,59 @@
+<div class="page-container">
+  <app-section-header title="Finalizar Compra"></app-section-header>
+  <app-section-subheader class="subheader" title="É necessario estar logado para comprar!" />
+
+  <div [class.success-mode]="successMessage()" class="compra-grid">
+    <ng-container *ngIf="!successMessage()">
+      <!-- Coluna do Resumo -->
+      <div class="resumo-section">
+        <fieldset *ngIf="(veiculo$ | async) as veiculo">
+          <legend>Resumo do Pedido</legend>
+          <div class="veiculo-summary">
+            <img class="veiculo-imagem" *ngIf="veiculo.imagens && veiculo.imagens.length > 0" [src]="veiculo.imagens[0]" alt="{{ veiculo.titulo }}">
+            <div class="veiculo-info">
+              <h4>{{ veiculo.titulo }}</h4>
+              <p>{{ veiculo.getAnoFormatado() }} | {{ veiculo.marca }} {{ veiculo.modelo }}</p>
+              <p class="price">{{ veiculo.getPrecoFormatado() }}</p>
+            </div>
+          </div>
+        </fieldset>
+      </div>
+
+      <!-- Coluna do Formulário -->
+      <div class="form-section">
+        <form [formGroup]="compraForm" (ngSubmit)="onSubmit()">
+        <fieldset>
+          <legend>Confirme Seus Dados</legend>
+          <div class="form-grid-inputs">
+            <app-default-form-input label="Nome Completo" formControlName="nome"></app-default-form-input>
+            <app-default-form-input label="Email" type="email" formControlName="email"></app-default-form-input>
+            <app-default-form-input label="Telefone" type="tel" formControlName="telefone"></app-default-form-input>
+            <app-default-form-input label="Endereço Completo" formControlName="endereco"></app-default-form-input>
+          </div>
+        </fieldset>
+
+        <div *ngIf="errorMessage()" class="feedback-message error">
+          {{ errorMessage() }}
+        </div>
+
+        <!-- Ações do Formulário -->
+        <div class="form-actions">
+          <app-default-button
+            type="submit"
+            text="Finalizar Compra"
+            [isLoading]="isLoading()"
+            [disabled]="compraForm.invalid || isLoading()">
+          </app-default-button>
+        </div>
+        </form>
+      </div>
+    </ng-container>
+
+    <!-- Mensagem de Sucesso -->
+    <div *ngIf="successMessage()" class="success-container">
+      <h3>Pedido Realizado com Sucesso!</h3>
+      <p>{{ successMessage() }}</p>
+      <app-default-button text="Voltar para a Home" routerLink="/"></app-default-button>
+    </div>
+  </div>
+</div>

@@ -3,6 +3,16 @@ import VeiculoRepository from '../../repository/VeiculoRepository';
 
 export default class VeiculosController {
   private veiculoRepository = new VeiculoRepository();
+
+  constructor() {
+    // Garante que o 'this' seja o da classe VeiculosController em todos os métodos.
+    this.create = this.create.bind(this);
+    this.findAll = this.findAll.bind(this);
+    this.findById = this.findById.bind(this);
+    this.findMaisVendidos = this.findMaisVendidos.bind(this);
+    this.update = this.update.bind(this);
+    this.delete = this.delete.bind(this);
+  }
   
   public async create(req: Request, res: Response): Promise<Response> {
     const veiculoData = req.body;
@@ -37,8 +47,12 @@ export default class VeiculosController {
   }
 
   public async findAll(req: Request, res: Response): Promise<Response> {
+    const filters = req.query;
+    const page = req.query.page ? parseInt(req.query.page as string, 10) : 1;
+    const limit = req.query.limit ? parseInt(req.query.limit as string, 10) : 12;
+
     try {
-      const veiculos = await this.veiculoRepository.findAll();
+      const veiculos = await this.veiculoRepository.findAll(filters, page, limit);
       return res.json(veiculos);
     } catch (error: any) {
       return res.status(500).json({ message: error.message });
@@ -70,8 +84,11 @@ export default class VeiculosController {
   public async update(req: Request, res: Response): Promise<Response> {
     const { id } = req.params;
     const veiculoData = req.body;
+    const { files } = req;
+    const novasImagens = Array.isArray(files) ? files.map(file => file.filename) : undefined;
+
     try {
-      const veiculoAtualizado = await this.veiculoRepository.update(Number(id), veiculoData);
+      const veiculoAtualizado = await this.veiculoRepository.update(Number(id), veiculoData, novasImagens);
       return res.json(veiculoAtualizado);
     } catch (error: any) {
       return res.status(500).json({ message: error.message });

@@ -4,6 +4,13 @@ import JWT from '../../Security/JWT';
 
 export default class AdmsController {
   
+  private authenticator = new Authenticator();
+  
+  constructor() {
+    // Garante que o 'this' dentro do método 'login' sempre se refira à instância da classe.
+    this.login = this.login.bind(this);
+  }
+
   /** * Realiza o login de um administrador. * @param req A requisição Express, contendo email e senha no corpo. * @param res A resposta Express. * @returns Uma Promise que resolve para a resposta Express. */
   public async login(req: Request, res: Response): Promise<Response> {
     const { email, senha } = req.body;
@@ -15,7 +22,7 @@ export default class AdmsController {
     }
 
     try {
-      const adm = await Authenticator.authenticateAdm({ email, senha });
+      const adm = await this.authenticator.authenticateAdm({ email, senha });
 
       if (!adm) {
         return res.status(401).json(
@@ -28,7 +35,11 @@ export default class AdmsController {
       return res.json({ user: { email: adm.email }, token });
     } 
     catch (error) {
-      return res.status(500).json({ message: 'Erro interno do servidor.' });
+      // Log do erro no console do servidor para depuração.
+      console.error('Erro no login do administrador:', error);
+      // Retorna a mensagem de erro específica para o frontend.
+      const errorMessage = error instanceof Error ? error.message : 'Erro interno do servidor.';
+      return res.status(500).json({ message: errorMessage });
     }
   
   }

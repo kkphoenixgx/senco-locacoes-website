@@ -13,6 +13,7 @@ export class DefaultButton {
   @Input() text = 'Clique Aqui';
   @Input() styleType: 'primary' | 'secondary' = 'primary';
   @Input() routerLink: string | any[] | null | undefined;
+  @Input() queryParams: { [key: string]: any } = {};
   @Input() type: 'button' | 'submit' | 'reset' = 'button';
   @Input() disabled = false;
   @Input() isLoading = false;

@@ -1,32 +1,36 @@
 import 'dotenv/config'; // Carrega as variáveis de ambiente
 import express from 'express';
+import cors from 'cors';
 import routes from './routes';
 import uploadConfig from './api/config/upload';
 import swaggerUi from 'swagger-ui-express';
-import { swaggerSpec } from './api/config/swagger';
+import { swaggerSpec } from './api/middlewares/swagger';
 
-export const app = express();
+export const viteNodeApp = express();
 
 const port = process.env.API_PORT || 3000;
 
-app.get('/', (_, res) => {
+viteNodeApp.get('/', (_, res) => {
   res.send('Olá, mundo com Vite + Node.js + TypeScript!');
 });
 
 //? ----------- Middlewares -----------
 
-app.use(express.json());
-app.use('/files', express.static(uploadConfig.directory));
-app.use('/api-docs', swaggerUi.serve, swaggerUi.setup(swaggerSpec));
+viteNodeApp.use(cors());
+viteNodeApp.use(express.json());
+viteNodeApp.use('/files', express.static(uploadConfig.directory));
+viteNodeApp.use('/api-docs', swaggerUi.serve, swaggerUi.setup(swaggerSpec));
 
 //? ----------- Routes -----------
 
-app.use('/', routes);
+viteNodeApp.use('/', routes);
 
 //? ----------- Servidor -----------
 
-if (process.env.NODE_ENV !== 'test') { // Evita que o servidor inicie durante testes
-  app.listen(port, () => {
-    console.log(`Servidor rodando em http://localhost:${port}`);
+// Em ambiente de desenvolvimento, o vite-plugin-node gerencia o servidor.
+// Em produção, o arquivo 'server.ts' cuidará disso.
+if (process.env.NODE_ENV !== 'test') {
+  viteNodeApp.listen(port, () => {
+    console.log(`🚀 Servidor rodando em http://localhost:${port}`);
   });
 }

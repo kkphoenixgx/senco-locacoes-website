@@ -1,0 +1,41 @@
+<div class="page-container">
+  <app-section-header title="Minha Conta"></app-section-header>
+
+  <div class="profile-card">
+    <app-section-subheader title="Meus Dados"></app-section-subheader>
+
+    <div *ngIf="successMessage()" class="feedback-message success">
+      {{ successMessage() }}
+    </div>
+    <div *ngIf="errorMessage()" class="feedback-message error">
+      {{ errorMessage() }}
+    </div>
+
+    <form *ngIf="profileForm" [formGroup]="profileForm" (ngSubmit)="onSubmit()" class="profile-form">
+      <app-default-form-input
+        label="Nome Completo"
+        formControlName="nome"></app-default-form-input>
+      <app-default-form-input
+        label="Email (não pode ser alterado)"
+        type="email"
+        formControlName="email"></app-default-form-input>
+      <app-default-form-input
+        label="Telefone"
+        type="tel"
+        formControlName="telefone"></app-default-form-input>
+      <app-default-form-input
+        label="Endereço"
+        formControlName="endereco"></app-default-form-input>
+
+      <div class="form-actions">
+        <app-default-button
+          type="submit"
+          text="Salvar Alterações"
+          [isLoading]="isLoading()"
+          [disabled]="profileForm.invalid || isLoading() || !profileForm.dirty">
+        </app-default-button>
+      </div>
+    </form>
+
+  </div>
+</div>

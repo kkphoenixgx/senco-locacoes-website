@@ -1,11 +1,22 @@
 <div class="card-container" [class.flipped]="isFlipped()">
   
   <div class="product-card card-front" (click)="flipCard()">
-    <div class="product-image-placeholder">{{ veiculo.categoria?.nome || 'Veículo' }}</div>
+    <div class="product-image-container">
+      @if (veiculo.imagens && veiculo.imagens.length > 0) {
+        <img [src]="veiculo.imagens[0]" [alt]="veiculo.titulo">
+      } @else {
+        <div class="product-image-placeholder">
+          {{ veiculo.categoria?.nome || 'Veículo' }}
+        </div>
+      }
+    </div>
     <h3>{{ veiculo.titulo }}</h3>
     <p class="price">{{ veiculo.getPrecoFormatado() }}</p>
     <div class="cta-button-container">
-      <a [routerLink]="buttonLink" class="cta-button" (click)="$event.stopPropagation()">{{ buttonText }}</a>
+      <app-default-button
+        text="Tenho Interesse"
+        (click)="onPurchaseClick($event)">
+      </app-default-button>
     </div>
     <div class="flip-indicator">
       Clique para ver mais
@@ -22,9 +33,25 @@
       <li><strong>Cor: </strong> {{ veiculo.cor }}</li>
       <li><strong>Marca: </strong> {{ veiculo.marca }}</li>
       <li><strong>Modelo: </strong> {{ veiculo.modelo }}</li>
+      @if (veiculo.documentacao && veiculo.documentacao !== 'null') {
+        <li><strong>Documentação: </strong> {{ veiculo.documentacao }}</li>
+      }
+      @if (veiculo.revisoes && veiculo.revisoes !== 'null') {
+        <li><strong>Revisões: </strong> {{ veiculo.revisoes }}</li>
+      }
     </ul>
-    <div class="cta-button-container">
-      <a [routerLink]="buttonLink" class="cta-button" (click)="$event.stopPropagation()">{{ buttonText }}</a>
+    @if (veiculo.descricao) {
+      <div class="details-description">
+        <h4>Descrição</h4>
+        <p>{{ veiculo.descricao }}</p>
+      </div>
+    }
+
+    <div class="cta-button-container back">
+      <app-default-button
+        text="Tenho Interesse"
+        (click)="onPurchaseClick($event)">
+      </app-default-button>
     </div>
   </div>
 

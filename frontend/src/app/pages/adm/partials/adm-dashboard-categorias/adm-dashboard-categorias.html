@@ -1,0 +1,56 @@
+<div class="page-container">
+  <div class="page-header">
+    <app-section-header title="Gerenciamento de Categorias" color="black" ></app-section-header>
+    <app-default-button *ngIf="!showForm()" text="Adicionar Nova Categoria" (click)="onAddNew()"></app-default-button>
+  </div>
+
+  <!-- Formulário de Adicionar/Editar -->
+  <div *ngIf="showForm()" class="form-container">
+    <h2>{{ editingCategoriaId() ? 'Editar Categoria' : 'Nova Categoria' }}</h2>
+    
+    <form [formGroup]="categoriaForm" (ngSubmit)="onSave()">
+
+      <div class="formFields">
+        <app-default-form-input color="black" label="Nome da Categoria" formControlName="nome"></app-default-form-input>
+        <app-default-form-text-area color="black" label="Descrição (Opcional)" formControlName="descricao" [rows]="3"></app-default-form-text-area>
+      </div>
+
+      <div *ngIf="errorMessage()" class="server-error-message">
+        {{ errorMessage() }}
+      </div>
+
+      <div class="form-actions">
+        <app-default-button text="Cancelar" styleType="secondary" (click)="onCancel()"></app-default-button>
+        <app-default-button type="submit" text="Salvar Categoria" [isLoading]="isLoading()" [disabled]="categoriaForm.invalid || isLoading()"></app-default-button>
+      </div>
+    </form>
+  </div>
+
+  <!-- Tabela de Categorias -->
+  <div *ngIf="!showForm()" class="table-container">
+    <table class="data-table">
+      <thead>
+        <tr>
+          <th>Nome</th>
+          <th>Descrição</th>
+          <th>Ações</th>
+        </tr>
+      </thead>
+      <tbody>
+        <ng-container *ngIf="(categorias$ | async) as categorias">
+          <tr *ngFor="let categoria of categorias">
+            <td>{{ categoria.nome }}</td>
+            <td>{{ categoria.descricao || 'N/A' }}</td>
+            <td class="actions-cell">
+              <button class="btn btn-sm btn-secondary" (click)="onEdit(categoria)">Editar</button>
+              <button class="btn btn-sm btn-danger" (click)="onDelete(categoria.id)">Excluir</button>
+            </td>
+          </tr>
+          <tr *ngIf="categorias.length === 0">
+            <td colspan="3" class="empty-state">Nenhuma categoria cadastrada.</td>
+          </tr>
+        </ng-container>
+      </tbody>
+    </table>
+  </div>
+</div>

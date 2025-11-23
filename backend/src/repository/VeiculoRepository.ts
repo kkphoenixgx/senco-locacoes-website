@@ -2,6 +2,12 @@ import Veiculo from "../model/items/Veiculo";
 import ConnectionFactory from "../database/ConnectionFactory";
 import { ResultSetHeader, RowDataPacket } from "mysql2";
 import CategoriaVeiculos from "../model/items/CategoriaVeiculos";
+import fs from 'fs/promises';
+import path from 'path';
+import { fileURLToPath } from 'url';
+
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = path.dirname(__filename);
 
 export default class VeiculoRepository {
   
@@ -79,9 +85,9 @@ export default class VeiculoRepository {
   }
 
   /** Busca todos os veículos no banco de dados. */
-  public async findAll(): Promise<Veiculo[]> {
+  public async findAll(filters: any = {}, page: number = 1, limit: number = 12): Promise<Veiculo[]> {
     const pool = ConnectionFactory.getPool();
-    const query = `
+    let query = `
       SELECT 
         v.*,
         c.nome as categoria_nome,
@@ -90,9 +96,40 @@ export default class VeiculoRepository {
       FROM veiculos v
       JOIN categoria_veiculos c ON v.categoria_id = c.id
     `;
+    
+    const params: (string | number)[] = [];
+    const whereClauses: string[] = [];
+
+    if (filters.nome) {
+      whereClauses.push("v.titulo LIKE ?");
+      params.push(`%${filters.nome}%`);
+    }
+    if (filters.marca) {
+      whereClauses.push("v.marca = ?");
+      params.push(filters.marca);
+    }
+    if (filters.ano) {
+      whereClauses.push("v.ano_fabricacao = ?");
+      params.push(Number(filters.ano));
+    }
+    if (filters.precoMin) {
+      whereClauses.push("v.preco >= ?");
+      params.push(Number(filters.precoMin));
+    }
+    if (filters.precoMax) {
+      whereClauses.push("v.preco <= ?");
+      params.push(Number(filters.precoMax));
+    }
+
+    if (whereClauses.length > 0) {
+      query += ` WHERE ${whereClauses.join(' AND ')}`;
+    }
+
+    query += ` ORDER BY v.id DESC LIMIT ? OFFSET ?`;
+    params.push(limit, (page - 1) * limit);
 
     try {
-      const [rows] = await pool.execute<RowDataPacket[]>(query);
+      const [rows] = await pool.execute<RowDataPacket[]>(query, params);
       
       return rows.map(row => {
         const categoria = new CategoriaVeiculos(row.categoria_id, row.categoria_nome, row.categoria_descricao);
@@ -208,12 +245,33 @@ export default class VeiculoRepository {
   }
 
   /** Atualiza os dados de um veículo. */
-  public async update(id: number, veiculoData: Partial<Omit<Veiculo, 'id' | 'getAnoFormatado'>>): Promise<Veiculo | null> {
+  public async update(id: number, veiculoData: Partial<Omit<Veiculo, 'id' | 'getAnoFormatado'>>, nomesNovasImagens?: string[]): Promise<Veiculo | null> {
     const pool = ConnectionFactory.getPool();
     const connection = await pool.getConnection();
     
     try {
       await connection.beginTransaction();
+
+      if (nomesNovasImagens && nomesNovasImagens.length > 0) {
+        const [oldImagesRows] = await connection.execute<RowDataPacket[]>('SELECT caminho_imagem FROM veiculo_imagens WHERE veiculo_id = ?', [id]);
+        const oldImageFiles = oldImagesRows.map(row => row.caminho_imagem);
+
+        await connection.execute('DELETE FROM veiculo_imagens WHERE veiculo_id = ?', [id]);
+
+        const imagemQuery = 'INSERT INTO veiculo_imagens (veiculo_id, caminho_imagem) VALUES ?';
+        const imagensValues = nomesNovasImagens.map(nome => [id, nome]);
+        await connection.query(imagemQuery, [imagensValues]);
+
+        const uploadDir = path.resolve(__dirname, '..', '..', 'uploads');
+        for (const filename of oldImageFiles) {
+          try {
+            await fs.unlink(path.join(uploadDir, filename));
+          } catch (err) {
+            // Loga o erro mas não interrompe a transação, pois o DB já está atualizado
+            console.error(`Falha ao deletar arquivo de imagem antigo: ${filename}`, err);
+          }
+        }
+      }
 
       const camposParaAtualizar = Object.keys(veiculoData)
         .filter(key => key !== 'imagens' && (veiculoData as any)[key] !== undefined)
@@ -221,16 +279,16 @@ export default class VeiculoRepository {
         .join(', ');
 
       if (camposParaAtualizar.length > 0) {
-        const valores = Object.entries(veiculoData)
+        const valores = Object.entries(veiculoData) // Garante que os valores numéricos sejam convertidos
           .filter(([key, value]) => key !== 'imagens' && value !== undefined)
-          .map(([, value]) => value);
+          .map(([key, value]) => {
+            const numericFields = ['preco', 'categoriaId', 'anoFabricacao', 'anoModelo', 'quilometragem'];
+            return numericFields.includes(key) ? Number(value) : value;
+          });
 
         const updateQuery = `UPDATE veiculos SET ${camposParaAtualizar} WHERE id = ?`;
         await connection.execute(updateQuery, [...valores, id]);
       }
-
-      // A lógica para atualizar imagens seria mais complexa (ex: remover antigas, adicionar novas)
-      // e foi omitida para simplificar.
 
       await connection.commit();
 
@@ -253,16 +311,24 @@ export default class VeiculoRepository {
     try {
       await connection.beginTransaction();
 
-      // As imagens são deletadas em cascata (ON DELETE CASCADE)
+      const [vendaItens] = await connection.execute<RowDataPacket[]>('SELECT venda_id FROM venda_itens WHERE veiculo_id = ? LIMIT 1', [id]);
+      if (vendaItens.length > 0) {
+        throw new Error('Não é possível excluir o veículo, pois ele já foi vendido e está associado a um histórico de vendas.');
+      }
+
+      await connection.execute('DELETE FROM veiculo_imagens WHERE veiculo_id = ?', [id]);
+
       const [result] = await connection.execute<ResultSetHeader>('DELETE FROM veiculos WHERE id = ?', [id]);
       
       await connection.commit();
 
       return result.affectedRows > 0;
-
-    } catch (error) {
+    } 
+    catch (error) {
       await connection.rollback();
       console.error(`Erro ao deletar veículo com ID ${id}:`, error);
+      if (error instanceof Error) throw error;
+  
       throw new Error('Erro ao deletar veículo no banco de dados.');
     } finally {
       connection.release();

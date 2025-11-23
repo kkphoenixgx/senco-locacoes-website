@@ -5,6 +5,18 @@ import JWT from '../../Security/JWT';
 
 export default class ClientesController {
   private clienteRepository = new ClienteRepository();
+  private authenticator = new Authenticator();
+
+  constructor() {
+    // Garante o 'this' correto nos métodos
+    this.create = this.create.bind(this);
+    this.login = this.login.bind(this);
+    this.getProfile = this.getProfile.bind(this);
+    this.findAll = this.findAll.bind(this);
+    this.findById = this.findById.bind(this);
+    this.update = this.update.bind(this);
+    this.delete = this.delete.bind(this);
+  }
 
   /** Cria um novo cliente e retorna um token de autenticação. */
   public async create(req: Request, res: Response): Promise<Response> {
@@ -20,7 +32,9 @@ export default class ClientesController {
 
       return res.status(201).json({ user: { id: novoCliente.id, nome, email }, token });
     } catch (error: any) {
-      return res.status(500).json({ message: error.message || 'Erro ao criar cliente.' });
+      console.error('Erro ao criar cliente:', error);
+      const errorMessage = error instanceof Error ? error.message : 'Erro ao criar cliente.';
+      return res.status(500).json({ message: errorMessage });
     }
   }
 
@@ -32,13 +46,38 @@ export default class ClientesController {
       return res.status(400).json({ message: 'Email e senha são obrigatórios.' });
     }
 
-    const cliente = await Authenticator.authenticateCliente({ email, senha });
-    if (!cliente) {
-      return res.status(401).json({ message: 'Email ou senha incorretos.' });
+    try {
+      const cliente = await this.authenticator.authenticateCliente({ email, senha });
+      if (!cliente) {
+        return res.status(401).json({ message: 'Email ou senha incorretos.' });
+      }
+
+      const token = JWT.generate({ id: cliente.id, email: cliente.email, role: 'client' });
+      return res.json({ user: { id: cliente.id, email: cliente.email, nome: cliente.nome }, token });
+    } catch (error) {
+      console.error('Erro no login do cliente:', error);
+      const errorMessage = error instanceof Error ? error.message : 'Erro interno do servidor.';
+      return res.status(500).json({ message: errorMessage });
+    }
+  }
+
+  /** Retorna o perfil do cliente atualmente autenticado. */
+  public async getProfile(req: Request, res: Response): Promise<Response> {
+    const clienteId = req.user?.id;
+
+    if (!clienteId) {
+      return res.status(401).json({ message: 'Usuário não autenticado.' });
     }
 
-    const token = JWT.generate({ id: cliente.id, email: cliente.email });
-    return res.json({ user: { id: cliente.id, email: cliente.email, nome: cliente.nome }, token });
+    try {
+      const cliente = await this.clienteRepository.findById(clienteId);
+      if (!cliente) return res.status(404).json({ message: 'Cliente não encontrado.' });
+      return res.json(cliente);
+    } catch (error: any) {
+      console.error('Erro ao buscar perfil do cliente:', error);
+      const errorMessage = error instanceof Error ? error.message : 'Erro interno do servidor.';
+      return res.status(500).json({ message: errorMessage });
+    }
   }
 
   /** Retorna todos os clientes (rota de administrador). */
@@ -47,7 +86,9 @@ export default class ClientesController {
       const clientes = await this.clienteRepository.findAll();
       return res.json(clientes);
     } catch (error: any) {
-      return res.status(500).json({ message: error.message });
+      console.error('Erro ao buscar todos os clientes:', error);
+      const errorMessage = error instanceof Error ? error.message : 'Erro interno do servidor.';
+      return res.status(500).json({ message: errorMessage });
     }
   }
 
@@ -61,21 +102,31 @@ export default class ClientesController {
       }
       return res.json(cliente);
     } catch (error: any) {
-      return res.status(500).json({ message: error.message });
+      console.error(`Erro ao buscar cliente por ID ${id}:`, error);
+      const errorMessage = error instanceof Error ? error.message : 'Erro interno do servidor.';
+      return res.status(500).json({ message: errorMessage });
     }
   }
 
   /** Atualiza os dados de um cliente. */
   public async update(req: Request, res: Response): Promise<Response> {
-    const { id } = req.params;
+    const id = req.user?.id; // Pega o ID do usuário autenticado pelo token
     const clienteData = req.body;
 
-    if (req.user?.role !== 'admin' && req.user?.id !== Number(id)) {
-      return res.status(403).json({ message: 'Acesso negado. Você só pode atualizar seu próprio perfil.' });
+    if (!id) {
+      return res.status(401).json({ message: 'Acesso negado. Usuário não autenticado.' });
     }
 
-    const clienteAtualizado = await this.clienteRepository.update(Number(id), clienteData);
-    return res.json(clienteAtualizado);
+    try {
+      // Remove o email do objeto de dados para garantir que não seja alterado
+      delete clienteData.email;
+
+      const clienteAtualizado = await this.clienteRepository.update(id, clienteData);
+      return res.json(clienteAtualizado);
+    } catch (error: any) {
+      console.error(`Erro ao atualizar cliente com ID ${id}:`, error);
+      return res.status(500).json({ message: 'Erro ao atualizar dados do cliente.' });
+    }
   }
 
   /** Deleta um cliente. */

@@ -1,0 +1,39 @@
+<div class="page-container">
+  <div class="page-header">
+    <app-section-header title="Gerenciamento de Clientes" color="black"></app-section-header>
+  </div>
+
+  <div *ngIf="errorMessage()" class="server-error-message">
+    {{ errorMessage() }}
+  </div>
+
+  <div class="table-container">
+    <table class="data-table">
+      <thead>
+        <tr>
+          <th>ID</th>
+          <th>Nome</th>
+          <th>Email</th>
+          <th>Telefone</th>
+          <th>Ações</th>
+        </tr>
+      </thead>
+      <tbody>
+        <ng-container *ngIf="(clientes$ | async) as clientes">
+          <tr *ngFor="let cliente of clientes">
+            <td>#{{ cliente.id }}</td>
+            <td>{{ cliente.nome }}</td>
+            <td>{{ cliente.email }}</td>
+            <td>{{ cliente.telefone }}</td>
+            <td class="actions-cell">
+              <button class="btn btn-sm btn-danger" (click)="onDelete(cliente.id)">Excluir</button>
+            </td>
+          </tr>
+          <tr *ngIf="clientes.length === 0">
+            <td colspan="5" class="empty-state">Nenhum cliente cadastrado.</td>
+          </tr>
+        </ng-container>
+      </tbody>
+    </table>
+  </div>
+</div>

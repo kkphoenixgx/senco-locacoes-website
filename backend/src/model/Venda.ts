@@ -23,6 +23,9 @@ import ItemsVendidos from "./ItemsVendidos";
  *           type: integer
  *         cliente:
  *           $ref: '#/components/schemas/Cliente'
+ *         efetivada:
+ *           type: boolean
+ *           description: Indica se a venda foi confirmada e paga.
  */
 export default class Venda {
   
@@ -34,7 +37,8 @@ export default class Venda {
     public dataVenda: Date,
     public precoTotal: number,
     public clienteId: number,
-    public cliente?: Cliente
+    public cliente?: Cliente,
+    public efetivada: boolean = false
   ){}
 
   //? ----------- Methods -----------

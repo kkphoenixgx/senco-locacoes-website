@@ -1,0 +1,37 @@
+<div class="auth-container">
+  <div class="auth-card">
+    <h1 class="auth-title">Login</h1>
+    <p class="auth-subtitle">Acesse sua conta para continuar.</p>
+
+    <form [formGroup]="loginForm" (ngSubmit)="onSubmit()" class="auth-form">
+      <app-default-form-input
+        label="Email"
+        type="email"
+        placeholder="seu@email.com"
+        formControlName="email"></app-default-form-input>
+      <app-default-form-input
+        label="Senha"
+        type="password"
+        formControlName="password"></app-default-form-input>
+
+      <div *ngIf="errorMessage()" class="error-message server-error">
+        {{ errorMessage() }}
+      </div>
+
+      <app-default-button
+        type="submit"
+        text="Entrar"
+        [isLoading]="isLoading()"
+        [disabled]="loginForm.invalid || isLoading()"></app-default-button>
+    </form>
+
+    <div class="switch-form-link">
+      <span>Não tem uma conta?</span>
+      <a routerLink="/cadastro">Cadastre-se aqui</a>
+    </div>
+
+    <div class="admin-login-link">
+      <a routerLink="/adm/login">Acesso Administrativo</a>
+    </div>
+  </div>
+</div>

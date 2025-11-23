@@ -1,0 +1,76 @@
+.page-container {
+  padding: 2rem;
+
+  .subheader {
+    margin-bottom: 20vh;
+  }
+}
+
+
+.veiculo-summary {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  flex-direction: column;
+
+  .veiculo-imagem {
+    width: 30%;
+    max-height: 250px;
+    object-fit: contain;
+    border-radius: 8px;
+    margin-bottom: 1rem;
+  }
+}
+
+.compra-grid {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 2rem;
+  justify-content: center;
+  align-items: flex-start;
+
+  &.success-mode {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+  }
+
+  @media (min-width: 992px) {
+    grid-template-columns: 1fr 1.5fr;
+    gap: 3rem;
+  }
+}
+
+.form-actions {
+  margin-top: 2rem;
+  margin-bottom: 1rem;
+}
+
+fieldset {
+  border: none;
+  padding: 0;
+  margin: 0;
+}
+
+.form-grid-inputs {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 1rem;
+
+  @media (min-width: 768px) {
+    grid-template-columns: repeat(2, 1fr);
+  }
+}
+
+.success-container {
+  text-align: center;
+  padding: 2rem;
+  border: 1px solid var(--success-color);
+  border-radius: 8px;
+  background-color: var(--background-alt-color);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 1.5rem;
+}

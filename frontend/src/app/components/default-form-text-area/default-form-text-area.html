@@ -1,10 +1,11 @@
 <div class="form-group">
-  <label *ngIf="label" [for]="ngControl.name">{{ label }}</label>
+  <label *ngIf="label" [ngStyle]="{'color': color ? color : null}" [for]="ngControl.name">{{ label }}</label>
   <textarea
     [id]="ngControl.name"
     [formControl]="formControl"
     [placeholder]="placeholder"
     [rows]="rows"
+    [ngStyle]="{'background-color': backgroundColor ? backgroundColor : null}"
     [ngClass]="{ 'invalid': ngControl.invalid && (ngControl.dirty || ngControl.touched) }"
   ></textarea>
   <div *ngIf="ngControl.invalid && (ngControl.dirty || ngControl.touched)" class="error-message">

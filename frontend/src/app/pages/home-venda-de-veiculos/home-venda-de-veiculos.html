@@ -24,14 +24,25 @@
 
   <section class="featured-vehicles-section">
     <app-section-header title="Veículos em Destaque"></app-section-header>
-    
-    <div class="product-grid">
-      <app-card-product *ngFor="let veiculo of (veiculos$ | async)?.slice(0, 3)"
-        [veiculo]="veiculo"
-        buttonText="Tenho Interesse"
-        buttonLink="/contato" 
-      />
-    </div>
+
+    <ng-container *ngIf="isLoading(); else content">
+      <p class="empty-state">Carregando veículos...</p>
+    </ng-container>
+
+    <ng-template #content>
+      <div *ngIf="veiculos().length > 0; else noVehicles" class="product-grid">
+        <app-card-product *ngFor="let veiculo of veiculos().slice(0, 3)"
+          [veiculo]="veiculo" (purchaseRequest)="handlePurchaseRequest($event)"
+        />
+      </div>
+      <ng-template #noVehicles>
+        <p class="empty-state">Nenhum veículo em destaque no momento.</p>
+      </ng-template>
+
+      <div *ngIf="error()" class="empty-state error-state">
+        <p>{{ error() }}</p>
+      </div>
+    </ng-template>
 
   </section>
 

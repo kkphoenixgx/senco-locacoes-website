@@ -13,9 +13,10 @@ export class DefaultFormInput implements ControlValueAccessor {
   @Input() label = '';
   @Input() type: 'text' | 'email' | 'password' | 'tel' | 'number' = 'text';
   @Input() placeholder = '';
+  @Input() color = '';
+  @Input() backgroundColor = '';
 
-  // By injecting NgControl and setting it to self, this component
-  // links itself to the parent form's formControlName directive.
+
   constructor(@Self() public ngControl: NgControl) {
     this.ngControl.valueAccessor = this;
   }

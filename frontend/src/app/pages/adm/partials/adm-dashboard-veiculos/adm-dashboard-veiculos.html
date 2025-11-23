@@ -8,50 +8,59 @@
   <div *ngIf="showForm()" class="form-container">
     <h2 color="black" >{{ editingVeiculoId() ? 'Editar Veículo' : 'Novo Veículo' }}</h2>
     
-    <form [formGroup]="veiculoForm" (ngSubmit)="onSave()">
+    <form [formGroup]="veiculoForm" (ngSubmit)="onSave()" class="vehicle-form">
+      <p class="required-legend">Campos marcados com * são obrigatórios.</p>
       <div *ngIf="errorMessage()" class="server-error-message">
         {{ errorMessage() }}
       </div>
 
       <div class="form-grid">
         <div class="form-group">
-          <label for="titulo">Título</label>
+          <label for="titulo">Título *</label>
           <input id="titulo" type="text" formControlName="titulo" [class.invalid]="getFormControl('titulo').invalid && getFormControl('titulo').touched">
         </div>
         <div class="form-group">
-          <label for="preco">Preço</label>
+          <label for="preco">Preço *</label>
           <input id="preco" type="number" formControlName="preco" [class.invalid]="getFormControl('preco').invalid && getFormControl('preco').touched">
         </div>
         <div class="form-group">
-          <label for="categoriaId">Categoria</label>
+          <label for="categoriaId">Categoria *</label>
           <select id="categoriaId" formControlName="categoriaId" [class.invalid]="getFormControl('categoriaId').invalid && getFormControl('categoriaId').touched">
             <option [ngValue]="null" disabled>Selecione uma categoria</option>
             <option *ngFor="let categoria of categorias$ | async" [ngValue]="categoria.id">{{ categoria.nome }}</option>
           </select>
         </div>
         <div class="form-group">
-          <label for="marca">Marca</label>
+          <label for="marca">Marca *</label>
           <input id="marca" type="text" formControlName="marca" [class.invalid]="getFormControl('marca').invalid && getFormControl('marca').touched">
         </div>
         <div class="form-group">
-          <label for="modelo">Modelo</label>
+          <label for="modelo">Modelo *</label>
           <input id="modelo" type="text" formControlName="modelo" [class.invalid]="getFormControl('modelo').invalid && getFormControl('modelo').touched">
         </div>
         <div class="form-group">
-          <label for="anoFabricacao">Ano de Fabricação</label>
+          <label for="anoFabricacao">Ano de Fabricação *</label>
           <input id="anoFabricacao" type="number" formControlName="anoFabricacao" [class.invalid]="getFormControl('anoFabricacao').invalid && getFormControl('anoFabricacao').touched">
         </div>
         <div class="form-group">
-          <label for="anoModelo">Ano do Modelo</label>
+          <label for="anoModelo">Ano do Modelo *</label>
           <input id="anoModelo" type="number" formControlName="anoModelo" [class.invalid]="getFormControl('anoModelo').invalid && getFormControl('anoModelo').touched">
         </div>
         <div class="form-group">
-          <label for="quilometragem">Quilometragem</label>
+          <label for="quilometragem">Quilometragem *</label>
           <input id="quilometragem" type="number" formControlName="quilometragem" [class.invalid]="getFormControl('quilometragem').invalid && getFormControl('quilometragem').touched">
         </div>
         <div class="form-group">
-          <label for="cor">Cor</label>
+          <label for="cor">Cor *</label>
           <input id="cor" type="text" formControlName="cor" [class.invalid]="getFormControl('cor').invalid && getFormControl('cor').touched">
+        </div>
+        <div class="form-group">
+          <label for="documentacao">Documentação</label>
+          <textarea id="documentacao" formControlName="documentacao"></textarea>
+        </div>
+        <div class="form-group">
+          <label for="revisoes">Revisões</label>
+          <textarea id="revisoes" formControlName="revisoes"></textarea>
         </div>
       </div>
       
@@ -59,8 +68,7 @@
         <label for="descricao">Descrição</label>
         <textarea id="descricao" formControlName="descricao"></textarea>
       </div>
-      <div class="form-group">
-        <label for="imagens">Imagens</label>
+      <div class="form-group file-input-group">        <label for="imagens">Imagens *</label>
         <input id="imagens" type="file" multiple (change)="onFileChange($event)" [class.invalid]="getFormControl('imagens').invalid && getFormControl('imagens').touched">
       </div>
 

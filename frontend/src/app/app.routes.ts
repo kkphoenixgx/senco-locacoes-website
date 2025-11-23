@@ -18,11 +18,11 @@ import { AdmDashboardVeiculosComponent } from './pages/adm/partials/adm-dashboar
 import { AdmDashboardVendasComponent } from './pages/adm/partials/adm-dashboard-vendas/adm-dashboard-vendas';
 import { VeiculosService } from './services/veiculos.service';
 import { PurchaseService } from './services/purchase.service';
-import { AuthService } from './services/auth.service';
 import { VendasService } from './services/vendas.service';
 import { CategoriasService } from './services/categorias.service';
 import { AdmDashboardHomeComponent } from './pages/adm/partials/adm-dashboard-home/adm-dashboard-home';
 import { AdmDashboardCategoriasComponent } from './pages/adm/partials/adm-dashboard-categorias/adm-dashboard-categorias';
+import { AdmVendaDetalheComponent } from './pages/adm/partials/adm-dashboard-vendas/partials/adm-venda-detalhe';
 import { AdmDashboardClientesComponent } from './pages/adm/partials/adm-dashboard-clientes/adm-dashboard-clientes';
 import { ClientesService } from './services/clientes.service';
 import { CadastroComponent } from './pages/cadastro/cadastro';
@@ -52,12 +52,10 @@ export const routes: Routes = [
   {
     path: 'login',
     component: LoginComponent,
-    providers: [AuthService],
   },
   {
     path: 'cadastro',
     component: CadastroComponent,
-    providers: [AuthService],
   },
   {
     path: 'minha-conta',
@@ -68,22 +66,22 @@ export const routes: Routes = [
   {
     path: 'comprar/:id', // Rota para a página de compra de um veículo específico
     component: CompraVeiculos,
-    providers: [VeiculosService, ClientesService, VendasService, AuthService],
+    providers: [VeiculosService, ClientesService, VendasService],
   },
   // --- Rotas Administrativas ---
   { 
-    path: 'adm/login', component: AdmLogin, 
-    providers: [AuthService]
+    path: 'adm/login', component: AdmLogin
   },
   {
     path: 'adm',
     component: Adm,
     canActivate: [authGuard],
-    providers: [AuthService, VeiculosService, CategoriasService, ClientesService, VendasService, DashboardService],
+    providers: [VeiculosService, CategoriasService, ClientesService, VendasService, DashboardService],
     children: [
       { path: '', redirectTo: 'dashboard', pathMatch: 'full'},
       { path: 'dashboard', component:  AdmDashboardHomeComponent },
       { path: 'vendas', component: AdmDashboardVendasComponent },
+      { path: 'vendas/detalhe/:id', component: AdmVendaDetalheComponent },
       { path: 'veiculos', component:  AdmDashboardVeiculosComponent },
       { path: 'categorias', component:  AdmDashboardCategoriasComponent },
       { path: 'clientes', component:  AdmDashboardClientesComponent },

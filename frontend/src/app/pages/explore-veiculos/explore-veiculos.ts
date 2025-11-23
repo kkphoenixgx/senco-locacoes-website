@@ -3,13 +3,14 @@ import { CommonModule, registerLocaleData } from '@angular/common';
 import { CardProduct } from '../../components/card-product/card-product';
 import { VeiculosService } from '../../services/veiculos.service';
 import { BehaviorSubject, combineLatest, EMPTY, Observable, of } from 'rxjs';
-import Veiculo from '../../model/items/Veiculos';
+import Veiculo from '../../model/items/Veiculos'; // This seems to be a model class, not from a component
 import { SectionHeader } from '../../components/section-header/section-header';
 import { FormsModule } from '@angular/forms';
-import { map, startWith, debounceTime, distinctUntilChanged, switchMap, tap, scan } from 'rxjs/operators';
+import { map, startWith, debounceTime, distinctUntilChanged, switchMap, tap, scan, catchError } from 'rxjs/operators';
 import localePt from '@angular/common/locales/pt';
 import { PurchaseService } from '../../services/purchase.service';
 import { DefaultButton } from '../../components/default-button/default-button';
+import { NotificationService } from '../../services/notification.service';
 
 registerLocaleData(localePt);
 
@@ -31,12 +32,14 @@ export class ExploreVeiculos implements OnInit {
   private readonly PAGE_SIZE = 12;
   private veiculosService = inject(VeiculosService);
   private purchaseService = inject(PurchaseService);
+  private notificationService = inject(NotificationService);
   
   private allVeiculos$ = new BehaviorSubject<Veiculo[]>([]); // Mantém a lista de marcas e anos
   
   veiculos = signal<Veiculo[]>([]);
   isLoading = signal(false);
   hasMoreVehicles = signal(true);
+  error = signal<string | null>(null);
   filteredVeiculos$!: Observable<Veiculo[]>;
   marcas$!: Observable<string[]>;
   anos$!: Observable<number[]>;
@@ -55,7 +58,7 @@ export class ExploreVeiculos implements OnInit {
 
   // Computeds para o template
   hasVehicles = computed(() => this.veiculos().length > 0);
-  showEmptyState = computed(() => !this.hasVehicles() && !this.isLoading());
+  showEmptyState = computed(() => !this.hasVehicles() && !this.isLoading() && !this.error());
 
   ngOnInit(): void {
     // Carrega todos os veículos uma vez para popular os filtros de marca e ano
@@ -76,12 +79,18 @@ export class ExploreVeiculos implements OnInit {
       tap(([filters, page]) => {
         if (page === 1) this.veiculos.set([]); // Limpa a lista se for uma nova busca (filtros mudaram)
         this.isLoading.set(true);
+        this.error.set(null);
       }),
       switchMap(([filters, page]) => 
-        this.veiculosService.getVeiculos({ ...filters, page, limit: this.PAGE_SIZE })
+        this.veiculosService.getVeiculos({ ...filters, page, limit: this.PAGE_SIZE }).pipe(
+          catchError(err => {
+            this.error.set('Não foi possível carregar os veículos. Verifique sua conexão e tente novamente.');
+            return of([]);
+          })
+        )
       )
     ).subscribe(newVeiculos => {
-      this.hasMoreVehicles.set(newVeiculos.length === this.PAGE_SIZE);
+      this.hasMoreVehicles.set(newVeiculos.length === this.PAGE_SIZE && !this.error());
       this.veiculos.update(current => [...current, ...newVeiculos]);
       this.isLoading.set(false);
     });
@@ -99,6 +108,7 @@ export class ExploreVeiculos implements OnInit {
       // Se já estiver na página 1, força a atualização
       this.veiculos.set([]);
       this.isLoading.set(true);
+      this.error.set(null);
       this.veiculosService.getVeiculos({ ...newFilters, page: 1, limit: this.PAGE_SIZE }).subscribe();
     }
   }
@@ -115,10 +125,10 @@ export class ExploreVeiculos implements OnInit {
 
   handlePurchaseRequest(vehicleId: number) {
     this.purchaseService.requestPurchase(vehicleId).subscribe({
-      next: (response) => {
-        alert(response.message); // Exibe um alerta de sucesso
+      next: () => {
+        this.notificationService.show('Sua solicitação de compra foi enviada com sucesso!', 'success');
       },
-      error: (err) => alert(err.error?.message || 'Não foi possível completar a solicitação.')
+      error: (err) => this.notificationService.show(err.error?.message || 'Não foi possível completar a solicitação.', 'error')
     });
   }
 }

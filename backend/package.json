@@ -5,7 +5,7 @@
   "type": "module",
   "scripts": {
     "dev": "vite --config vite.dev.config.ts",
-    "restart": "npm run build && npm run start",
+    "restart": "clear && npm run build && npm run start",
     "build": "vite build --config vite.prod.config.ts",
     "start": "node -r dotenv/config dist-prod/server.js"
   },

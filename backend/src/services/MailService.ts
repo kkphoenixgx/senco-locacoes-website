@@ -10,16 +10,17 @@ class MailService {
   private transporter;
 
   constructor() {
-    // Configura o "transportador" de e-mail com as credenciais do .env
+    
     this.transporter = nodemailer.createTransport({
       host: process.env.MAIL_HOST,
       port: Number(process.env.MAIL_PORT),
-      secure: Number(process.env.MAIL_PORT) === 465, // true para porta 465, false para outras
+      secure: Number(process.env.MAIL_PORT) === 465,
       auth: {
         user: process.env.MAIL_USER,
         pass: process.env.MAIL_PASS,
       },
     });
+
   }
 
   /**

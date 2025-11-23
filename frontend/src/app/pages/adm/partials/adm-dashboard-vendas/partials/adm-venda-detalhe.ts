@@ -1,7 +1,7 @@
 import { Component, inject, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { ActivatedRoute, RouterLink } from '@angular/router';
-import { Observable, of } from 'rxjs';
+import { Observable, of, tap } from 'rxjs';
 import { switchMap, catchError } from 'rxjs/operators';
 import Venda from '../../../../../model/Venda';
 import { VendasService } from '../../../../../services/vendas.service'; 
@@ -32,5 +32,15 @@ export class AdmVendaDetalheComponent implements OnInit {
       }),
       catchError(() => of(null)) // Em caso de erro na API, retorna nulo para mostrar mensagem de erro
     );
+  }
+
+  onStatusChange(event: Event, vendaId: number): void {
+    const input = event.target as HTMLInputElement;
+    const novoStatus = input.checked;
+
+    this.vendasService.updateStatus(vendaId, novoStatus).subscribe({
+      // Opcional: adicionar feedback visual de sucesso ou erro
+      error: () => input.checked = !novoStatus // Reverte em caso de erro
+    });
   }
 }

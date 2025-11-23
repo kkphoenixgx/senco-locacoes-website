@@ -1,6 +1,6 @@
 import { HttpClient, HttpParams } from '@angular/common/http';
 import { inject, Injectable, Signal } from '@angular/core';
-import { map, Observable } from 'rxjs';
+import { catchError, map, Observable, of } from 'rxjs';
 import Veiculo from '../model/items/Veiculos';
 import CategoriaVeiculos from '../model/items/CategoriaVeiculos';
 
@@ -23,7 +23,11 @@ export class VeiculosService {
     });
 
     return this.http.get<any[]>(this.apiUrl, { params }).pipe(
-      map(data => data.map(item => this.mapToVeiculo(item)))
+      map(data => data.map(item => this.mapToVeiculo(item))),
+      catchError(err => {
+        console.error('Erro ao buscar veículos:', err);
+        return of([]);
+      })
     );
   }
 

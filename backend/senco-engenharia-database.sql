@@ -61,7 +61,8 @@ CREATE TABLE vendas (
     id INT AUTO_INCREMENT PRIMARY KEY,
     data_venda TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
     preco_total NUMERIC(12, 2) NOT NULL,
-    cliente_id INT NOT NULL,
+    cliente_id INT,
+    efetivada BOOLEAN NOT NULL DEFAULT FALSE,
     FOREIGN KEY (cliente_id) REFERENCES clientes(id) ON DELETE CASCADE
 );
 

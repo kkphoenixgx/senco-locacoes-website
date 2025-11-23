@@ -2,49 +2,42 @@
   <div class="footer-container">
 
     <section class="footer-section contact-info-section">
-      <div class="contact-form-container">
-        <h3>Contato</h3>
-        <form class="contact-form">
-          <div class="form-row">
-            <input type="text" placeholder="Nome" name="name" />
-            <input type="email" placeholder="Email" name="email" />
+      <div class="grid-container">
+        <div class="contact-form-container">
+          <h3>Contato</h3>
+
+          <div *ngIf="successMessage()" class="feedback-message success">
+            {{ successMessage() }}
           </div>
-          <div class="form-row">
-            <textarea placeholder="Mensagem" name="message" rows="4"></textarea>
+          <div *ngIf="errorMessage()" class="feedback-message error">
+            {{ errorMessage() }}
           </div>
-          <div class="form-row-submit">
-            <button type="submit" class="cta-button">Enviar</button>
-          </div>
-        </form>
+
+          <form *ngIf="!successMessage()" [formGroup]="contactForm" (ngSubmit)="onSubmit()" class="contact-form">
+            <div class="form-row">
+              <input type="text" placeholder="Nome" formControlName="name" />
+              <input type="email" placeholder="Email" formControlName="email" />
+            </div>
+            <div class="form-row">
+              <textarea placeholder="Mensagem" formControlName="message" rows="4"></textarea>
+            </div>
+            <div class="form-row-submit">
+              <button type="submit" class="cta-button" [disabled]="contactForm.invalid || isLoading()">{{ isLoading() ? 'Enviando...' : 'Enviar' }}</button>
+            </div>
+          </form>
+        </div>
+        <app-contact-info-block></app-contact-info-block>
       </div>
-
-      <!-- <div class="contact-details">
-        <ul>
-          <li></li>
-        </ul>
-      </div> -->
-
     </section>
 
     <section class="footer-section sub-footer">
-      <p class="copyright-text">© 2024 Senco Locações. Todos os direitos reservados.</p>
+      <p class="copyright-text">© 2025 Senco Locações. Todos os direitos reservados. Desenvolvido por: <a class="kkphoenix-info" href="https://github.com/kkphoenixgx"><img src="assets/icons/favicon-32x32.png" alt="kkphoenix logo">©kkphoenix</a></p>
       <div class="social-icons">
-        <a aria-label="Instagram"
-          href="#" 
-          >
-          <img class="social-icons-image" src="assets/icons/Instagram.png" alt="Instagram">
-        </a>
         
         <a aria-label="whatsapp"
           href="https://wa.me/5522996156154?text=Olá!+Gostaria+de+saber+mais+sobre+seus+produtos" 
           >
           <img class="social-icons-image" src="assets/icons/whatsapp.png" alt="whatsapp"> 
-        </a>
-        
-        <a aria-label="Facebook"
-          href="#" 
-          > 
-          <img class="social-icons-image" src="assets/icons/facebook.webp" alt="facebook"> 
         </a>
       
         </div>

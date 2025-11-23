@@ -10,6 +10,8 @@ import { DefaultFormTextArea } from '../../components/default-form-text-area/def
 import { SectionHeader } from '../../components/section-header/section-header';
 import { ContactService } from '../../services/contact.service';
 import { CommonModule } from '@angular/common';
+import { AuthService } from '../../services/auth.service';
+import { ClientesService } from '../../services/clientes.service';
 import { MapFrame } from '../../components/map-frame/map-frame';
 
 
@@ -32,6 +34,8 @@ import { MapFrame } from '../../components/map-frame/map-frame';
 export class ContactUs implements OnInit {
   private contactService = inject(ContactService);
   private route = inject(ActivatedRoute);
+  private authService = inject(AuthService);
+  private clientesService = inject(ClientesService);
 
   isLoading = signal(false);
   successMessage = signal<string | null>(null);
@@ -54,6 +58,17 @@ export class ContactUs implements OnInit {
         });
       }
     });
+
+    const authState = this.authService.authState();
+    if (authState.isAuthenticated && authState.role === 'client') {
+      this.clientesService.getProfile().subscribe(cliente => {
+        this.contactForm.patchValue({
+          name: cliente.nome,
+          email: cliente.email,
+          phone: cliente.telefone
+        });
+      });
+    }
   }
 
   onSubmit() {

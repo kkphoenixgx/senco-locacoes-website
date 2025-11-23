@@ -19,9 +19,7 @@ import CategoriaVeiculos from '../../../../model/items/CategoriaVeiculos';
     CommonModule,
     ReactiveFormsModule,
     SectionHeader,
-    DefaultButton,
-    // DefaultFormInput,
-    // DefaultFormTextArea
+    DefaultButton
   ],
   templateUrl: './adm-dashboard-veiculos.html',
   styleUrls: ['./adm-dashboard-veiculos.scss']

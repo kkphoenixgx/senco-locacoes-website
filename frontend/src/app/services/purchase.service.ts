@@ -1,16 +1,16 @@
-import { Injectable, inject } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
+import { inject, Injectable } from '@angular/core';
 import { Observable } from 'rxjs';
 import { environment } from '../../../environment';
+import Venda from '../model/Venda';
 
 @Injectable({
   providedIn: 'root'
 })
 export class PurchaseService {
   private http = inject(HttpClient);
-  private purchaseUrl = `${environment.apiUrl}/purchase/request`;
 
-  requestPurchase(vehicleId: number): Observable<{ message: string }> {
-    return this.http.post<{ message: string }>(this.purchaseUrl, { vehicleId });
+  requestPurchase(vehicleId: number): Observable<Venda> {
+    return this.http.post<Venda>(`${environment.apiUrl}/purchase/request`, { vehicleId });
   }
 }

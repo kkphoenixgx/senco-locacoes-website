@@ -2,6 +2,7 @@ import { Router } from 'express';
 import VendasController from '../controller/VendasController';
 import ensureAuthenticated from '../middlewares/auth.middleware';
 
+import ensureAdmin from '../middlewares/admin.middleware';
 const vendasRoutes = Router();
 const vendasController = new VendasController();
 
@@ -11,9 +12,6 @@ const vendasController = new VendasController();
  *   name: Vendas
  *   description: Endpoints para gerenciamento de vendas
  */
-
-// Todas as rotas de venda são protegidas por padrão
-vendasRoutes.use(ensureAuthenticated);
 
 /**
  * @swagger
@@ -43,7 +41,7 @@ vendasRoutes.use(ensureAuthenticated);
  *       201:
  *         description: Venda criada com sucesso.
  */
-vendasRoutes.post('/vendas', vendasController.create);
+vendasRoutes.post('/vendas', ensureAuthenticated, vendasController.create);
 
 /**
  * @swagger
@@ -63,7 +61,7 @@ vendasRoutes.post('/vendas', vendasController.create);
  *               items:
  *                 $ref: '#/components/schemas/Venda'
  */
-vendasRoutes.get('/vendas', vendasController.findAll);
+vendasRoutes.get('/vendas', ensureAuthenticated, vendasController.findAll);
 
 /**
  * @swagger
@@ -75,7 +73,7 @@ vendasRoutes.get('/vendas', vendasController.findAll);
  *       - bearerAuth: []
  *     # ... (parâmetros e respostas similares ao GET de Veículo por ID)
  */
-vendasRoutes.get('/vendas/:id', vendasController.findById);
+vendasRoutes.get('/vendas/:id', ensureAuthenticated, ensureAdmin, vendasController.findById);
 
 /**
  * @swagger
@@ -87,6 +85,19 @@ vendasRoutes.get('/vendas/:id', vendasController.findById);
  *       - bearerAuth: []
  *     # ... (parâmetros e respostas similares ao DELETE de Veículo por ID)
  */
-vendasRoutes.delete('/vendas/:id', vendasController.delete);
+vendasRoutes.delete('/vendas/:id', ensureAuthenticated, ensureAdmin, vendasController.delete);
+
+/**
+ * @swagger
+ * /api/vendas/{id}/status:
+ *   put:
+ *     summary: Atualiza o status de efetivação de uma venda.
+ *     tags: [Vendas]
+ *     security:
+ *       - bearerAuth: []
+ *     # ... (parâmetros e respostas)
+ */
+vendasRoutes.put('/vendas/:id/status', ensureAuthenticated, ensureAdmin, vendasController.updateStatus);
+
 
 export default vendasRoutes;

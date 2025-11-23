@@ -1,15 +1,15 @@
 <div class="page-container">
   <app-section-header title="Finalizar Compra"></app-section-header>
+  <app-section-subheader class="subheader" title="É necessario estar logado para comprar!" />
 
-  <div class="compra-grid">
-    <!-- Coluna do Formulário -->
-    <div class="form-section">
-      <form [formGroup]="compraForm" (ngSubmit)="onSubmit()">
-        <!-- Detalhes do Veículo (somente leitura) -->
+  <div [class.success-mode]="successMessage()" class="compra-grid">
+    <ng-container *ngIf="!successMessage()">
+      <!-- Coluna do Resumo -->
+      <div class="resumo-section">
         <fieldset *ngIf="(veiculo$ | async) as veiculo">
           <legend>Resumo do Pedido</legend>
           <div class="veiculo-summary">
-            <img *ngIf="veiculo.imagens && veiculo.imagens.length > 0" [src]="veiculo.imagens[0]" alt="{{ veiculo.titulo }}">
+            <img class="veiculo-imagem" *ngIf="veiculo.imagens && veiculo.imagens.length > 0" [src]="veiculo.imagens[0]" alt="{{ veiculo.titulo }}">
             <div class="veiculo-info">
               <h4>{{ veiculo.titulo }}</h4>
               <p>{{ veiculo.getAnoFormatado() }} | {{ veiculo.marca }} {{ veiculo.modelo }}</p>
@@ -17,28 +17,21 @@
             </div>
           </div>
         </fieldset>
+      </div>
 
-        <!-- Dados do Cliente -->
+      <!-- Coluna do Formulário -->
+      <div class="form-section">
+        <form [formGroup]="compraForm" (ngSubmit)="onSubmit()">
         <fieldset>
-          <legend>{{ isClienteLogado ? 'Confirme Seus Dados' : 'Seus Dados' }}</legend>
+          <legend>Confirme Seus Dados</legend>
           <div class="form-grid-inputs">
             <app-default-form-input label="Nome Completo" formControlName="nome"></app-default-form-input>
             <app-default-form-input label="Email" type="email" formControlName="email"></app-default-form-input>
             <app-default-form-input label="Telefone" type="tel" formControlName="telefone"></app-default-form-input>
             <app-default-form-input label="Endereço Completo" formControlName="endereco"></app-default-form-input>
-
-            <!-- Campos de senha para novos clientes -->
-            <ng-container *ngIf="!isClienteLogado">
-              <app-default-form-input label="Crie uma Senha" type="password" formControlName="senhaPlana"></app-default-form-input>
-              <app-default-form-input label="Confirme a Senha" type="password" formControlName="confirmarSenha"></app-default-form-input>
-            </ng-container>
           </div>
         </fieldset>
 
-        <!-- Mensagens de Erro -->
-        <div *ngIf="compraForm.errors?.['passwordMismatch'] && compraForm.get('confirmarSenha')?.touched" class="feedback-message error">
-          As senhas não coincidem.
-        </div>
         <div *ngIf="errorMessage()" class="feedback-message error">
           {{ errorMessage() }}
         </div>
@@ -52,8 +45,9 @@
             [disabled]="compraForm.invalid || isLoading()">
           </app-default-button>
         </div>
-      </form>
-    </div>
+        </form>
+      </div>
+    </ng-container>
 
     <!-- Mensagem de Sucesso -->
     <div *ngIf="successMessage()" class="success-container">

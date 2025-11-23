@@ -10,14 +10,16 @@ export default class VendasController {
     this.findAll = this.findAll.bind(this);
     this.findById = this.findById.bind(this);
     this.delete = this.delete.bind(this);
+    this.updateStatus = this.updateStatus.bind(this);
   }
 
   public async create(req: Request, res: Response): Promise<Response> {
     const vendaData = req.body;
     
     try {
+      // Este método agora é mais simples, ideal para uso administrativo interno.
+      // A lógica principal de compra do cliente passa pelo PurchaseController.
       vendaData.clienteId = req.user?.id;
-
       const novaVenda = await this.vendaRepository.create(vendaData);
       return res.status(201).json(novaVenda);
     } 
@@ -56,5 +58,19 @@ export default class VendasController {
       return res.status(404).json({ message: 'Venda não encontrada.' });
     }
     return res.status(204).send();
+  }
+
+  public async updateStatus(req: Request, res: Response): Promise<Response> {
+    const { id } = req.params;
+    const { efetivada } = req.body;
+
+    if (typeof efetivada !== 'boolean') {
+      return res.status(400).json({ message: "O campo 'efetivada' deve ser um valor booleano." });
+    }
+
+    const vendaAtualizada = await this.vendaRepository.updateStatus(Number(id), efetivada);
+    if (!vendaAtualizada) return res.status(404).json({ message: 'Venda não encontrada.' });
+
+    return res.json(vendaAtualizada);
   }
 }

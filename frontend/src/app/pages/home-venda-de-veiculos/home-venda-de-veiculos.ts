@@ -9,6 +9,7 @@ import { FeaturedCard } from '../../components/featured-card/featured-card';
 import { SectionHeader } from '../../components/section-header/section-header';
 import { DefaultButton } from '../../components/default-button/default-button';
 import { PurchaseService } from '../../services/purchase.service';
+import { NotificationService } from '../../services/notification.service';
 
 @Component({
   selector: 'app-home-venda-de-veiculos', // O seletor está correto
@@ -19,6 +20,7 @@ import { PurchaseService } from '../../services/purchase.service';
 export class HomeVendaDeVeiculos implements OnInit {
   private veiculosService = inject(VeiculosService);
   private purchaseService = inject(PurchaseService);
+  private notificationService = inject(NotificationService);
 
   public veiculos = signal<Veiculo[]>([]); // Para a lista geral
   public maisVendidos = signal<Veiculo[]>([]); // Para os mais vendidos
@@ -50,9 +52,9 @@ export class HomeVendaDeVeiculos implements OnInit {
   handlePurchaseRequest(vehicleId: number) {
     this.purchaseService.requestPurchase(vehicleId).subscribe({
       next: (response) => {
-        alert(response.message);
+        this.notificationService.show('Sua solicitação de compra foi enviada com sucesso!', 'success');
       },
-      error: (err) => alert(err.error?.message || 'Não foi possível completar a solicitação.')
+      error: (err) => this.notificationService.show(err.error?.message || 'Não foi possível completar a solicitação.', 'error')
     });
   }
 }

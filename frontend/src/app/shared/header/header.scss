@@ -82,51 +82,24 @@
   gap: 1.5rem;
 }
 
-// .cta-button {
-//   background-image: linear-gradient(to top, #e0b420 50%, var(--yellow-default) 50%);
-//   background-size: 100% 200%;
-//   background-position: bottom;
-//   color: var(--blue-default);
-//   padding: 0.6rem 0.8rem;
-//   border-radius: 5px;
-//   text-decoration: none;
-//   font-weight: bold;
-//   transition: background-position 0.3s ease;
-
-//   &:hover {
-//     background-position: top;
-//     scale: 1.05;
-//   }
-// }
-
 .login-link {
   position: relative;
-  display: inline-block;
-
-  .icon-login {
-    width: 30px;
-    display: block;
-    transition: transform 0.2s ease;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: var(--white-default);
+  cursor: pointer;
+  transition: color 0.3s ease;
+  
+  mat-icon {
+    font-size: 28px;
+    width: 28px;
+    height: 28px;
   }
-
-  &:hover::after {
-    content: 'Login';
-    position: absolute;
-    bottom: -35px;
-    left: 50%;
-    transform: translateX(-50%);
-    background-color: var(--blue-lighter);
-    color: var(--blue-default);
-    padding: 5px 10px;
-    border-radius: 4px;
-    font-size: 0.8rem;
-    font-weight: 600;
-    white-space: nowrap;
+  
+  &:hover {
+    color: var(--yellow-default);
   }
-}
-
-.icon-login{
-  width: 30px;
 }
 
 /* Esconde o menu desktop e as ações em telas menores */
@@ -202,11 +175,18 @@
   }
 
   a {
-    font-size: 1.5rem;
+    font-size: 1.3rem;
     text-transform: uppercase;
     font-weight: bold;
     color: var(--white-default);
     text-decoration: none;
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+
+    mat-icon {
+      font-size: x-large;
+    }
   }
 
   .cta-button-mobile {
@@ -226,9 +206,9 @@
   position: absolute;
   top: 1.5rem;
   right: 5rem;
-  a {
-    padding: 0.5rem;
-  }
+  display: flex;
+  gap: 1rem;
+  align-items: center;
 }
 
 /* Media Query para Desktop */

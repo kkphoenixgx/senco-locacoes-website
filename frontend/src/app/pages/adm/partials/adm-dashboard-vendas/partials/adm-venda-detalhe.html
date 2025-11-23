@@ -14,6 +14,16 @@
       <span class="label">Valor Total</span>
       <span class="value price">{{ venda.getPrecoTotalFormatado() }}</span>
     </div>
+    <div class="summary-item">
+      <span class="label">Status da Venda</span>
+      <div class="status-toggle-container">
+        <label class="switch">
+          <input type="checkbox" [checked]="venda.efetivada" (change)="onStatusChange($event, venda.id)">
+          <span class="slider round"></span>
+        </label>
+        <span class="status-text" [class.efetivada]="venda.efetivada">{{ venda.efetivada ? 'Efetivada' : 'Pendente' }}</span>
+      </div>
+    </div>
   </div>
 
   <!-- Detalhes do Cliente -->

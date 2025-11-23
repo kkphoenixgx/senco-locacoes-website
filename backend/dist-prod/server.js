@@ -885,13 +885,19 @@ class ClientesController {
   }
   /** Atualiza os dados de um cliente. */
   async update(req, res) {
-    const { id } = req.params;
+    const id = req.user?.id;
     const clienteData = req.body;
-    if (req.user?.role !== "admin" && req.user?.id !== Number(id)) {
-      return res.status(403).json({ message: "Acesso negado. Você só pode atualizar seu próprio perfil." });
+    if (!id) {
+      return res.status(401).json({ message: "Acesso negado. Usuário não autenticado." });
     }
-    const clienteAtualizado = await this.clienteRepository.update(Number(id), clienteData);
-    return res.json(clienteAtualizado);
+    try {
+      delete clienteData.email;
+      const clienteAtualizado = await this.clienteRepository.update(id, clienteData);
+      return res.json(clienteAtualizado);
+    } catch (error) {
+      console.error(`Erro ao atualizar cliente com ID ${id}:`, error);
+      return res.status(500).json({ message: "Erro ao atualizar dados do cliente." });
+    }
   }
   /** Deleta um cliente. */
   async delete(req, res) {
@@ -910,23 +916,21 @@ function ensureAdmin(req, res, next) {
   return next();
 }
 const clientesRoutes = Router();
-const clientesController = new ClientesController();
-clientesRoutes.post("/clientes", clientesController.create);
-clientesRoutes.post("/clientes/login", clientesController.login);
-clientesRoutes.get("/clientes/me", ensureAuthenticated, clientesController.getProfile);
-clientesRoutes.get("/clientes", ensureAuthenticated, ensureAdmin, clientesController.findAll);
-clientesRoutes.get("/clientes/:id", ensureAuthenticated, clientesController.findById);
-clientesRoutes.put("/clientes/:id", ensureAuthenticated, clientesController.update);
-clientesRoutes.delete("/clientes/:id", ensureAuthenticated, clientesController.delete);
+const clientesController$1 = new ClientesController();
+clientesRoutes.get("/clientes/me", ensureAuthenticated, clientesController$1.getProfile);
+clientesRoutes.get("/clientes", ensureAuthenticated, ensureAdmin, clientesController$1.findAll);
+clientesRoutes.get("/clientes/:id", ensureAuthenticated, clientesController$1.findById);
+clientesRoutes.delete("/clientes/:id", ensureAuthenticated, clientesController$1.delete);
 class Venda {
   //? ----------- Constructor -----------
-  constructor(id, items, dataVenda, precoTotal, clienteId, cliente) {
+  constructor(id, items, dataVenda, precoTotal, clienteId, cliente, efetivada = false) {
     this.id = id;
     this.items = items;
     this.dataVenda = dataVenda;
     this.precoTotal = precoTotal;
     this.clienteId = clienteId;
     this.cliente = cliente;
+    this.efetivada = efetivada;
   }
   //? ----------- Methods -----------
   getPrecoTotalFormatado() {
@@ -946,11 +950,12 @@ class VendaRepository {
     const connection = await pool.getConnection();
     try {
       await connection.beginTransaction();
-      const vendaQuery = "INSERT INTO vendas (data_venda, preco_total, cliente_id) VALUES (?, ?, ?)";
+      const vendaQuery = "INSERT INTO vendas (data_venda, preco_total, cliente_id, efetivada) VALUES (?, ?, ?, ?)";
       const [vendaResult] = await connection.execute(vendaQuery, [
         vendaData.dataVenda,
         vendaData.precoTotal,
-        vendaData.clienteId
+        vendaData.clienteId,
+        false
       ]);
       const vendaId = vendaResult.insertId;
       const itensQuery = "INSERT INTO venda_itens (venda_id, veiculo_id) VALUES ?";
@@ -971,7 +976,7 @@ class VendaRepository {
     const pool = ConnectionFactory.getPool();
     const query = `
       SELECT
-        v.id as venda_id, v.data_venda, v.preco_total,
+        v.id as venda_id, v.data_venda, v.preco_total, v.efetivada,
         c.id as cliente_id, c.nome as cliente_nome, c.telefone as cliente_telefone, c.email as cliente_email, c.endereco as cliente_endereco, c.senha_hash,
         ve.id as veiculo_id, ve.titulo, ve.preco, ve.descricao, ve.modelo, ve.marca, ve.ano_fabricacao, ve.ano_modelo, ve.quilometragem, ve.cor, ve.documentacao, ve.revisoes,
         (SELECT GROUP_CONCAT(vi.caminho_imagem) FROM veiculo_imagens vi WHERE vi.veiculo_id = ve.id) as imagens
@@ -1014,7 +1019,8 @@ class VendaRepository {
       new Date(rows[0].data_venda),
       parseFloat(rows[0].preco_total),
       rows[0].cliente_id,
-      cliente
+      cliente,
+      rows[0].efetivada
     );
   }
   /** Busca todas as vendas. */
@@ -1022,7 +1028,7 @@ class VendaRepository {
     const pool = ConnectionFactory.getPool();
     const query = `
       SELECT
-        v.id as venda_id, v.data_venda, v.preco_total,
+        v.id as venda_id, v.data_venda, v.preco_total, v.efetivada,
         c.id as cliente_id, c.nome as cliente_nome, c.telefone as cliente_telefone, c.email as cliente_email, c.endereco as cliente_endereco, c.senha_hash,
         ve.id as veiculo_id, ve.titulo, ve.preco, ve.descricao, ve.modelo, ve.marca, ve.ano_fabricacao, ve.ano_modelo, ve.quilometragem, ve.cor, ve.documentacao, ve.revisoes,
         (SELECT GROUP_CONCAT(vi.caminho_imagem) FROM veiculo_imagens vi WHERE vi.veiculo_id = ve.id) as imagens
@@ -1072,7 +1078,8 @@ class VendaRepository {
         new Date(data.vendaData.data_venda),
         parseFloat(data.vendaData.preco_total),
         data.vendaData.cliente_id,
-        data.cliente
+        data.cliente,
+        data.vendaData.efetivada
       ));
     }
     return vendas;
@@ -1091,6 +1098,12 @@ class VendaRepository {
     await pool.execute(query, [...valores, id]);
     return this.findById(id);
   }
+  /** Atualiza o status 'efetivada' de uma venda. */
+  async updateStatus(id, efetivada) {
+    const pool = ConnectionFactory.getPool();
+    await pool.execute("UPDATE vendas SET efetivada = ? WHERE id = ?", [efetivada, id]);
+    return this.findById(id);
+  }
   /** Deleta uma venda. A tabela venda_itens será limpa em cascata. */
   async delete(id) {
     const pool = ConnectionFactory.getPool();
@@ -1106,6 +1119,7 @@ class VendasController {
     this.findAll = this.findAll.bind(this);
     this.findById = this.findById.bind(this);
     this.delete = this.delete.bind(this);
+    this.updateStatus = this.updateStatus.bind(this);
   }
   async create(req, res) {
     const vendaData = req.body;
@@ -1145,14 +1159,24 @@ class VendasController {
     }
     return res.status(204).send();
   }
+  async updateStatus(req, res) {
+    const { id } = req.params;
+    const { efetivada } = req.body;
+    if (typeof efetivada !== "boolean") {
+      return res.status(400).json({ message: "O campo 'efetivada' deve ser um valor booleano." });
+    }
+    const vendaAtualizada = await this.vendaRepository.updateStatus(Number(id), efetivada);
+    if (!vendaAtualizada) return res.status(404).json({ message: "Venda não encontrada." });
+    return res.json(vendaAtualizada);
+  }
 }
 const vendasRoutes = Router();
 const vendasController = new VendasController();
-vendasRoutes.use(ensureAuthenticated);
-vendasRoutes.post("/vendas", vendasController.create);
-vendasRoutes.get("/vendas", vendasController.findAll);
-vendasRoutes.get("/vendas/:id", vendasController.findById);
-vendasRoutes.delete("/vendas/:id", vendasController.delete);
+vendasRoutes.post("/vendas", ensureAuthenticated, vendasController.create);
+vendasRoutes.get("/vendas", ensureAuthenticated, vendasController.findAll);
+vendasRoutes.get("/vendas/:id", ensureAuthenticated, ensureAdmin, vendasController.findById);
+vendasRoutes.delete("/vendas/:id", ensureAuthenticated, ensureAdmin, vendasController.delete);
+vendasRoutes.put("/vendas/:id/status", ensureAuthenticated, ensureAdmin, vendasController.updateStatus);
 class CategoriaVeiculosRepository {
   pool = ConnectionFactory.getPool();
   /** Busca todas as categorias de veículos. */
@@ -1282,11 +1306,12 @@ class DashboardRepository {
   async getStats() {
     const [veiculosResult] = await this.pool.execute("SELECT COUNT(*) as total FROM veiculos");
     const [clientesResult] = await this.pool.execute("SELECT COUNT(*) as total FROM clientes");
-    const [vendasResult] = await this.pool.execute("SELECT COUNT(*) as total, COALESCE(SUM(preco_total), 0) as faturamento FROM vendas");
+    const [vendasResult] = await this.pool.execute("SELECT COUNT(*) as total FROM vendas");
+    const [faturamentoResult] = await this.pool.execute("SELECT COALESCE(SUM(preco_total), 0) as faturamento FROM vendas WHERE efetivada = TRUE");
     const totalVeiculos = veiculosResult?.[0]?.total ?? 0;
     const totalClientes = clientesResult?.[0]?.total ?? 0;
     const totalVendas = vendasResult?.[0]?.total ?? 0;
-    const faturamentoTotal = vendasResult?.[0]?.faturamento ?? 0;
+    const faturamentoTotal = faturamentoResult?.[0]?.faturamento ?? 0;
     return {
       totalVeiculos,
       totalClientes,
@@ -1314,6 +1339,11 @@ class DashboardController {
 const dashboardRoutes = Router();
 const controller$2 = new DashboardController();
 dashboardRoutes.get("/dashboard/stats", ensureAuthenticated, ensureAdmin, controller$2.getStats);
+const authRoutes = Router();
+const clientesController = new ClientesController();
+authRoutes.post("/auth/register", clientesController.create);
+authRoutes.post("/auth/login", clientesController.login);
+authRoutes.put("/auth/me", ensureAuthenticated, clientesController.update);
 class MailService {
   transporter;
   constructor() {
@@ -1321,7 +1351,6 @@ class MailService {
       host: process.env.MAIL_HOST,
       port: Number(process.env.MAIL_PORT),
       secure: Number(process.env.MAIL_PORT) === 465,
-      // true para porta 465, false para outras
       auth: {
         user: process.env.MAIL_USER,
         pass: process.env.MAIL_PASS
@@ -1391,6 +1420,7 @@ contactRoutes.post("/contact", controller$1.send);
 class PurchaseController {
   clienteRepository = new ClienteRepository();
   veiculoRepository = new VeiculoRepository();
+  vendaRepository = new VendaRepository();
   constructor() {
     this.request = this.request.bind(this);
   }
@@ -1403,7 +1433,7 @@ class PurchaseController {
     const adminEmail = process.env.ADMIN_MAIL;
     if (!adminEmail) {
       console.error("ADMIN_MAIL não está definido no .env");
-      return res.status(500).json({ message: "Erro de configuração do servidor." });
+      return res.status(500).json({ message: "Erro de configuração do servidor de e-mail." });
     }
     try {
       const cliente = await this.clienteRepository.findById(clienteId);
@@ -1411,8 +1441,18 @@ class PurchaseController {
       if (!cliente || !veiculo) {
         return res.status(404).json({ message: "Cliente ou veículo não encontrado." });
       }
+      const vendaData = {
+        clienteId,
+        items: [veiculo],
+        precoTotal: veiculo.preco,
+        dataVenda: /* @__PURE__ */ new Date()
+      };
+      const novaVenda = await this.vendaRepository.create(vendaData);
+      if (!novaVenda) {
+        throw new Error("Falha ao registrar a venda no banco de dados.");
+      }
       const emailHtml = `
-        <h1>Nova Solicitação de Compra</h1>
+        <h1>Nova Solicitação de Compra Recebida (Venda #${novaVenda.id})</h1>
         <p>O cliente <strong>${cliente.nome}</strong> demonstrou interesse formal na compra do seguinte veículo:</p>
         <hr>
         <h2>Detalhes do Veículo</h2>
@@ -1426,14 +1466,14 @@ class PurchaseController {
         <p><strong>Telefone:</strong> ${cliente.telefone || "Não informado"}</p>
         <p><strong>Endereço:</strong> ${cliente.endereco || "Não informado"}</p>
         <hr>
-        <p><em>Por favor, entre em contato com o cliente para prosseguir com a negociação.</em></p>
+        <p><em>Por favor, entre em contato com o cliente para prosseguir com a negociação. A venda foi registrada no sistema com o ID ${novaVenda.id}.</em></p>
       `;
       await MailService$1.sendMail({
         to: adminEmail,
-        subject: `Solicitação de Compra - Veículo #${veiculo.id} (${veiculo.titulo})`,
+        subject: `Nova Solicitação de Compra - Veículo #${veiculo.id}`,
         html: emailHtml
       });
-      return res.status(200).json({ message: "Sua solicitação de compra foi enviada com sucesso! Entraremos em contato em breve." });
+      return res.status(201).json(novaVenda);
     } catch (error) {
       console.error("Erro ao processar solicitação de compra:", error);
       return res.status(500).json({ message: "Não foi possível processar sua solicitação. Tente novamente mais tarde." });
@@ -1445,6 +1485,7 @@ const controller = new PurchaseController();
 purchaseRoutes.post("/purchase/request", ensureAuthenticated, controller.request);
 const apiRoutes = Router();
 apiRoutes.use(admRoutes);
+apiRoutes.use(authRoutes);
 apiRoutes.use(veiculosRoutes);
 apiRoutes.use(clientesRoutes);
 apiRoutes.use(vendasRoutes);

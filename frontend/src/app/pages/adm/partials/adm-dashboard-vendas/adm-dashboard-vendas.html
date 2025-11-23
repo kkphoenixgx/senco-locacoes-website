@@ -12,6 +12,7 @@
           <th>Data</th>
           <th>Valor Total</th>
           <th>Itens</th>
+          <th>Status</th>
           <th>Ações</th>
         </tr>
       </thead>
@@ -23,13 +24,18 @@
             <td>{{ venda.dataVenda | date:'dd/MM/yyyy HH:mm' }}</td>
             <td>{{ venda.getPrecoTotalFormatado() }}</td>
             <td>{{ venda.items.length }}</td>
+            <td class="status-cell">
+              <span class="status" [class.efetivada]="venda.efetivada" [class.pendente]="!venda.efetivada">
+                {{ venda.efetivada ? 'Efetivada' : 'Pendente' }}
+              </span>
+            </td>
             <td class="actions-cell">
-              <a [routerLink]="['/adm/vendas', venda.id]" class="btn btn-sm btn-secondary">Ver Detalhes</a>
+              <a [routerLink]="['/adm/vendas/detalhe', venda.id]" class="btn btn-sm btn-secondary">Ver Detalhes</a>
+              <button (click)="toggleStatus(venda)" class="btn btn-sm btn-primary">Mudar Status</button>
+              <button (click)="deleteVenda(venda.id)" class="btn btn-sm btn-danger">Deletar</button>
             </td>
           </tr>
-          <tr *ngIf="vendas.length === 0">
-            <td colspan="6" class="empty-state">Nenhuma venda registrada.</td>
-          </tr>
+          <tr *ngIf="vendas.length === 0"><td colspan="7" class="empty-state">Nenhuma venda registrada.</td></tr>
         </ng-container>
       </tbody>
     </table>

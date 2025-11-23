@@ -1,0 +1,34 @@
+.notification-container {
+  position: fixed;
+  bottom: 2rem;
+  right: 2rem;
+  padding: 1rem 1.5rem;
+  border-radius: 8px;
+  color: white;
+  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
+  z-index: 1050;
+  max-width: 320px;
+  animation: fadeIn 0.3s ease-out;
+
+  p {
+    margin: 0;
+    font-weight: 500;
+  }
+
+  &.success {
+    background-color: #48bb78; // green-500
+  }
+
+  &.error {
+    background-color: #f56565; // red-500
+  }
+
+  &.info {
+    background-color: #4299e1; // blue-500
+  }
+}
+
+@keyframes fadeIn {
+  from { opacity: 0; transform: translateY(20px); }
+  to { opacity: 1; transform: translateY(0); }
+}

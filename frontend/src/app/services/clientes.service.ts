@@ -3,6 +3,7 @@ import { HttpClient } from '@angular/common/http';
 import { Observable, of } from 'rxjs';
 import { catchError, map } from 'rxjs/operators';
 import { environment } from '../../../environment';
+
 import Cliente from '../model/Cliente';
 
 @Injectable({
@@ -34,24 +35,17 @@ export class ClientesService {
     );
   }
 
-  /**
-   * Atualiza os dados do perfil do cliente autenticado.
-   * @param clienteData Os dados a serem atualizados.
-   */
+  /** * Atualiza os dados do perfil do cliente autenticado. * @param clienteData Os dados a serem atualizados. */
   updateProfile(clienteData: Partial<Cliente>): Observable<Cliente> {
-    return this.http.put<Cliente>(`${this.clientesUrl}/me`, clienteData);
+    return this.http.put<Cliente>(`${environment.apiUrl}/auth/me`, clienteData);
   }
 
-  /**
-   * Deleta um cliente da API.
-   * @param id O ID do cliente a ser deletado.
-   */
+  /** * Deleta um cliente da API. * @param id O ID do cliente a ser deletado. */
   deleteCliente(id: number): Observable<void> {
     return this.http.delete<void>(`${this.clientesUrl}/${id}`);
   }
 
   private mapToCliente(item: any): Cliente {
-    // O backend já envia os dados no formato esperado pelo construtor do Cliente.
     return new Cliente(item.id, item.nome, item.telefone, item.email, item.endereco);
   }
 }

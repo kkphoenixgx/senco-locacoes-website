@@ -15,62 +15,6 @@ const clientesController = new ClientesController();
 
 /**
  * @swagger
- * /api/clientes:
- *   post:
- *     summary: Cria um novo cliente.
- *     tags: [Clientes]
- *     requestBody:
- *       required: true
- *       content:
- *         application/json:
- *           schema:
- *             type: object
- *             required: [nome, email, senhaPlana]
- *             properties:
- *               nome:
- *                 type: string
- *               email:
- *                 type: string
- *               senhaPlana:
- *                 type: string
- *               telefone:
- *                 type: string
- *               endereco:
- *                 type: string
- *     responses:
- *       201:
- *         description: Cliente criado com sucesso, retorna o usuário e um token JWT.
- */
-clientesRoutes.post('/clientes', clientesController.create);
-
-/**
- * @swagger
- * /api/clientes/login:
- *   post:
- *     summary: Realiza o login de um cliente.
- *     tags: [Clientes]
- *     requestBody:
- *       required: true
- *       content:
- *         application/json:
- *           schema:
- *             type: object
- *             required: [email, senha]
- *             properties:
- *               email:
- *                 type: string
- *               senha:
- *                 type: string
- *     responses:
- *       200:
- *         description: Login bem-sucedido, retorna o usuário e um token JWT.
- *       401:
- *         description: Email ou senha incorretos.
- */
-clientesRoutes.post('/clientes/login', clientesController.login);
-
-/**
- * @swagger
  * /api/clientes/me:
  *   get:
  *     summary: Retorna o perfil do cliente autenticado.
@@ -134,8 +78,6 @@ clientesRoutes.get('/clientes', ensureAuthenticated, ensureAdmin, clientesContro
  */
 clientesRoutes.get('/clientes/:id', ensureAuthenticated, clientesController.findById);
 
-// As rotas PUT e DELETE seguiriam um padrão similar de documentação
-clientesRoutes.put('/clientes/:id', ensureAuthenticated, clientesController.update);
 clientesRoutes.delete('/clientes/:id', ensureAuthenticated, clientesController.delete);
 
 export default clientesRoutes;

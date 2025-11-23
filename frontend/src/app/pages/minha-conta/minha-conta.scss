@@ -1,7 +1,7 @@
 :host {
   display: block;
-  background-color: #f4f7fa; // Usa o mesmo fundo do painel ADM
-  color: var(--blue-default);
+  background-color: var(--dark-blue); // Fundo escuro padrão do site
+  color: var(--white-default); // Cor de texto padrão para fundo escuro
   padding: 2rem 0 4rem;
   min-height: 80vh;
 }
@@ -13,7 +13,7 @@
 }
 
 .profile-card {
-  background-color: #ffffff;
+  background-color: var(--blue-default); // Cor de "card" para o tema escuro
   padding: 2rem;
   border-radius: 8px;
   box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
@@ -64,11 +64,11 @@ app-default-form-input[formControlName="email"] {
   // O ::ng-deep é necessário para estilizar o componente encapsulado
   ::ng-deep input {
     background-color: #e9ecef;
-    cursor: not-allowed;
-    color: #6c757d;
+    cursor: not-allowed; // Mantém o cursor
+    color: #6c757d; // Cor de texto para campo desabilitado
   }
 
   ::ng-deep label {
-    color: #6c757d;
+    color: #adb5bd; // Cor de label mais suave para campo desabilitado
   }
 }

@@ -36,6 +36,10 @@
     <p>Nenhum veículo encontrado com os filtros selecionados.</p>
   </div>
 
+  <div *ngIf="error()" class="empty-state error-state">
+    <p>{{ error() }}</p>
+  </div>
+
   <section class="pagination-section">
     <app-default-button 
       *ngIf="hasMoreVehicles() || isLoading()"

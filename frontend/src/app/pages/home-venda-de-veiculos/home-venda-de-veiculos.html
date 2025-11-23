@@ -38,6 +38,10 @@
       <ng-template #noVehicles>
         <p class="empty-state">Nenhum veículo em destaque no momento.</p>
       </ng-template>
+
+      <div *ngIf="error()" class="empty-state error-state">
+        <p>{{ error() }}</p>
+      </div>
     </ng-template>
 
   </section>

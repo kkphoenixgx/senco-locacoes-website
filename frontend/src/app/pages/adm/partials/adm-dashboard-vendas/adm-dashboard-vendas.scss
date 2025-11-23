@@ -72,10 +72,37 @@
       background-color: #cbd5e0;
     }
   }
+
+  &.btn-danger {
+    background-color: #e53e3e; // red-600
+    color: #ffffff;
+    &:hover {
+      background-color: #c53030; // red-700
+    }
+  }
 }
 
 .empty-state {
   text-align: center;
   padding: 2rem;
   color: #718096;
+}
+
+.status-cell {
+  .status {
+    padding: 0.25rem 0.6rem;
+    border-radius: 12px;
+    font-size: 0.8rem;
+    font-weight: 500;
+    
+    &.efetivada {
+      background-color: #c6f6d5; // green-200
+      color: #2f855a; // green-700
+    }
+
+    &.pendente {
+      background-color: #feebc8; // yellow-200
+      color: #975a16; // yellow-700
+    }
+  }
 }

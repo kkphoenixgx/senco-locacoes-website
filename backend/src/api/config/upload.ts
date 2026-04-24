@@ -6,7 +6,7 @@ import { fileURLToPath } from 'url';
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
 
-const uploadFolder = path.resolve(__dirname, '..', '..', '..', 'uploads');
+const uploadFolder = path.resolve(__dirname, '..', '..', 'uploads');
 
 export default {
   directory: uploadFolder,

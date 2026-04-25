@@ -1,0 +1,25 @@
+# Dependências
+node_modules/
+
+# Uploads
+uploads/
+
+# Build
+dist/
+dist-prod/
+.angular/
+
+# Ambiente
+.env
+*.env
+.vscode/
+
+# Logs
+*.log
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+
+# OS
+.DS_Store
+Thumbs.db

@@ -3,22 +3,29 @@
     "target": "ES2022",
     "useDefineForClassFields": true,
     "module": "ESNext",
-    "lib": ["ES2022"],
-    "types": ["@types/node"],
+    "lib": [
+      "ES2022"
+    ],
+    "types": [
+      "@types/node"
+    ],
     "skipLibCheck": true,
-
     /* Bundler mode */
     "moduleResolution": "bundler",
     "outDir": "./dist-prod",
+    "rootDir": "./src",
     "sourceMap": true,
     "esModuleInterop": true,
-
     /* Linting */
     "strict": true,
     "noUnusedLocals": true,
     "noUnusedParameters": true,
     "noFallthroughCasesInSwitch": true
   },
-  "include": ["src/**/*.ts"],
-  "exclude": ["node_modules"]
+  "include": [
+    "src/**/*.ts"
+  ],
+  "exclude": [
+    "node_modules"
+  ]
 }

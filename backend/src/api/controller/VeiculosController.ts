@@ -1,5 +1,5 @@
 import { Request, Response } from 'express';
-import VeiculoRepository from '../../repository/VeiculoRepository'; 
+import VeiculoRepository from '../../repository/VeiculoRepository';
 
 export default class VeiculosController {
   private veiculoRepository = new VeiculoRepository();
@@ -13,7 +13,7 @@ export default class VeiculosController {
     this.update = this.update.bind(this);
     this.delete = this.delete.bind(this);
   }
-  
+
   public async create(req: Request, res: Response): Promise<Response> {
     const veiculoData = req.body;
     const { files } = req;
@@ -48,8 +48,12 @@ export default class VeiculosController {
 
   public async findAll(req: Request, res: Response): Promise<Response> {
     const filters = req.query;
-    const page = req.query.page ? parseInt(req.query.page as string, 10) : 1;
-    const limit = req.query.limit ? parseInt(req.query.limit as string, 10) : 12;
+
+    const pageParam = parseInt(req.query.page as string, 10);
+    const page = !isNaN(pageParam) && pageParam > 0 ? pageParam : 1;
+
+    const limitParam = parseInt(req.query.limit as string, 10);
+    const limit = !isNaN(limitParam) && limitParam > 0 ? limitParam : 12;
 
     try {
       const veiculos = await this.veiculoRepository.findAll(filters, page, limit);
@@ -74,7 +78,10 @@ export default class VeiculosController {
 
   public async findMaisVendidos(req: Request, res: Response): Promise<Response> {
     try {
-      const veiculos = await this.veiculoRepository.findMaisVendidos();
+      const limitParam = parseInt(req.query.limit as string, 10);
+      const limit = !isNaN(limitParam) && limitParam > 0 ? limitParam : 10;
+
+      const veiculos = await this.veiculoRepository.findMaisVendidos(limit);
       return res.json(veiculos);
     } catch (error: any) {
       return res.status(500).json({ message: error.message });

@@ -343,8 +343,8 @@ class AdmsController {
 const admRoutes = Router();
 const admsController = new AdmsController();
 admRoutes.post("/adms/login", admsController.login);
-const __filename = fileURLToPath(import.meta.url);
-const __dirname$1 = path.dirname(__filename);
+const __filename$1 = fileURLToPath(import.meta.url);
+const __dirname$1 = path.dirname(__filename$1);
 const uploadFolder = path.resolve(__dirname$1, "..", "..", "..", "uploads");
 const uploadConfig = {
   directory: uploadFolder,
@@ -418,6 +418,8 @@ class CategoriaVeiculos {
     this.descricao = descricao;
   }
 }
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = path.dirname(__filename);
 class VeiculoRepository {
   /** Cria um novo veículo no banco de dados e associa suas imagens. */
   async create(veiculoData, nomesImagens) {

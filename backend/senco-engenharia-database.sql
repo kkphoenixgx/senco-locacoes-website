@@ -77,4 +77,4 @@ CREATE TABLE venda_itens (
 
 -- Inserção do Administrador Padrão
 INSERT INTO adms (email, senha_hash) VALUES 
-('senco.engenharia.adm@gmail.com', '$2b$10$1daZSajmRSap9wA35gUAHe6f5NiOlZfM.QIMpNs1tRLENSEf.tPNq');
+('admin@senco.com.br', '$2b$10$Yjp1dx96ttuOEMYO71tZ4ehjje9Ir.nnBcnu0Gpd9/vGmK/JRzhbq');

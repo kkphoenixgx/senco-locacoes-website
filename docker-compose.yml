@@ -1,0 +1,83 @@
+services:
+  db:
+    image: mysql:9.0
+    container_name: senco_db
+    restart: always
+    environment:
+      MYSQL_ROOT_PASSWORD: root_password
+      MYSQL_DATABASE: senco_engenharia_db
+      MYSQL_USER: senco_user
+      MYSQL_PASSWORD: senco_password
+    ports:
+      - "3306:3306"
+    volumes:
+      - ./backend/senco-engenharia-database.sql:/docker-entrypoint-initdb.d/init.sql
+      - senco_db_data:/var/lib/mysql
+    networks:
+      - senco_network
+    healthcheck:
+      test: ["CMD", "mysqladmin", "ping", "-h", "localhost", "-u", "root", "-p$MYSQL_ROOT_PASSWORD"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
+  backend:
+    build:
+      context: ./backend
+      dockerfile: Dockerfile
+    container_name: senco_backend
+    restart: always
+    environment:
+      NODE_ENV: production
+      DB_HOST: db
+      DB_USER: senco_user
+      DB_PASSWORD: senco_password
+      DB_NAME: senco_engenharia_db
+      API_PORT: 3000
+      UPLOADS_DIR: /app/uploads
+      # Adicione outras variáveis de ambiente necessárias (JWT_SECRET, etc.)
+    ports:
+      - "3000:3000"
+    volumes:
+      - senco_uploads:/app/uploads
+    depends_on:
+      db:
+        condition: service_healthy
+    networks:
+      - senco_network
+
+  frontend:
+    build:
+      context: ./frontend
+      dockerfile: Dockerfile
+    container_name: senco_frontend
+    restart: always
+    ports:
+      - "80:80"
+    depends_on:
+      - backend
+    networks:
+      - senco_network
+
+  seeder:
+    image: mysql:9.0
+    profiles: ["seed"]
+    container_name: senco_seeder
+    depends_on:
+      db:
+        condition: service_healthy
+    volumes:
+      - ./seed:/seed
+      - ./sample_data:/sample_data
+      - senco_uploads:/app/uploads
+    networks:
+      - senco_network
+    entrypoint: ["/bin/sh", "/seed/seed-script.sh"]
+
+networks:
+  senco_network:
+    driver: bridge
+
+volumes:
+  senco_db_data:
+  senco_uploads:

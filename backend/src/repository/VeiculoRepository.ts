@@ -4,19 +4,16 @@ import { ResultSetHeader, RowDataPacket } from "mysql2";
 import CategoriaVeiculos from "../model/items/CategoriaVeiculos";
 import fs from 'fs/promises';
 import path from 'path';
-import { fileURLToPath } from 'url';
-
-const __filename = fileURLToPath(import.meta.url);
-const __dirname = path.dirname(__filename);
+import uploadConfig from "../api/config/upload";
 
 export default class VeiculoRepository {
-  
+
   /** Cria um novo veículo no banco de dados e associa suas imagens. */
   public async create(veiculoData: Omit<Veiculo, 'id' | 'getAnoFormatado'>, nomesImagens: string[]): Promise<Veiculo> {
     const pool = ConnectionFactory.getPool();
     const connection = await pool.getConnection();
     await connection.beginTransaction();
-    
+
     const veiculoQuery = `
       INSERT INTO veiculos (titulo, preco, descricao, categoria_id, modelo, marca, ano_fabricacao, ano_modelo, quilometragem, cor, documentacao, revisoes)
       VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
@@ -24,19 +21,19 @@ export default class VeiculoRepository {
 
     try {
       const [result] = await connection.execute<ResultSetHeader>(
-        veiculoQuery, 
+        veiculoQuery,
         [
-          veiculoData.titulo, 
-          veiculoData.preco, 
-          veiculoData.descricao, 
+          veiculoData.titulo,
+          veiculoData.preco,
+          veiculoData.descricao,
           veiculoData.categoriaId,
-          veiculoData.modelo, 
+          veiculoData.modelo,
           veiculoData.marca,
-          veiculoData.anoFabricacao, 
-          veiculoData.anoModelo, 
+          veiculoData.anoFabricacao,
+          veiculoData.anoModelo,
           veiculoData.quilometragem,
-          veiculoData.cor, 
-          veiculoData.documentacao, 
+          veiculoData.cor,
+          veiculoData.documentacao,
           veiculoData.revisoes
         ]
       );
@@ -75,7 +72,7 @@ export default class VeiculoRepository {
         veiculoData.revisoes,
         categoria
       );
-    } 
+    }
     catch (error) {
       await connection.rollback();
       console.error('Erro ao criar veículo:', error);
@@ -96,7 +93,7 @@ export default class VeiculoRepository {
       FROM veiculos v
       JOIN categoria_veiculos c ON v.categoria_id = c.id
     `;
-    
+
     const params: (string | number)[] = [];
     const whereClauses: string[] = [];
 
@@ -108,15 +105,15 @@ export default class VeiculoRepository {
       whereClauses.push("v.marca = ?");
       params.push(filters.marca);
     }
-    if (filters.ano) {
+    if (filters.ano && !isNaN(Number(filters.ano))) {
       whereClauses.push("v.ano_fabricacao = ?");
       params.push(Number(filters.ano));
     }
-    if (filters.precoMin) {
+    if (filters.precoMin && !isNaN(Number(filters.precoMin))) {
       whereClauses.push("v.preco >= ?");
       params.push(Number(filters.precoMin));
     }
-    if (filters.precoMax) {
+    if (filters.precoMax && !isNaN(Number(filters.precoMax))) {
       whereClauses.push("v.preco <= ?");
       params.push(Number(filters.precoMax));
     }
@@ -125,12 +122,15 @@ export default class VeiculoRepository {
       query += ` WHERE ${whereClauses.join(' AND ')}`;
     }
 
-    query += ` ORDER BY v.id DESC LIMIT ? OFFSET ?`;
-    params.push(limit, (page - 1) * limit);
+    const safeLimit = parseInt(String(limit), 10) || 12;
+    const safePage = parseInt(String(page), 10) || 1;
+    const offset = (safePage - 1) * safeLimit;
+
+    query += ` ORDER BY v.id DESC LIMIT ${safeLimit} OFFSET ${offset}`;
 
     try {
       const [rows] = await pool.execute<RowDataPacket[]>(query, params);
-      
+
       return rows.map(row => {
         const categoria = new CategoriaVeiculos(row.categoria_id, row.categoria_nome, row.categoria_descricao);
         const imagens = row.imagens ? row.imagens.split(',') : [];
@@ -162,6 +162,7 @@ export default class VeiculoRepository {
   /** Busca os veículos mais vendidos, ordenados pela quantidade de vendas. */
   public async findMaisVendidos(limit: number = 10): Promise<Veiculo[]> {
     const pool = ConnectionFactory.getPool();
+    const safeLimit = parseInt(String(limit), 10) || 10;
     const query = `
       SELECT 
         v.*,
@@ -174,11 +175,11 @@ export default class VeiculoRepository {
       LEFT JOIN venda_itens itens ON v.id = itens.veiculo_id
       GROUP BY v.id
       ORDER BY total_vendas DESC
-      LIMIT ?
+      LIMIT ${safeLimit}
     `;
 
     try {
-      const [rows] = await pool.execute<RowDataPacket[]>(query, [limit]);
+      const [rows] = await pool.execute<RowDataPacket[]>(query);
       return rows.map(row => {
         const categoria = new CategoriaVeiculos(row.categoria_id, row.categoria_nome, row.categoria_descricao);
         const imagens = row.imagens ? row.imagens.split(',') : [];
@@ -248,7 +249,7 @@ export default class VeiculoRepository {
   public async update(id: number, veiculoData: Partial<Omit<Veiculo, 'id' | 'getAnoFormatado'>>, nomesNovasImagens?: string[]): Promise<Veiculo | null> {
     const pool = ConnectionFactory.getPool();
     const connection = await pool.getConnection();
-    
+
     try {
       await connection.beginTransaction();
 
@@ -262,7 +263,7 @@ export default class VeiculoRepository {
         const imagensValues = nomesNovasImagens.map(nome => [id, nome]);
         await connection.query(imagemQuery, [imagensValues]);
 
-        const uploadDir = path.resolve(__dirname, '..', '..', 'uploads');
+        const uploadDir = uploadConfig.directory;
         for (const filename of oldImageFiles) {
           try {
             await fs.unlink(path.join(uploadDir, filename));
@@ -319,16 +320,16 @@ export default class VeiculoRepository {
       await connection.execute('DELETE FROM veiculo_imagens WHERE veiculo_id = ?', [id]);
 
       const [result] = await connection.execute<ResultSetHeader>('DELETE FROM veiculos WHERE id = ?', [id]);
-      
+
       await connection.commit();
 
       return result.affectedRows > 0;
-    } 
+    }
     catch (error) {
       await connection.rollback();
       console.error(`Erro ao deletar veículo com ID ${id}:`, error);
       if (error instanceof Error) throw error;
-  
+
       throw new Error('Erro ao deletar veículo no banco de dados.');
     } finally {
       connection.release();
